@@ -12,17 +12,18 @@ public class Transacao {
     private String descricao;
 
     private TipoTransacao tipoTransacao;
-    //private Usuario usuario;
+    private Usuario usuario;
 
     public Transacao () {};
 
-    public Transacao(Long id, BigDecimal valor, LocalDateTime data, Categoria categoria, String descricao, TipoTransacao tipoTransacao) {
+    public Transacao(Long id, BigDecimal valor, LocalDateTime data, Categoria categoria, String descricao, TipoTransacao tipoTransacao, Usuario usuario) {
         this.id = id;
         this.valor = valor;
         this.data = data;
         this.categoria = categoria;
         this.descricao = descricao;
         this.tipoTransacao = tipoTransacao;
+        this.usuario = usuario;
     }
 
     public Long getId() {
@@ -73,17 +74,25 @@ public class Transacao {
         this.tipoTransacao = tipoTransacao;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transacao transacao = (Transacao) o;
-        return Objects.equals(id, transacao.id) && Objects.equals(valor, transacao.valor) && Objects.equals(data, transacao.data) && Objects.equals(categoria, transacao.categoria) && Objects.equals(descricao, transacao.descricao) && tipoTransacao == transacao.tipoTransacao;
+        return Objects.equals(getId(), transacao.getId()) && Objects.equals(getValor(), transacao.getValor()) && Objects.equals(getData(), transacao.getData()) && Objects.equals(getCategoria(), transacao.getCategoria()) && Objects.equals(getDescricao(), transacao.getDescricao()) && getTipoTransacao() == transacao.getTipoTransacao() && Objects.equals(getUsuario(), transacao.getUsuario());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, valor, data, categoria, descricao, tipoTransacao);
+        return Objects.hash(getId(), getValor(), getData(), getCategoria(), getDescricao(), getTipoTransacao(), getUsuario());
     }
 
     public void registrar () {};
