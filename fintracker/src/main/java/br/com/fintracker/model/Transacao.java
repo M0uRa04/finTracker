@@ -1,31 +1,28 @@
 package br.com.fintracker.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Table
-@Entity
 public class Transacao {
     private Long id;
     private BigDecimal valor;
     private LocalDateTime data;
-    //private Categoria categoria;
+    private Categoria categoria;
     private String descricao;
 
-    //private TipoTransacao tipoTransacao;
+    private TipoTransacao tipoTransacao;
     //private Usuario usuario;
 
     public Transacao () {};
 
-    public Transacao(Long id, BigDecimal valor, LocalDateTime data, String descricao) {
+    public Transacao(Long id, BigDecimal valor, LocalDateTime data, Categoria categoria, String descricao, TipoTransacao tipoTransacao) {
         this.id = id;
         this.valor = valor;
         this.data = data;
+        this.categoria = categoria;
         this.descricao = descricao;
+        this.tipoTransacao = tipoTransacao;
     }
 
     public Long getId() {
@@ -52,6 +49,14 @@ public class Transacao {
         this.data = data;
     }
 
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
     public String getDescricao() {
         return descricao;
     }
@@ -60,17 +65,25 @@ public class Transacao {
         this.descricao = descricao;
     }
 
+    public TipoTransacao getTipoTransacao() {
+        return tipoTransacao;
+    }
+
+    public void setTipoTransacao(TipoTransacao tipoTransacao) {
+        this.tipoTransacao = tipoTransacao;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transacao transacao = (Transacao) o;
-        return Objects.equals(getId(), transacao.getId()) && Objects.equals(getValor(), transacao.getValor()) && Objects.equals(getData(), transacao.getData()) && Objects.equals(getDescricao(), transacao.getDescricao());
+        return Objects.equals(id, transacao.id) && Objects.equals(valor, transacao.valor) && Objects.equals(data, transacao.data) && Objects.equals(categoria, transacao.categoria) && Objects.equals(descricao, transacao.descricao) && tipoTransacao == transacao.tipoTransacao;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getValor(), getData(), getDescricao());
+        return Objects.hash(id, valor, data, categoria, descricao, tipoTransacao);
     }
 
     public void registrar () {};
