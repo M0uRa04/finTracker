@@ -8,6 +8,6 @@ public interface ApiCrud <T, ID>{
     Optional<T> buscarNoBancoDeDados(ID id);
     List<T> buscarTodosOsRegistrosNoBancoDeDados();
     Optional<T> atualizarNoBancoDeDados(ID id, T t);
-    Optional<T> removerDoBancoDeDados(ID id);
+    void removerDoBancoDeDados(ID id);
     Optional<T> inativarDoBancoDeDados(ID id);
 }

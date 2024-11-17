@@ -1,5 +1,6 @@
 package br.com.fintracker.model.usuario;
 
+import br.com.fintracker.dto.UsuarioDTO;
 import br.com.fintracker.model.Transacao;
 import jakarta.persistence.*;
 
@@ -16,17 +17,18 @@ public class Usuario {
     private String nome;
     private String email;
     private String senha;
+    private Boolean isAtivo;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Transacao>transacoes;
 
     public Usuario () {};
 
-    public Usuario(Long id, String email, String senha, String nome) {
-        this.nome = nome;
-        this.id = id;
-        this.email = email;
-        this.senha = senha;
+    public Usuario(UsuarioDTO dto) {
+        this.nome = dto.nome();
+        this.email = dto.email();
+        this.senha = dto.senha();
+        this.isAtivo = true;
     }
 
     public Long getId() {
@@ -59,6 +61,14 @@ public class Usuario {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Boolean getAtivo() {
+        return isAtivo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        isAtivo = ativo;
     }
 
     @Override
