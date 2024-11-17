@@ -1,14 +1,18 @@
 package br.com.fintracker.model;
 
+import jakarta.persistence.OneToMany;
+
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 public class Categoria {
 
     private Long id;
-
     private String nomeCategoria;
     private BigDecimal cota;
+    @OneToMany
+    private List<Transacao> transacoes;
 
     public Categoria () {};
 
