@@ -1,16 +1,29 @@
 package br.com.fintracker.model.usuario;
 
+import br.com.fintracker.model.Transacao;
+import jakarta.persistence.*;
+
+import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "usuario")
 public class Usuario {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nome;
     private String email;
     private String senha;
 
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    private List<Transacao>transacoes;
+
     public Usuario () {};
 
-    public Usuario(Long id, String email, String senha) {
+    public Usuario(Long id, String email, String senha, String nome) {
+        this.nome = nome;
         this.id = id;
         this.email = email;
         this.senha = senha;
@@ -40,6 +53,14 @@ public class Usuario {
         this.senha = senha;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -52,6 +73,4 @@ public class Usuario {
     public int hashCode() {
         return Objects.hash(getId(), getEmail(), getSenha());
     }
-
-    public void criarRelatorio () {};
 }
