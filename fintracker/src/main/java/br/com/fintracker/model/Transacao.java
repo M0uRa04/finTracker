@@ -1,5 +1,7 @@
 package br.com.fintracker.model;
 
+import br.com.fintracker.model.usuario.Usuario;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
