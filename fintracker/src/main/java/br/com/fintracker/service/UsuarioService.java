@@ -1,7 +1,7 @@
 package br.com.fintracker.service;
 
-import br.com.fintracker.dto.DadosAtualizacaoUsuario;
-import br.com.fintracker.dto.UsuarioDTO;
+import br.com.fintracker.dto.usuario.DadosAtualizacaoUsuario;
+import br.com.fintracker.dto.usuario.UsuarioDTO;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class UsuarioService implements ApiCrud <UsuarioDTO, Long> {
     @Autowired
     private UsuarioRepository repository;
 
-    public Usuario atualizarAtributos(Usuario usuario, DadosAtualizacaoUsuario dtoAtualizacao) {
+    private Usuario atualizarAtributos(Usuario usuario, DadosAtualizacaoUsuario dtoAtualizacao) {
         if (dtoAtualizacao.nome() != null) {
             usuario.setNome(dtoAtualizacao.nome());
         }
@@ -38,7 +38,7 @@ public class UsuarioService implements ApiCrud <UsuarioDTO, Long> {
     }
 
     @Override
-    public Optional<UsuarioDTO> buscarNoBancoDeDados(Long id) {
+    public Optional<UsuarioDTO> buscarNoBancoDeDadosPeloId(Long id) {
         Usuario usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado para o id fornecido."));
         return Optional.of(new UsuarioDTO(usuario));
     }
@@ -52,6 +52,7 @@ public class UsuarioService implements ApiCrud <UsuarioDTO, Long> {
         return usuariosDTO;
     }
 
+    @Deprecated
     @Override
     public Optional<UsuarioDTO> atualizarNoBancoDeDados(Long aLong, UsuarioDTO dto) {
         return Optional.empty();

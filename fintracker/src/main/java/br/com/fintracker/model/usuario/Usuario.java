@@ -1,6 +1,6 @@
 package br.com.fintracker.model.usuario;
 
-import br.com.fintracker.dto.UsuarioDTO;
+import br.com.fintracker.dto.usuario.UsuarioDTO;
 import br.com.fintracker.model.Transacao;
 import jakarta.persistence.*;
 

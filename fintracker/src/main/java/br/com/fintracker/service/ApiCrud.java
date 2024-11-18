@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface ApiCrud <T, ID>{
     T inserirNoBancoDeDados(T t);
-    Optional<T> buscarNoBancoDeDados(ID id);
+    Optional<T> buscarNoBancoDeDadosPeloId(ID id);
     List<T> buscarTodosOsRegistrosNoBancoDeDados();
     Optional<T> atualizarNoBancoDeDados(ID id, T t);
     void removerDoBancoDeDados(ID id);

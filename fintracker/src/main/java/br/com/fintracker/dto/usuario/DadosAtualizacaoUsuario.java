@@ -1,4 +1,4 @@
-package br.com.fintracker.dto;
+package br.com.fintracker.dto.usuario;
 
 public record DadosAtualizacaoUsuario (
 

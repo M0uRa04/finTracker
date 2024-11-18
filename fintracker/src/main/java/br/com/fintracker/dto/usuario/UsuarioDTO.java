@@ -1,4 +1,4 @@
-package br.com.fintracker.dto;
+package br.com.fintracker.dto.usuario;
 
 import br.com.fintracker.model.usuario.Usuario;
 import jakarta.validation.constraints.Email;
