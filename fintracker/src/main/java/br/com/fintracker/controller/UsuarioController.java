@@ -1,6 +1,7 @@
 package br.com.fintracker.controller;
 
 import br.com.fintracker.dto.usuario.DadosAtualizacaoUsuario;
+import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
 import br.com.fintracker.dto.usuario.UsuarioDTO;
 import br.com.fintracker.service.UsuarioService;
 import jakarta.transaction.Transactional;
@@ -19,13 +20,12 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity criarConta (@RequestBody @Valid UsuarioDTO usuarioDTO) {
-        service.inserirNoBancoDeDados(usuarioDTO);
         var uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(usuarioDTO)
                 .toUri();
-        return ResponseEntity.created(uri).body(usuarioDTO);
+        return ResponseEntity.created(uri).body( service.inserirNoBancoDeDados(usuarioDTO));
     }
 
     @GetMapping("/{id}")
@@ -41,17 +41,17 @@ public class UsuarioController {
     @PatchMapping("/{id}")
     @Transactional
     public ResponseEntity atualizarConta (@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoUsuario dadosAtualizacaoUsuario) {
-
+        //alterar este método para autenticar o usuario via email para atualizar
         return ResponseEntity.ok(service.atualizarUsuarioComDadosParciais(id, dadosAtualizacaoUsuario));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("deletar/{id}")
     public ResponseEntity deletarConta (@PathVariable long id) {
         service.removerDoBancoDeDados(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/inativar")
+    @PatchMapping("inativar/{id}")
     public ResponseEntity inativarConta (@PathVariable long id) {
         service.inativarDoBancoDeDados(id);
         return ResponseEntity.noContent().build();

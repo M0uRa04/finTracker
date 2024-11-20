@@ -1,6 +1,7 @@
 package br.com.fintracker.service;
 
 import br.com.fintracker.dto.usuario.DadosAtualizacaoUsuario;
+import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
 import br.com.fintracker.dto.usuario.UsuarioDTO;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.UsuarioRepository;
@@ -11,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UsuarioService implements ApiCrud <UsuarioDTO, Long> {
+public class UsuarioService {
 
     private final UsuarioRepository repository;
 
@@ -33,50 +34,49 @@ public class UsuarioService implements ApiCrud <UsuarioDTO, Long> {
     }
 
 
-    @Override
-    public UsuarioDTO inserirNoBancoDeDados(UsuarioDTO dto) {
+
+    public DadosRespostaUsuario inserirNoBancoDeDados(UsuarioDTO dto) {
         var usuario = repository.saveAndFlush(new Usuario(dto));
-        return new UsuarioDTO(usuario);
+        return new DadosRespostaUsuario(usuario);
     }
 
-    @Override
-    public Optional<UsuarioDTO> buscarNoBancoDeDadosPeloId(Long id) {
+
+    public Optional<DadosRespostaUsuario> buscarNoBancoDeDadosPeloId(Long id) {
         Usuario usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado para o id fornecido."));
-        return Optional.of(new UsuarioDTO(usuario));
+        return Optional.of(new DadosRespostaUsuario(usuario));
     }
 
-    @Override
-    public List<UsuarioDTO> buscarTodosOsRegistrosNoBancoDeDados() {
-        List<UsuarioDTO> usuariosDTO = repository.findAll().stream()
-                .map(UsuarioDTO::new)
+
+    public List<DadosRespostaUsuario> buscarTodosOsRegistrosNoBancoDeDados() {
+        List<DadosRespostaUsuario> usuarios = repository.findAllByisAtivoTrue().stream()
+                .map(DadosRespostaUsuario::new)
                 .collect(Collectors.toList());
 
-        return usuariosDTO;
+        return usuarios;
     }
 
     @Deprecated
-    @Override
-    public Optional<UsuarioDTO> atualizarNoBancoDeDados(Long aLong, UsuarioDTO dto) {
+    public Optional<DadosRespostaUsuario> atualizarNoBancoDeDados(Long aLong, UsuarioDTO dto) {
         return Optional.empty();
     }
 
-    public Optional<UsuarioDTO> atualizarUsuarioComDadosParciais(Long id, DadosAtualizacaoUsuario dtoAtualizacao) {
+    public Optional<DadosRespostaUsuario> atualizarUsuarioComDadosParciais(Long id, DadosAtualizacaoUsuario dtoAtualizacao) {
         var usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado para o id fornecido."));
         repository.save(atualizarAtributos(usuario, dtoAtualizacao));
-        return Optional.of(new UsuarioDTO(usuario));
+        return Optional.of(new DadosRespostaUsuario(usuario));
     }
 
-    @Override
+
     public void removerDoBancoDeDados(Long id) {
         repository.deleteById(id);
     }
 
-    @Override
-    public Optional<UsuarioDTO> inativarDoBancoDeDados(Long id) {
+
+    public Optional<DadosRespostaUsuario> inativarDoBancoDeDados(Long id) {
         var usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado para o id fornecido."));
         usuario.setAtivo(false);
         repository.save(usuario);
-        return Optional.of(new UsuarioDTO(usuario));
+        return Optional.of(new DadosRespostaUsuario(usuario));
     }
 
 }

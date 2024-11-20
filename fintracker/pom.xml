@@ -91,10 +91,34 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering> <!-- Desativa o filtering -->
+			</resource>
+		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include> <!-- Executa classes de teste que terminam com "Test" -->
+					</includes>
+					<testFailureIgnore>false</testFailureIgnore>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<phase>verify</phase> <!-- Garante que o Spring Boot só rodará após os testes -->
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -33,6 +33,8 @@ public class Usuario {
         this.nome = dto.nome();
         this.email = dto.email();
         this.senha = dto.senha();
+        this.isAtivo = true;
+        this.perfil = Perfis.ROLE_USER;
     }
 
     public Long getId() {

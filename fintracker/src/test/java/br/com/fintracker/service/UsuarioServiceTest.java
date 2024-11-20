@@ -1,6 +1,7 @@
 package br.com.fintracker.service;
 
 import br.com.fintracker.dto.usuario.DadosAtualizacaoUsuario;
+import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
 import br.com.fintracker.dto.usuario.UsuarioDTO;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.UsuarioRepository;
@@ -40,7 +41,7 @@ public class UsuarioServiceTest {
 
         when(repository.saveAndFlush(any(Usuario.class))).thenReturn(usuario);
 
-        UsuarioDTO result = service.inserirNoBancoDeDados(dto);
+        DadosRespostaUsuario result = service.inserirNoBancoDeDados(dto);
 
         assertNotNull(result);
         assertEquals("John", result.nome());
@@ -53,7 +54,7 @@ public class UsuarioServiceTest {
 
         when(repository.findById(1L)).thenReturn(Optional.of(usuario));
 
-        Optional<UsuarioDTO> result = service.buscarNoBancoDeDadosPeloId(1L);
+        Optional<DadosRespostaUsuario> result = service.buscarNoBancoDeDadosPeloId(1L);
 
         assertTrue(result.isPresent());
         assertEquals("John", result.get().nome());
@@ -66,14 +67,14 @@ public class UsuarioServiceTest {
         ;
         Usuario usuario2 = UsuarioTestUtils.criarUsuario(2L, "Jane", "jane@example.com", "654321", true);
 
-        when(repository.findAll()).thenReturn(List.of(usuario1, usuario2));
+        when(repository.findAllByisAtivoTrue()).thenReturn(List.of(usuario1, usuario2));
 
-        List<UsuarioDTO> result = service.buscarTodosOsRegistrosNoBancoDeDados();
+        List<DadosRespostaUsuario> result = service.buscarTodosOsRegistrosNoBancoDeDados();
 
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("John", result.get(0).nome());
-        verify(repository, times(1)).findAll();
+        verify(repository, times(1)).findAllByisAtivoTrue();
     }
 
     @Test
@@ -84,7 +85,7 @@ public class UsuarioServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.of(usuario));
         when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
-        Optional<UsuarioDTO> result = service.atualizarUsuarioComDadosParciais(1L, dtoAtualizacao);
+        Optional<DadosRespostaUsuario> result = service.atualizarUsuarioComDadosParciais(1L, dtoAtualizacao);
 
         assertTrue(result.isPresent());
         assertEquals("Johnny", usuario.getNome());
@@ -99,7 +100,7 @@ public class UsuarioServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.of(usuario));
         when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
-        Optional<UsuarioDTO> result = service.inativarDoBancoDeDados(1L);
+        Optional<DadosRespostaUsuario> result = service.inativarDoBancoDeDados(1L);
 
         assertTrue(result.isPresent());
         assertFalse(usuario.getAtivo());

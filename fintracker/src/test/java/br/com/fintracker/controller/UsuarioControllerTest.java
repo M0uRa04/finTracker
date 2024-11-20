@@ -1,6 +1,7 @@
 package br.com.fintracker.controller;
 
 import br.com.fintracker.dto.usuario.DadosAtualizacaoUsuario;
+import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
 import br.com.fintracker.dto.usuario.UsuarioDTO;
 import br.com.fintracker.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +34,8 @@ class UsuarioControllerTest {
     @Test
     void criarConta_DeveRetornarCreatedQuandoUsuarioValido() throws Exception {
         UsuarioDTO usuarioDTO = new UsuarioDTO("Robson", "robson@example.com", "123456");
-        Mockito.when(usuarioService.inserirNoBancoDeDados(usuarioDTO)).thenReturn(usuarioDTO);
+        DadosRespostaUsuario dadosRespostaUsuario = new DadosRespostaUsuario(usuarioDTO);
+        Mockito.when(usuarioService.inserirNoBancoDeDados(usuarioDTO)).thenReturn(dadosRespostaUsuario);
 
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -56,8 +58,8 @@ class UsuarioControllerTest {
     @Test
     void buscarContaPeloId_DeveRetornarUsuarioQuandoIdValido() throws Exception {
         Long id = 1L;
-        UsuarioDTO usuarioDTO = new UsuarioDTO("Robson", "robson@example.com", "123456");
-        Mockito.when(usuarioService.buscarNoBancoDeDadosPeloId(id)).thenReturn(Optional.of(usuarioDTO));
+        DadosRespostaUsuario dadosRespostaUsuario = new DadosRespostaUsuario("Robson", "robson@example.com");
+        Mockito.when(usuarioService.buscarNoBancoDeDadosPeloId(id)).thenReturn(Optional.of(dadosRespostaUsuario));
 
         mockMvc.perform(get("/user/{id}", id))
                 .andExpect(status().isOk())
@@ -77,8 +79,8 @@ class UsuarioControllerTest {
     @Test
     void listarTodasAsContas_DeveRetornarListaDeUsuarios() throws Exception {
         var usuarios = List.of(
-                new UsuarioDTO("Robson", "robson@example.com", "123456"),
-                new UsuarioDTO("João", "joao@example.com", "654321")
+                new DadosRespostaUsuario("Robson", "robson@example.com"),
+                new DadosRespostaUsuario("João", "joao@example.com")
         );
 
         Mockito.when(usuarioService.buscarTodosOsRegistrosNoBancoDeDados()).thenReturn(usuarios);
@@ -96,7 +98,7 @@ class UsuarioControllerTest {
         DadosAtualizacaoUsuario dados = new DadosAtualizacaoUsuario("Robson Atualizado", "robsonatualizado@email.com", "12659", true);
 
         Mockito.when(usuarioService.atualizarUsuarioComDadosParciais(id, dados))
-                .thenReturn(Optional.of(new UsuarioDTO("Robson Atualizado", "robson@example.com", "123456")));
+                .thenReturn(Optional.of(new DadosRespostaUsuario("Robson Atualizado", "robson@example.com")));
 
         mockMvc.perform(patch("/user/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -111,7 +113,7 @@ class UsuarioControllerTest {
 
         Mockito.doNothing().when(usuarioService).removerDoBancoDeDados(id);
 
-        mockMvc.perform(delete("/user/{id}", id))
+        mockMvc.perform(delete("/user/deletar/{id}", id))
                 .andExpect(status().isNoContent());
     }
 
@@ -121,10 +123,10 @@ class UsuarioControllerTest {
         Long id = 1L;
 
         // Simulando que o método retorne um objeto após inativar a conta
-        UsuarioDTO usuarioDTO = new UsuarioDTO("Robson", "robson@example.com", "123456");
-        Mockito.when(usuarioService.inativarDoBancoDeDados(id)).thenReturn(Optional.of(usuarioDTO));
+        DadosRespostaUsuario dadosRespostaUsuario = new DadosRespostaUsuario("Robson", "robson@example.com");
+        Mockito.when(usuarioService.inativarDoBancoDeDados(id)).thenReturn(Optional.of(dadosRespostaUsuario));
 
-        mockMvc.perform(patch("/user/{id}/inativar", id))
+        mockMvc.perform(patch("/user/inativar/{id}", id))
                 .andExpect(status().isNoContent());
     }
 
