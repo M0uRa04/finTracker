@@ -30,8 +30,7 @@ public class UsuarioServiceTest {
     @BeforeEach
     void setUp() {
         repository = Mockito.mock(UsuarioRepository.class);
-        service = new UsuarioService();
-        service.repository = repository; // Injetar o mock manualmente
+        service = new UsuarioService(repository);// Injetar o mock manualmente
     }
 
     @Test
