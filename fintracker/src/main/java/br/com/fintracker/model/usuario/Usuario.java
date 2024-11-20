@@ -18,17 +18,21 @@ public class Usuario {
     private String email;
     private String senha;
     private Boolean isAtivo;
+    @Enumerated(EnumType.STRING)
+    private Perfis perfil;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Transacao>transacoes;
 
-    public Usuario () {};
+    public Usuario () {
+        this.isAtivo = true;
+        this.perfil = Perfis.ROLE_USER;
+    };
 
     public Usuario(UsuarioDTO dto) {
         this.nome = dto.nome();
         this.email = dto.email();
         this.senha = dto.senha();
-        this.isAtivo = true;
     }
 
     public Long getId() {
@@ -69,6 +73,14 @@ public class Usuario {
 
     public void setAtivo(Boolean ativo) {
         isAtivo = ativo;
+    }
+
+    public Perfis getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(Perfis perfil) {
+        this.perfil = perfil;
     }
 
     @Override
