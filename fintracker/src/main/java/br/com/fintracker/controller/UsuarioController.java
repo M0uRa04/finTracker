@@ -20,7 +20,11 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity criarConta (@RequestBody @Valid UsuarioDTO usuarioDTO) {
         service.inserirNoBancoDeDados(usuarioDTO);
-        var uri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUri();
+        var uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(usuarioDTO)
+                .toUri();
         return ResponseEntity.created(uri).body(usuarioDTO);
     }
 
@@ -29,7 +33,7 @@ public class UsuarioController {
         return ResponseEntity.ok(service.buscarNoBancoDeDadosPeloId(id));
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity listarTodasAsContas() {
         return ResponseEntity.ok(service.buscarTodosOsRegistrosNoBancoDeDados());
     }
@@ -37,8 +41,8 @@ public class UsuarioController {
     @PatchMapping("/{id}")
     @Transactional
     public ResponseEntity atualizarConta (@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoUsuario dadosAtualizacaoUsuario) {
-        service.atualizarUsuarioComDadosParciais(id, dadosAtualizacaoUsuario);
-        return ResponseEntity.ok("");
+
+        return ResponseEntity.ok(service.atualizarUsuarioComDadosParciais(id, dadosAtualizacaoUsuario));
     }
 
     @DeleteMapping("/{id}")
@@ -47,7 +51,7 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/inativar")
     public ResponseEntity inativarConta (@PathVariable long id) {
         service.inativarDoBancoDeDados(id);
         return ResponseEntity.noContent().build();

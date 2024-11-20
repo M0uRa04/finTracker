@@ -4,7 +4,7 @@ CREATE TABLE usuario (
     nome VARCHAR(60) NOT NULL,
     email VARCHAR(60) NOT NULL UNIQUE,
     senha VARCHAR(100) NOT NULL,
-    isAtivo BOOLEAN NOT NULL,
+    is_ativo BOOLEAN NOT NULL,
     perfil VARCHAR(50) NOT NULL,
 
     PRIMARY KEY (id)
