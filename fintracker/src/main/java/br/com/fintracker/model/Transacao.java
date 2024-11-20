@@ -1,25 +1,28 @@
 package br.com.fintracker.model;
 
 import br.com.fintracker.model.usuario.Usuario;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
+@Entity
+@Table(name = "transacao")
 public class Transacao {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private BigDecimal valor;
     private LocalDateTime data;
-    private Categoria categoria;
     private String descricao;
-
+    @Enumerated(EnumType.STRING)
     private TipoTransacao tipoTransacao;
+    @ManyToOne
+    private Categoria categoria;
+    @ManyToOne
     private Usuario usuario;
 
-    public Transacao () {};
-
-    public Transacao(Long id, BigDecimal valor, LocalDateTime data, Categoria categoria, String descricao, TipoTransacao tipoTransacao, Usuario usuario) {
-        this.id = id;
+    public Transacao(BigDecimal valor, LocalDateTime data, Categoria categoria, String descricao, TipoTransacao tipoTransacao, Usuario usuario) {
         this.valor = valor;
         this.data = data;
         this.categoria = categoria;
@@ -97,7 +100,4 @@ public class Transacao {
         return Objects.hash(getId(), getValor(), getData(), getCategoria(), getDescricao(), getTipoTransacao(), getUsuario());
     }
 
-    public void registrar () {};
-
-    public void atualizarSaldo() {};
 }

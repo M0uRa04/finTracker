@@ -1,14 +1,19 @@
 package br.com.fintracker.model;
 
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 public class Categoria {
 
     private Long id;
-
     private String nomeCategoria;
     private BigDecimal cota;
+    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
+    private List<Transacao> transacoes;
 
     public Categoria () {};
 
