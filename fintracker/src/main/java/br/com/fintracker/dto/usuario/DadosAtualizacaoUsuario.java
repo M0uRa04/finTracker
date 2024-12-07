@@ -8,6 +8,4 @@ public record DadosAtualizacaoUsuario (
         Boolean isAtivo
 ){
 
-
-
 }
