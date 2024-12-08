@@ -1,12 +1,11 @@
 package br.com.fintracker.model.usuario;
 
-import br.com.fintracker.dto.usuario.UsuarioDTO;
+import br.com.fintracker.dto.usuario.DadosUsuario;
 import br.com.fintracker.model.Transacao;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario extends UserDetails {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +30,8 @@ public class Usuario extends UserDetails {
 
     public Usuario () {};
 
+
+
     public Usuario (String nome, String email, String senha, Perfis perfil) {
         this.nome = nome;
         this.email = email;
@@ -39,10 +40,10 @@ public class Usuario extends UserDetails {
         this.perfil = perfil;
     };
 
-    public Usuario(UsuarioDTO dto) {
+    public Usuario(DadosUsuario dto, String senhaEncriptada) {
         this.nome = dto.nome();
         this.email = dto.email();
-        this.senha = dto.senha();
+        this.senha = senhaEncriptada;
         this.isAtivo = true;
         this.perfil = Perfis.USER;
     }

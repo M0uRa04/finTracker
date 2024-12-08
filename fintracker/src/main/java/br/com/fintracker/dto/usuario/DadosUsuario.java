@@ -4,7 +4,7 @@ import br.com.fintracker.model.usuario.Usuario;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record UsuarioDTO (
+public record DadosUsuario(
 
         @NotBlank
         String nome,
@@ -14,7 +14,7 @@ public record UsuarioDTO (
         String senha
 
 ) {
-    public UsuarioDTO(Usuario usuario) {
+    public DadosUsuario(Usuario usuario) {
         this(usuario.getNome(), usuario.getEmail(), usuario.getSenha());
     }
 }

@@ -2,7 +2,7 @@ package br.com.fintracker.controller;
 
 import br.com.fintracker.dto.usuario.DadosAtualizacaoUsuario;
 import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
-import br.com.fintracker.dto.usuario.UsuarioDTO;
+import br.com.fintracker.dto.usuario.DadosUsuario;
 import br.com.fintracker.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -33,13 +33,13 @@ class UsuarioControllerTest {
 
     @Test
     void criarConta_DeveRetornarCreatedQuandoUsuarioValido() throws Exception {
-        UsuarioDTO usuarioDTO = new UsuarioDTO("Robson", "robson@example.com", "123456");
-        DadosRespostaUsuario dadosRespostaUsuario = new DadosRespostaUsuario(usuarioDTO);
-        Mockito.when(usuarioService.inserirNoBancoDeDados(usuarioDTO)).thenReturn(dadosRespostaUsuario);
+        DadosUsuario dadosUsuario = new DadosUsuario("Robson", "robson@example.com", "123456");
+        DadosRespostaUsuario dadosRespostaUsuario = new DadosRespostaUsuario(dadosUsuario);
+        Mockito.when(usuarioService.inserirNoBancoDeDados(dadosUsuario)).thenReturn(dadosRespostaUsuario);
 
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(usuarioDTO)))
+                        .content(objectMapper.writeValueAsString(dadosUsuario)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.nome").value("Robson"))
                 .andExpect(jsonPath("$.email").value("robson@example.com"));
@@ -47,11 +47,11 @@ class UsuarioControllerTest {
 
     @Test
     void criarConta_DeveRetornarBadRequestQuandoDadosInvalidos() throws Exception {
-        UsuarioDTO usuarioDTO = new UsuarioDTO("", "emailInvalido", "");
+        DadosUsuario dadosUsuario = new DadosUsuario("", "emailInvalido", "");
 
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(usuarioDTO)))
+                        .content(objectMapper.writeValueAsString(dadosUsuario)))
                 .andExpect(status().isBadRequest());
     }
 
