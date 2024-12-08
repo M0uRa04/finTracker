@@ -40,6 +40,14 @@ public class Usuario implements UserDetails {
         this.perfil = perfil;
     };
 
+    public Usuario(DadosUsuario dto) {
+        this.nome = dto.nome();
+        this.email = dto.email();
+        this.senha = dto.senha();
+        this.isAtivo = true;
+        this.perfil = Perfis.USER;
+    }
+
     public Usuario(DadosUsuario dto, String senhaEncriptada) {
         this.nome = dto.nome();
         this.email = dto.email();

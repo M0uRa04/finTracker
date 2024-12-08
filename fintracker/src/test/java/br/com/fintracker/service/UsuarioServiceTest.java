@@ -41,7 +41,7 @@ public class UsuarioServiceTest {
 
         when(repository.saveAndFlush(any(Usuario.class))).thenReturn(usuario);
 
-        DadosRespostaUsuario result = service.inserirNoBancoDeDados(dto);
+        DadosRespostaUsuario result = service.inserirNoBancoDeDados(dto, "senhaTeste");
 
         assertNotNull(result);
         assertEquals("John", result.nome());

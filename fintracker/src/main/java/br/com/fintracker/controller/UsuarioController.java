@@ -32,7 +32,12 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity buscarContaPeloId (@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarNoBancoDeDadosPeloId(id));
+        if (service.buscarNoBancoDeDadosPeloId(id) != null) {
+            return ResponseEntity.ok(service.buscarNoBancoDeDadosPeloId(id));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     @GetMapping
