@@ -2,7 +2,7 @@ package br.com.fintracker.service;
 
 import br.com.fintracker.dto.usuario.DadosAtualizacaoUsuario;
 import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
-import br.com.fintracker.dto.usuario.UsuarioDTO;
+import br.com.fintracker.dto.usuario.DadosUsuario;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.UsuarioRepository;
 import br.com.fintracker.utils.UsuarioTestUtils;
@@ -37,11 +37,11 @@ public class UsuarioServiceTest {
     @Test
     void testInserirNoBancoDeDados() {
         Usuario usuario = UsuarioTestUtils.criarUsuario(1L, "John", "john@example.com", "123456", true);
-        UsuarioDTO dto = new UsuarioDTO(usuario);
+        DadosUsuario dto = new DadosUsuario(usuario);
 
         when(repository.saveAndFlush(any(Usuario.class))).thenReturn(usuario);
 
-        DadosRespostaUsuario result = service.inserirNoBancoDeDados(dto);
+        DadosRespostaUsuario result = service.inserirNoBancoDeDados(dto, "senhaTeste");
 
         assertNotNull(result);
         assertEquals("John", result.nome());

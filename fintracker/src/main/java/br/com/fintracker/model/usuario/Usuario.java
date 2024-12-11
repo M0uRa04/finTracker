@@ -1,15 +1,19 @@
 package br.com.fintracker.model.usuario;
 
-import br.com.fintracker.dto.usuario.UsuarioDTO;
+import br.com.fintracker.dto.usuario.DadosUsuario;
 import br.com.fintracker.model.Transacao;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,17 +28,32 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Transacao>transacoes;
 
-    public Usuario () {
+    public Usuario () {};
+
+
+
+    public Usuario (String nome, String email, String senha, Perfis perfil) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
         this.isAtivo = true;
-        this.perfil = Perfis.ROLE_USER;
+        this.perfil = perfil;
     };
 
-    public Usuario(UsuarioDTO dto) {
+    public Usuario(DadosUsuario dto) {
         this.nome = dto.nome();
         this.email = dto.email();
         this.senha = dto.senha();
         this.isAtivo = true;
-        this.perfil = Perfis.ROLE_USER;
+        this.perfil = Perfis.USER;
+    }
+
+    public Usuario(DadosUsuario dto, String senhaEncriptada) {
+        this.nome = dto.nome();
+        this.email = dto.email();
+        this.senha = senhaEncriptada;
+        this.isAtivo = true;
+        this.perfil = Perfis.USER;
     }
 
     public Long getId() {
@@ -86,15 +105,68 @@ public class Usuario {
     }
 
     @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.perfil == Perfis.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
+                new SimpleGrantedAuthority("ROLE_USER"));
+        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
-        return Objects.equals(getId(), usuario.getId()) && Objects.equals(getEmail(), usuario.getEmail()) && Objects.equals(getSenha(), usuario.getSenha());
+        return Objects.equals(getId(), usuario.getId()) && Objects.equals(getNome(), usuario.getNome()) && Objects.equals(getEmail(), usuario.getEmail()) && Objects.equals(getSenha(), usuario.getSenha()) && Objects.equals(isAtivo, usuario.isAtivo) && getPerfil() == usuario.getPerfil() && Objects.equals(transacoes, usuario.transacoes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getEmail(), getSenha());
+        return Objects.hash(getId(), getNome(), getEmail(), getSenha(), isAtivo, getPerfil(), transacoes);
     }
+
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                ", senha='" + senha + '\'' +
+                ", isAtivo=" + isAtivo +
+                ", perfil=" + perfil +
+                ", transacoes=" + transacoes +
+                '}';
+    }
+
+
 }
