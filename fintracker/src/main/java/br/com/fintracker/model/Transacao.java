@@ -1,5 +1,6 @@
 package br.com.fintracker.model;
 
+import br.com.fintracker.model.usuario.Usuario;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -15,20 +16,17 @@ public class Transacao {
     private Long id;
     private BigDecimal valor;
     private LocalDate dataTransacao;
+    private String descricao;
+    @Enumerated(EnumType.STRING)
+    private TipoTransacao tipoTransacao;
     @ManyToOne
     private Categoria categoria;
-    private String descricao;
-    @Enumerated(value = EnumType.STRING)
-    private TipoTransacao tipoTransacao;
     @ManyToOne
     private Usuario usuario;
 
-    public Transacao () {};
-
-    public Transacao(Long id, BigDecimal valor, LocalDate data, Categoria categoria, String descricao, TipoTransacao tipoTransacao, Usuario usuario) {
-        this.id = id;
+    public Transacao(BigDecimal valor, LocalDate dataTransacao, Categoria categoria, String descricao, TipoTransacao tipoTransacao, Usuario usuario) {
         this.valor = valor;
-        this.dataTransacao = data;
+        this.dataTransacao = dataTransacao;
         this.categoria = categoria;
         this.descricao = descricao;
         this.tipoTransacao = tipoTransacao;
