@@ -7,7 +7,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
+<<<<<<< HEAD
 
+=======
+>>>>>>> implementa-usuario
 @Entity
 @Table(name = "transacao")
 public class Transacao {
@@ -16,6 +19,7 @@ public class Transacao {
     private Long id;
     private BigDecimal valor;
     private LocalDate dataTransacao;
+
     private String descricao;
     @Enumerated(EnumType.STRING)
     private TipoTransacao tipoTransacao;
@@ -23,7 +27,6 @@ public class Transacao {
     private Categoria categoria;
     @ManyToOne
     private Usuario usuario;
-
     public Transacao(BigDecimal valor, LocalDate dataTransacao, Categoria categoria, String descricao, TipoTransacao tipoTransacao, Usuario usuario) {
         this.valor = valor;
         this.dataTransacao = dataTransacao;

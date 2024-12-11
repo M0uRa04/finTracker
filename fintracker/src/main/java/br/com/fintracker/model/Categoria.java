@@ -1,22 +1,27 @@
 package br.com.fintracker.model;
+
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.*;
+
+
+import jakarta.persistence.*;
+
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Categoria {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nomeCategoria;
     private BigDecimal cota;
-
     private Boolean isAtivo;
     @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
     private List<Transacao> transacoes;
-
     public Categoria () {
         this.isAtivo = true;
     };
