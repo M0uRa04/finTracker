@@ -1,11 +1,6 @@
 package br.com.fintracker.model;
 
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.*;
-
-
-import jakarta.persistence.*;
-
 
 import java.math.BigDecimal;
 import java.util.List;
