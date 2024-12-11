@@ -4,6 +4,7 @@ import br.com.fintracker.dto.usuario.DadosAtualizacaoUsuario;
 import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
 import br.com.fintracker.dto.usuario.DadosUsuario;
 import br.com.fintracker.model.usuario.Usuario;
+import br.com.fintracker.repository.UsuarioRepository;
 import br.com.fintracker.service.JWTService;
 import br.com.fintracker.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +35,10 @@ class UsuarioControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private UsuarioRepository usuarioRepository;
+
 
     @MockBean
     private JWTService jwtService;

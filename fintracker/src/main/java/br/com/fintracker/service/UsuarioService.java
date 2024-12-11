@@ -43,7 +43,7 @@ public class UsuarioService {
 
 
     public Optional<DadosRespostaUsuario> buscarNoBancoDeDadosPeloId(Long id) {
-        Usuario usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado para o id fornecido."));
+        Usuario usuario = repository.findById(id).orElseThrow();
         return Optional.of(new DadosRespostaUsuario(usuario));
     }
 

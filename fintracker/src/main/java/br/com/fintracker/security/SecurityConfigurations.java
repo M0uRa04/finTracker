@@ -18,8 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfigurations {
 
-    //Adicionar aqui o servicoJWT
-
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity security) throws Exception {
         return security
@@ -30,11 +30,11 @@ public class SecurityConfigurations {
                         authorize -> authorize
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/user").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/user").permitAll() //retirar futuramente
                         .anyRequest().authenticated()
 
                 )
-                //.addFilterBefore(FiltroSuperPersonalizadoAqui,UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
 
     }
