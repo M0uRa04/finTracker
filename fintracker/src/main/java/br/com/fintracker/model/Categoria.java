@@ -1,5 +1,6 @@
 package br.com.fintracker.model;
 
+import br.com.fintracker.dto.categoria.DadosCadastroCategoria;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -20,6 +21,11 @@ public class Categoria {
     public Categoria () {
         this.isAtivo = true;
     };
+    public Categoria (DadosCadastroCategoria dados) {
+        this.nomeCategoria = dados.nomeCategoria();
+        this.cota = dados.cota();
+        this.isAtivo = true;
+    }
 
     public Boolean getAtivo() {
         return isAtivo;

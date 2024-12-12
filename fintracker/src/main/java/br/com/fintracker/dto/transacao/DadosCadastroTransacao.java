@@ -1,4 +1,4 @@
-package br.com.fintracker.dto;
+package br.com.fintracker.dto.transacao;
 
 import br.com.fintracker.model.Categoria;
 import br.com.fintracker.model.TipoTransacao;
@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record TransacaoDTO (
+public record DadosCadastroTransacao(
 
         @NotNull
         BigDecimal valor,
