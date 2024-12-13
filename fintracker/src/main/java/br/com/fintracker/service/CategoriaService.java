@@ -61,7 +61,6 @@ public class CategoriaService {
         return new DadosRespostaCategoria(repository.findByNomeCategoria(nomeCategoria.toUpperCase()));
     }
     @Transactional
-
     public void inativarCategoria (DadosAtualizacaoCategoria dados) {
         var categoriaEncontrada = repository.findByNomeCategoria(dados.nome().toUpperCase());
         if (categoriaEncontrada == null) {

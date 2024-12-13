@@ -21,10 +21,25 @@ public class Categoria {
     public Categoria () {
         this.isAtivo = true;
     };
+
+    public Categoria(Long id, String nomeCategoria, BigDecimal cota, Boolean isAtivo, List<Transacao> transacoes) {
+        this.id = id;
+        this.nomeCategoria = nomeCategoria;
+        this.cota = cota;
+        this.isAtivo = isAtivo;
+        this.transacoes = transacoes;
+    }
+
     public Categoria (DadosCadastroCategoria dados) {
         this.nomeCategoria = dados.nomeCategoria().toUpperCase();
         this.cota = dados.cota();
         this.isAtivo = true;
+    }
+
+    public Categoria(String nomeCategoria, BigDecimal cota, boolean isAtivo) {
+        this.nomeCategoria = nomeCategoria;
+        this.cota = cota;
+        this.isAtivo = isAtivo;
     }
 
     public Boolean getAtivo() {
