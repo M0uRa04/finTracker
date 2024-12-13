@@ -22,7 +22,7 @@ public class Categoria {
         this.isAtivo = true;
     };
     public Categoria (DadosCadastroCategoria dados) {
-        this.nomeCategoria = dados.nomeCategoria();
+        this.nomeCategoria = dados.nomeCategoria().toUpperCase();
         this.cota = dados.cota();
         this.isAtivo = true;
     }
