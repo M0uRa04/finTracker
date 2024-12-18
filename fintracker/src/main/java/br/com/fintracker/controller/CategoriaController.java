@@ -38,7 +38,7 @@ public class CategoriaController implements CrudController <DadosRespostaCategor
     @Override
     @GetMapping()
     public ResponseEntity<List<DadosRespostaCategoria>> listarTodos() {
-        return ResponseEntity.ok().body(service.listarwwCategorias());
+        return ResponseEntity.ok().body(service.listarCategorias());
     }
 
     @Override

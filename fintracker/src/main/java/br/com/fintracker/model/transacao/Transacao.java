@@ -1,11 +1,11 @@
-package br.com.fintracker.model;
+package br.com.fintracker.model.transacao;
 
+import br.com.fintracker.model.Categoria;
 import br.com.fintracker.model.usuario.Usuario;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity

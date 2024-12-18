@@ -1,7 +1,7 @@
 package br.com.fintracker.model.usuario;
 
 import br.com.fintracker.dto.usuario.DadosUsuario;
-import br.com.fintracker.model.Transacao;
+import br.com.fintracker.model.transacao.Transacao;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

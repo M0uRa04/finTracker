@@ -1,6 +1,7 @@
 package br.com.fintracker.model;
 
 import br.com.fintracker.dto.categoria.DadosCadastroCategoria;
+import br.com.fintracker.model.transacao.Transacao;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
