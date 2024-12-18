@@ -1,6 +1,6 @@
 package br.com.fintracker.dto.transacao;
 
-import br.com.fintracker.model.Categoria;
+import br.com.fintracker.model.categoria.Categoria;
 import br.com.fintracker.model.transacao.TipoTransacao;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

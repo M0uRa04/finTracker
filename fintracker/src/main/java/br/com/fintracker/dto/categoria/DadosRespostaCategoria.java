@@ -1,6 +1,6 @@
 package br.com.fintracker.dto.categoria;
 
-import br.com.fintracker.model.Categoria;
+import br.com.fintracker.model.categoria.Categoria;
 
 import java.math.BigDecimal;
 

@@ -1,4 +1,4 @@
-package br.com.fintracker.model;
+package br.com.fintracker.model.categoria;
 
 import br.com.fintracker.dto.categoria.DadosCadastroCategoria;
 import br.com.fintracker.model.transacao.Transacao;

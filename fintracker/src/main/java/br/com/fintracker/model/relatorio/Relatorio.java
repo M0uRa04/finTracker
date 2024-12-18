@@ -1,4 +1,4 @@
-package br.com.fintracker.model;
+package br.com.fintracker.model.relatorio;
 
 import br.com.fintracker.model.usuario.Usuario;
 

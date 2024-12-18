@@ -1,6 +1,6 @@
 package br.com.fintracker.model.transacao;
 
-import br.com.fintracker.model.Categoria;
+import br.com.fintracker.model.categoria.Categoria;
 import br.com.fintracker.model.usuario.Usuario;
 import jakarta.persistence.*;
 

@@ -3,7 +3,7 @@ package br.com.fintracker.service;
 import br.com.fintracker.dto.categoria.DadosAtualizacaoCategoria;
 import br.com.fintracker.dto.categoria.DadosCadastroCategoria;
 import br.com.fintracker.dto.categoria.DadosRespostaCategoria;
-import br.com.fintracker.model.Categoria;
+import br.com.fintracker.model.categoria.Categoria;
 import br.com.fintracker.repository.CategoriaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
