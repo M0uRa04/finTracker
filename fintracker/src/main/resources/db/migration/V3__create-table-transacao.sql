@@ -4,7 +4,7 @@ CREATE TABLE transacao (
     valor DECIMAL NOT NULL,
     data_transacao DATE NOT NULL,
     descricao varchar(200),
-    tipo_transacao VARCHAR NOT NULL(40),
+    tipo_transacao VARCHAR (40) NOT NULL,
 
     usuario_id INTEGER NOT NULL,
     categoria_id INTEGER NOT NULL,

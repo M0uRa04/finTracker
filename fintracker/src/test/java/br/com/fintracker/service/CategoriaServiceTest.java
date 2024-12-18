@@ -15,7 +15,6 @@ import org.mockito.MockitoAnnotations;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -92,7 +91,7 @@ class CategoriaServiceTest {
 
         DadosAtualizacaoCategoria dados = new DadosAtualizacaoCategoria("Alimentação", null, null);
 
-        assertThrows(EntityNotFoundException.class, () -> service.buscarCategoriaPorNome(dados.nome()));
+        assertThrows(EntityNotFoundException.class, () -> service.buscarCategoriaPorNome(dados.nomeCategoria()));
     }
 
     @Test

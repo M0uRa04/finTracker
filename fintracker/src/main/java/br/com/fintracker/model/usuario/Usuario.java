@@ -159,7 +159,7 @@ public class Usuario implements UserDetails {
     public String toString() {
         return "Usuario{" +
                 "id=" + id +
-                ", nome='" + nome + '\'' +
+                ", nomeCategoria='" + nome + '\'' +
                 ", email='" + email + '\'' +
                 ", senha='" + senha + '\'' +
                 ", isAtivo=" + isAtivo +

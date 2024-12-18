@@ -1,12 +1,9 @@
 package br.com.fintracker.dto.categoria;
 
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 
-@Service
 public record DadosAtualizacaoCategoria(
-        String nome,
+        String nomeCategoria,
         BigDecimal cota,
         Boolean isAtivo
 ) {
