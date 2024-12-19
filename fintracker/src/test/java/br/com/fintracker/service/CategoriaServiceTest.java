@@ -102,7 +102,7 @@ class CategoriaServiceTest {
 
         DadosAtualizacaoCategoria dados = new DadosAtualizacaoCategoria("Alimentação", null, null);
 
-        service.inativarCategoria(dados);
+        service.inativarCategoria(1L);
 
         assertFalse(categoria.getAtivo());
         verify(repository, times(1)).saveAndFlush(categoria);
@@ -114,7 +114,7 @@ class CategoriaServiceTest {
 
         DadosAtualizacaoCategoria dados = new DadosAtualizacaoCategoria("Alimentação", null, null);
 
-        assertThrows(EntityNotFoundException.class, () -> service.inativarCategoria(dados));
+        assertThrows(EntityNotFoundException.class, () -> service.inativarCategoria(1L));
     }
 
     @Test
@@ -125,7 +125,7 @@ class CategoriaServiceTest {
 
         DadosAtualizacaoCategoria dados = new DadosAtualizacaoCategoria("Alimentação", null, null);
 
-        service.deletarCategoria(dados);
+        service.deletarCategoria(1L);
 
         verify(repository, times(1)).delete(categoria);
     }
@@ -136,6 +136,6 @@ class CategoriaServiceTest {
 
         DadosAtualizacaoCategoria dados = new DadosAtualizacaoCategoria("Alimentação", null, null);
 
-        assertThrows(EntityNotFoundException.class, () -> service.deletarCategoria(dados));
+        assertThrows(EntityNotFoundException.class, () -> service.deletarCategoria(1L));
     }
 }

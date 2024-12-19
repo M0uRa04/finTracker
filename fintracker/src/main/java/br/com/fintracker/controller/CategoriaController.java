@@ -26,38 +26,41 @@ public class CategoriaController implements CrudController <DadosRespostaCategor
                 .path("/{id}")
                 .buildAndExpand(dadosCadastroCategoria)
                 .toUri();
-        return ResponseEntity.created(uri).body(service.inserirCategoria(dadosCadastroCategoria));
+        return ResponseEntity.created(uri).body(service.inserirNoBancoDeDados(dadosCadastroCategoria));
     }
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<DadosRespostaCategoria> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok().body(service.buscarCategoriaPorId(id));
+        if (service.buscarPorId(id).isPresent()) {
+            return ResponseEntity.ok().body(service.buscarPorId(id).get());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @Override
     @GetMapping()
     public ResponseEntity<List<DadosRespostaCategoria>> listarTodos() {
-        return ResponseEntity.ok().body(service.listarCategorias());
+        return ResponseEntity.ok().body(service.listarTodos());
     }
 
     @Override
     @PatchMapping("/{id}")
-    public ResponseEntity<DadosRespostaCategoria> atualizar(@PathVariable Long id, @Valid @RequestBody DadosAtualizacaoCategoria u) {
-        return ResponseEntity.ok().body(service.atualizarCategoria(id, u));
+    public ResponseEntity<DadosRespostaCategoria> atualizar(@PathVariable Long id, @Valid @RequestBody DadosAtualizacaoCategoria dadosAtualizacaoCategoria) {
+        return ResponseEntity.ok().body(service.atualizar(id, dadosAtualizacaoCategoria).get());
     }
 
     @Override
-    @PatchMapping("/inativar")
-    public ResponseEntity<Void> inativar(@RequestBody @Valid DadosAtualizacaoCategoria dadosAtualizacaoCategoria) {
-        service.inativarCategoria(dadosAtualizacaoCategoria);
+    @PatchMapping("/inativar/{id}")
+    public ResponseEntity<Void> inativar(@PathVariable Long id) {
+        service.inativar(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    @DeleteMapping
-    public ResponseEntity<Void> deletar(@RequestBody @Valid DadosAtualizacaoCategoria dadosAtualizacaoCategoria) {
-        service.deletarCategoria(dadosAtualizacaoCategoria);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -38,7 +38,7 @@ class CategoriaControllerTest {
         DadosRespostaCategoria resposta = new DadosRespostaCategoria("Alimentação", BigDecimal.valueOf(500));
 
         when(service.buscarCategoriaPorNome(dados.nomeCategoria())).thenReturn(null);
-        when(service.inserirCategoria(dados)).thenReturn(resposta);
+        when(service.inserirNoBancoDeDados(dados)).thenReturn(resposta);
 
         ResponseEntity<DadosRespostaCategoria> response = controller.inserirNoBancoDeDados(dados);
 
@@ -119,25 +119,25 @@ class CategoriaControllerTest {
         Long id = 1L;
 
         DadosAtualizacaoCategoria dadosAtualizacao = new DadosAtualizacaoCategoria("Alimentação", BigDecimal.valueOf(600), true);
-        doNothing().when(service).inativarCategoria(dadosAtualizacao);
+        doNothing().when(service).inativarCategoria(id);
 
-        ResponseEntity<Void> response = controller.inativar(dadosAtualizacao);
+        ResponseEntity<Void> response = controller.inativar(id);
 
         assertNotNull(response);
         assertEquals(204, response.getStatusCodeValue());
-        verify(service, times(1)).inativarCategoria(dadosAtualizacao);
+        verify(service, times(1)).inativarCategoria(id);
     }
 
     @Test
     void deletar_DeveDeletarCategoria() {
         DadosAtualizacaoCategoria dadosAtualizacao = new DadosAtualizacaoCategoria("Alimentação", BigDecimal.valueOf(600), true);
 
-        doNothing().when(service).deletarCategoria(new DadosAtualizacaoCategoria("Alimentação", BigDecimal.valueOf(600), true));
+        doNothing().when(service).deletarCategoria(1L);
 
-        ResponseEntity<Void> response = controller.deletar(new DadosAtualizacaoCategoria("Alimentação", BigDecimal.valueOf(600), true));
+        ResponseEntity<Void> response = controller.deletar(1L);
 
         assertNotNull(response);
         assertEquals(204, response.getStatusCodeValue());
-        verify(service, times(1)).deletarCategoria(dadosAtualizacao);
+        verify(service, times(1)).deletarCategoria(1L);
     }
 }

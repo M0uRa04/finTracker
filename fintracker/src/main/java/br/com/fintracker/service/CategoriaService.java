@@ -12,55 +12,67 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class CategoriaService {
+public class CategoriaService implements CrudService <DadosRespostaCategoria, DadosCadastroCategoria, DadosAtualizacaoCategoria>{
 
     @Autowired
     private CategoriaRepository repository;
 
-    public DadosRespostaCategoria inserirCategoria (DadosCadastroCategoria dados) {
-        if (repository.findByNomeCategoria(dados.nomeCategoria().toUpperCase()) != null) {
+
+
+    @Override
+    public DadosRespostaCategoria inserirNoBancoDeDados(DadosCadastroCategoria dadosCadastro) {
+        if (repository.findByNomeCategoria(dadosCadastro.nomeCategoria().toUpperCase()) != null) {
             throw new IllegalArgumentException("Categoria já existente com o nomeCategoria fornecido.");
         }
-        Categoria novaCategoria = new Categoria(dados);
+        Categoria novaCategoria = new Categoria(dadosCadastro);
         repository.saveAndFlush(novaCategoria);
         return new DadosRespostaCategoria(novaCategoria);
     }
 
+
+
+    @Override
     @Transactional
-    public DadosRespostaCategoria atualizarCategoria (Long id, DadosAtualizacaoCategoria dados) {
-        if (dados == null) {
-            throw new IllegalArgumentException("Os dados de atualização não podem ser nulos.");
+    public Optional<DadosRespostaCategoria> atualizar(Long id, DadosAtualizacaoCategoria dadosAtualizacao) {
+        if (dadosAtualizacao == null) {
+            throw new IllegalArgumentException("Os dadosAtualizacao de atualização não podem ser nulos.");
         }
 
         var categoriaEncontrada = repository.findById(id).orElseThrow(EntityNotFoundException::new);
 
-        if (!dados.nomeCategoria().isBlank()) {
-            categoriaEncontrada.setNomeCategoria(dados.nomeCategoria().toUpperCase());
+        if (!dadosAtualizacao.nomeCategoria().isBlank()) {
+            categoriaEncontrada.setNomeCategoria(dadosAtualizacao.nomeCategoria().toUpperCase());
         }
 
-        if (dados.isAtivo() != null) {
-            categoriaEncontrada.setAtivo(dados.isAtivo());
+        if (dadosAtualizacao.isAtivo() != null) {
+            categoriaEncontrada.setAtivo(dadosAtualizacao.isAtivo());
         }
 
-        if (dados.cota() != null && dados.cota().floatValue() > 0) {
-            categoriaEncontrada.setCota(dados.cota());
+        if (dadosAtualizacao.cota() != null && dadosAtualizacao.cota().floatValue() > 0) {
+            categoriaEncontrada.setCota(dadosAtualizacao.cota());
         }
 
         repository.saveAndFlush(categoriaEncontrada);
-        return new DadosRespostaCategoria(repository.findByNomeCategoria(categoriaEncontrada.getNomeCategoria()));
+        return Optional.of(new DadosRespostaCategoria(repository.findByNomeCategoria(categoriaEncontrada.getNomeCategoria())));
     }
 
-    public List<DadosRespostaCategoria> listarCategorias () {
+
+
+    @Override
+    public List<DadosRespostaCategoria> listarTodos() {
         return repository.findByIsAtivoTrue().stream()
                 .map(c -> new DadosRespostaCategoria(c))
                 .collect(Collectors.toList());
     }
 
-    public DadosRespostaCategoria buscarCategoriaPorId (Long id) {
-        return new DadosRespostaCategoria(repository.findById(id).orElseThrow(EntityNotFoundException::new));
+
+    @Override
+    public Optional<DadosRespostaCategoria> buscarPorId(Long id) {
+        return Optional.of(new DadosRespostaCategoria(repository.findByIdAndIsAtivoTrue(id).orElseThrow(EntityNotFoundException::new)));
     }
 
     public DadosRespostaCategoria buscarCategoriaPorNome (String nomeCategoria) {
@@ -72,25 +84,30 @@ public class CategoriaService {
         return new DadosRespostaCategoria(repository.findByNomeCategoria(nomeCategoria.toUpperCase()));
     }
 
+
+
+    @Override
     @Transactional
-    public void inativarCategoria (DadosAtualizacaoCategoria dados) {
-        var categoriaEncontrada = repository.findByNomeCategoria(dados.nomeCategoria().toUpperCase());
-        if (categoriaEncontrada == null) {
+    public void inativar(Long id) {
+        var categoriaEncontrada = repository.findById(id);
+        if (categoriaEncontrada.isEmpty()) {
             throw new EntityNotFoundException("Categoria não encontrada com o nomeCategoria fornecido.");
         }
-        categoriaEncontrada.setAtivo(false);
-        repository.saveAndFlush(categoriaEncontrada);
-
+        categoriaEncontrada.get().setAtivo(false);
+        repository.saveAndFlush(categoriaEncontrada.get());
     }
-    @Transactional
 
-    public void deletarCategoria (DadosAtualizacaoCategoria dados) {
-        var categoriaEncontrada = repository.findByNomeCategoria(dados.nomeCategoria().toUpperCase());
-        if (categoriaEncontrada == null) {
+
+    @Override
+    @Transactional
+    public void deletar(Long id) {
+        var categoriaEncontrada = repository.findById(id);
+        if (categoriaEncontrada.isEmpty()) {
             throw new EntityNotFoundException("Categoria não encontrada com o nomeCategoria fornecido.");
         }
-        repository.delete(categoriaEncontrada);
+        repository.delete(categoriaEncontrada.get());
     }
+
 
 
 }

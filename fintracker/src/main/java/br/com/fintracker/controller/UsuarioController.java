@@ -60,16 +60,16 @@ public class UsuarioController implements CrudController <DadosRespostaUsuario, 
     }
 
     @Override
-    @PatchMapping("inativar")
-    public ResponseEntity<Void> inativar(@RequestBody @Valid DadosAtualizacaoUsuario dadosAtualizacaoUsuario) {
-        service.inativarDoBancoDeDados(dadosAtualizacaoUsuario.id());
+    @PatchMapping("inativar/{id}")
+    public ResponseEntity<Void> inativar(@PathVariable Long id) {
+        service.inativarDoBancoDeDados(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    @DeleteMapping("deletar")
-    public ResponseEntity<Void> deletar(@RequestBody @Valid DadosAtualizacaoUsuario dadosAtualizacaoUsuario) {
-        service.removerDoBancoDeDados(dadosAtualizacaoUsuario.id());
+    @DeleteMapping("deletar/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.removerDoBancoDeDados(id);
         return ResponseEntity.noContent().build();
     }
 }

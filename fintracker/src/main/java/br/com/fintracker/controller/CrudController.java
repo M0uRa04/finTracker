@@ -10,6 +10,6 @@ public interface CrudController<ResponseDTO, CreateDTO, UpdateDTO> {
      ResponseEntity<ResponseDTO> buscarPorId(Long id);
      ResponseEntity<List<ResponseDTO>> listarTodos();
      ResponseEntity<ResponseDTO> atualizar(Long id, UpdateDTO updateDTO);
-     ResponseEntity<Void> inativar(UpdateDTO updateDTO);
-     ResponseEntity<Void> deletar(UpdateDTO updateDTO);
+     ResponseEntity<Void> inativar(Long id);
+     ResponseEntity<Void> deletar(Long id);
 }
