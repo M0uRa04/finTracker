@@ -1,4 +1,4 @@
-package br.com.fintracker.security;
+package br.com.fintracker.infra.security;
 
 import br.com.fintracker.repository.UsuarioRepository;
 import br.com.fintracker.service.JWTService;

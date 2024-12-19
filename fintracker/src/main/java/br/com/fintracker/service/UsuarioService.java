@@ -2,7 +2,7 @@ package br.com.fintracker.service;
 
 import br.com.fintracker.dto.usuario.DadosAtualizacaoUsuario;
 import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
-import br.com.fintracker.dto.usuario.DadosUsuario;
+import br.com.fintracker.dto.usuario.DadosCadastroUsuario;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,14 +36,14 @@ public class UsuarioService {
 
 
 
-    public DadosRespostaUsuario inserirNoBancoDeDados(DadosUsuario dto, String senhaEncriptada) {
+    public DadosRespostaUsuario inserirNoBancoDeDados(DadosCadastroUsuario dto, String senhaEncriptada) {
         var usuario = repository.saveAndFlush(new Usuario(dto, senhaEncriptada));
         return new DadosRespostaUsuario(usuario);
     }
 
 
     public Optional<DadosRespostaUsuario> buscarNoBancoDeDadosPeloId(Long id) {
-        Usuario usuario = repository.findById(id).orElseThrow();
+        Usuario usuario = repository.findByIdAndIsAtivoTrue(id);
         return Optional.of(new DadosRespostaUsuario(usuario));
     }
 
@@ -57,7 +57,7 @@ public class UsuarioService {
     }
 
     @Deprecated
-    public Optional<DadosRespostaUsuario> atualizarNoBancoDeDados(Long aLong, DadosUsuario dto) {
+    public Optional<DadosRespostaUsuario> atualizarNoBancoDeDados(Long aLong, DadosCadastroUsuario dto) {
         return Optional.empty();
     }
 

@@ -4,9 +4,8 @@ import br.com.fintracker.model.usuario.Usuario;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import org.springframework.beans.factory.annotation.Value;
 
-public record DadosUsuario(
+public record DadosCadastroUsuario(
 
         @NotBlank
         String nome,
@@ -17,7 +16,7 @@ public record DadosUsuario(
         String senha
 
 ) {
-    public DadosUsuario(Usuario usuario) {
+    public DadosCadastroUsuario(Usuario usuario) {
         this(usuario.getNome(), usuario.getEmail(), usuario.getSenha());
     }
 }

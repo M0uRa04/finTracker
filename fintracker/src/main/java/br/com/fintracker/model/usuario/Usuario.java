@@ -1,6 +1,6 @@
 package br.com.fintracker.model.usuario;
 
-import br.com.fintracker.dto.usuario.DadosUsuario;
+import br.com.fintracker.dto.usuario.DadosCadastroUsuario;
 import br.com.fintracker.model.transacao.Transacao;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,7 +40,7 @@ public class Usuario implements UserDetails {
         this.perfil = perfil;
     };
 
-    public Usuario(DadosUsuario dto) {
+    public Usuario(DadosCadastroUsuario dto) {
         this.nome = dto.nome();
         this.email = dto.email();
         this.senha = dto.senha();
@@ -48,7 +48,7 @@ public class Usuario implements UserDetails {
         this.perfil = Perfis.USER;
     }
 
-    public Usuario(DadosUsuario dto, String senhaEncriptada) {
+    public Usuario(DadosCadastroUsuario dto, String senhaEncriptada) {
         this.nome = dto.nome();
         this.email = dto.email();
         this.senha = senhaEncriptada;

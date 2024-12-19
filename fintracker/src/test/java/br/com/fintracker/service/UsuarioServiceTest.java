@@ -2,7 +2,7 @@ package br.com.fintracker.service;
 
 import br.com.fintracker.dto.usuario.DadosAtualizacaoUsuario;
 import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
-import br.com.fintracker.dto.usuario.DadosUsuario;
+import br.com.fintracker.dto.usuario.DadosCadastroUsuario;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.UsuarioRepository;
 import br.com.fintracker.utils.UsuarioTestUtils;
@@ -37,7 +37,7 @@ public class UsuarioServiceTest {
     @Test
     void testInserirNoBancoDeDados() {
         Usuario usuario = UsuarioTestUtils.criarUsuario(1L, "John", "john@example.com", "123456", true);
-        DadosUsuario dto = new DadosUsuario(usuario);
+        DadosCadastroUsuario dto = new DadosCadastroUsuario(usuario);
 
         when(repository.saveAndFlush(any(Usuario.class))).thenReturn(usuario);
 
@@ -80,7 +80,7 @@ public class UsuarioServiceTest {
     @Test
     void testAtualizarUsuarioComDadosParciais() {
         Usuario usuario = UsuarioTestUtils.criarUsuario(1L, "John", "john@example.com", "123456", true);
-        DadosAtualizacaoUsuario dtoAtualizacao = new DadosAtualizacaoUsuario("Johnny", null, null, null);
+        DadosAtualizacaoUsuario dtoAtualizacao = new DadosAtualizacaoUsuario(1L, "Johnny", null, null, null);
 
         when(repository.findById(1L)).thenReturn(Optional.of(usuario));
         when(repository.save(any(Usuario.class))).thenReturn(usuario);

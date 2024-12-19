@@ -11,7 +11,7 @@ public record DadosRespostaUsuario (
         this(usuario.getNome(), usuario.getEmail());
     }
 
-    public DadosRespostaUsuario(DadosUsuario dadosUsuario) {
-        this(dadosUsuario.nome(), dadosUsuario.email());
+    public DadosRespostaUsuario(DadosCadastroUsuario dadosCadastroUsuario) {
+        this(dadosCadastroUsuario.nome(), dadosCadastroUsuario.email());
     }
 }
