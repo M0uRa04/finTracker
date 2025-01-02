@@ -26,20 +26,19 @@ public class UsuarioController implements CrudController <DadosRespostaUsuario, 
     @PostMapping
     public ResponseEntity<DadosRespostaUsuario> inserirNoBancoDeDados(@RequestBody @Valid DadosCadastroUsuario dadosCadastroUsuario) {
         if (this.service.buscarPeloEmail(dadosCadastroUsuario.email()) != null) return ResponseEntity.badRequest().build();
-        String encryptedPassword = new BCryptPasswordEncoder().encode(dadosCadastroUsuario.senha());
         var uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(dadosCadastroUsuario)
                 .toUri();
-        return ResponseEntity.created(uri).body(service.inserirNoBancoDeDados(dadosCadastroUsuario, encryptedPassword));
+        return ResponseEntity.created(uri).body(service.inserirNoBancoDeDados(dadosCadastroUsuario));
     }
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<DadosRespostaUsuario> buscarPorId(@PathVariable Long id) {
-        if (service.buscarNoBancoDeDadosPeloId(id).isPresent()) {
-            return ResponseEntity.ok(service.buscarNoBancoDeDadosPeloId(id).orElseThrow(() -> new EntityNotFoundException()));
+        if (service.buscarPorId(id).isPresent()) {
+            return ResponseEntity.ok(service.buscarPorId(id).orElseThrow(() -> new EntityNotFoundException()));
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -48,7 +47,7 @@ public class UsuarioController implements CrudController <DadosRespostaUsuario, 
     @Override
     @GetMapping
     public ResponseEntity<List<DadosRespostaUsuario>> listarTodos() {
-        return ResponseEntity.ok(service.buscarTodosOsRegistrosNoBancoDeDados());
+        return ResponseEntity.ok(service.listarTodos());
     }
 
     @Override
@@ -56,20 +55,20 @@ public class UsuarioController implements CrudController <DadosRespostaUsuario, 
     @Transactional
     public ResponseEntity<DadosRespostaUsuario> atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoUsuario dadosAtualizacaoUsuario) {
         //alterar este método para autenticar o usuario via email para atualizar infos
-        return ResponseEntity.ok(service.atualizarUsuarioComDadosParciais(id, dadosAtualizacaoUsuario).orElseThrow(() -> new EntityNotFoundException()));
+        return ResponseEntity.ok(service.atualizar(id, dadosAtualizacaoUsuario).orElseThrow(() -> new EntityNotFoundException()));
     }
 
     @Override
     @PatchMapping("inativar/{id}")
     public ResponseEntity<Void> inativar(@PathVariable Long id) {
-        service.inativarDoBancoDeDados(id);
+        service.inativar(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
     @DeleteMapping("deletar/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        service.removerDoBancoDeDados(id);
+        service.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }

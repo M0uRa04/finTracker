@@ -6,6 +6,7 @@ import br.com.fintracker.dto.usuario.DadosCadastroUsuario;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements CrudService <DadosRespostaUsuario, DadosCadastroUsuario, DadosAtualizacaoUsuario>{
 
     private final UsuarioRepository repository;
 
@@ -29,26 +30,29 @@ public class UsuarioService {
             usuario.setEmail(dtoAtualizacao.email());
         }
         if (dtoAtualizacao.senha() != null) {
-            usuario.setSenha(dtoAtualizacao.senha());
+            String encryptedPassword = new BCryptPasswordEncoder().encode(dtoAtualizacao.senha());
+            usuario.setSenha(encryptedPassword);
         }
         return usuario;
     }
 
-
-
-    public DadosRespostaUsuario inserirNoBancoDeDados(DadosCadastroUsuario dto, String senhaEncriptada) {
-        var usuario = repository.saveAndFlush(new Usuario(dto, senhaEncriptada));
+    @Override
+    public DadosRespostaUsuario inserirNoBancoDeDados(DadosCadastroUsuario dadosCadastro) {
+        String encryptedPassword = new BCryptPasswordEncoder().encode(dadosCadastro.senha());
+        var usuario = repository.saveAndFlush(new Usuario(dadosCadastro, encryptedPassword));
         return new DadosRespostaUsuario(usuario);
     }
 
 
-    public Optional<DadosRespostaUsuario> buscarNoBancoDeDadosPeloId(Long id) {
+    @Override
+    public Optional<DadosRespostaUsuario> buscarPorId(Long id) {
         Usuario usuario = repository.findByIdAndIsAtivoTrue(id);
         return Optional.of(new DadosRespostaUsuario(usuario));
     }
 
 
-    public List<DadosRespostaUsuario> buscarTodosOsRegistrosNoBancoDeDados() {
+    @Override
+    public List<DadosRespostaUsuario> listarTodos() {
         List<DadosRespostaUsuario> usuarios = repository.findAllByisAtivoTrue().stream()
                 .map(DadosRespostaUsuario::new)
                 .collect(Collectors.toList());
@@ -56,28 +60,24 @@ public class UsuarioService {
         return usuarios;
     }
 
-    @Deprecated
-    public Optional<DadosRespostaUsuario> atualizarNoBancoDeDados(Long aLong, DadosCadastroUsuario dto) {
-        return Optional.empty();
-    }
 
-    public Optional<DadosRespostaUsuario> atualizarUsuarioComDadosParciais(Long id, DadosAtualizacaoUsuario dtoAtualizacao) {
+    @Override
+    public Optional<DadosRespostaUsuario> atualizar(Long id, DadosAtualizacaoUsuario dadosAtualizacao) {
         var usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado para o id fornecido."));
-        repository.save(atualizarAtributos(usuario, dtoAtualizacao));
+        repository.save(atualizarAtributos(usuario, dadosAtualizacao));
         return Optional.of(new DadosRespostaUsuario(usuario));
     }
 
-
-    public void removerDoBancoDeDados(Long id) {
-        repository.deleteById(id);
-    }
-
-
-    public Optional<DadosRespostaUsuario> inativarDoBancoDeDados(Long id) {
+    @Override
+    public void inativar(Long id) {
         var usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado para o id fornecido."));
         usuario.setAtivo(false);
         repository.save(usuario);
-        return Optional.of(new DadosRespostaUsuario(usuario));
+    }
+
+    @Override
+    public void deletar(Long id) {
+        repository.deleteById(id);
     }
 
     public UserDetails buscarPeloEmail (String email) {
