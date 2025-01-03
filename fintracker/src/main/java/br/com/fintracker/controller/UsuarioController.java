@@ -37,8 +37,9 @@ public class UsuarioController implements CrudController <DadosRespostaUsuario, 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<DadosRespostaUsuario> buscarPorId(@PathVariable Long id) {
-        if (service.buscarPorId(id).isPresent()) {
-            return ResponseEntity.ok(service.buscarPorId(id).orElseThrow(() -> new EntityNotFoundException()));
+        var usuarioEncontrado = service.buscarPorId(id);
+        if (usuarioEncontrado.isPresent()) {
+            return ResponseEntity.ok(usuarioEncontrado.orElseThrow(() -> new EntityNotFoundException()));
         } else {
             return ResponseEntity.notFound().build();
         }

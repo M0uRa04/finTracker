@@ -8,18 +8,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class CategoriaControllerTest {
-
 
     @Mock
     private CategoriaService service;
@@ -32,112 +34,87 @@ class CategoriaControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void inserirNoBancoDeDados_DeveCriarNovaCategoria() {
-        DadosCadastroCategoria dados = new DadosCadastroCategoria("Alimentação", BigDecimal.valueOf(500));
-        DadosRespostaCategoria resposta = new DadosRespostaCategoria("Alimentação", BigDecimal.valueOf(500));
 
-        when(service.buscarCategoriaPorNome(dados.nomeCategoria())).thenReturn(null);
-        when(service.inserirNoBancoDeDados(dados)).thenReturn(resposta);
 
-        ResponseEntity<DadosRespostaCategoria> response = controller.inserirNoBancoDeDados(dados);
-
-        assertNotNull(response);
-        assertEquals(201, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertEquals("Alimentação", response.getBody().nomeCategoria());
-        verify(service, times(1)).inserirCategoria(dados);
-    }
 
     @Test
-    void inserirNoBancoDeDados_DeveRetornarBadRequestSeCategoriaJaExistir() {
-        DadosCadastroCategoria dados = new DadosCadastroCategoria("Alimentação", BigDecimal.valueOf(500));
-        DadosRespostaCategoria respostaExistente = new DadosRespostaCategoria("Alimentação", BigDecimal.valueOf(500));
+    void buscarPorId_DeveRetornarOkComCategoriaSeEncontrada() {
+        long id = 1L;
+        DadosRespostaCategoria resposta = new DadosRespostaCategoria("Categoria Teste", BigDecimal.valueOf(1205));
 
-        when(service.buscarCategoriaPorNome(dados.nomeCategoria())).thenReturn(respostaExistente);
-
-        ResponseEntity<DadosRespostaCategoria> response = controller.inserirNoBancoDeDados(dados);
-
-        assertNotNull(response);
-        assertEquals(400, response.getStatusCodeValue());
-        verify(service, never()).inserirCategoria(dados);
-    }
-
-    @Test
-    void buscarPorId_DeveRetornarCategoria() {
-        Long id = 1L;
-        DadosRespostaCategoria resposta = new DadosRespostaCategoria("Alimentação", BigDecimal.valueOf(500));
-
-        when(service.buscarCategoriaPorId(id)).thenReturn(resposta);
+        when(service.buscarPorId(id)).thenReturn(Optional.of(resposta));
 
         ResponseEntity<DadosRespostaCategoria> response = controller.buscarPorId(id);
 
-        assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertEquals("Alimentação", response.getBody().nomeCategoria());
-        verify(service, times(1)).buscarCategoriaPorId(id);
+        assertEquals(resposta, response.getBody());
+        verify(service, times(1)).buscarPorId(id);
     }
 
     @Test
-    void listarTodos_DeveRetornarListaDeCategorias() {
-        List<DadosRespostaCategoria> categorias = Arrays.asList(
-                new DadosRespostaCategoria("Alimentação", BigDecimal.valueOf(500)),
-                new DadosRespostaCategoria("Transporte", BigDecimal.valueOf(300))
+    void buscarPorId_DeveRetornarNotFoundSeNaoEncontrada() {
+        long id = 1L;
+
+        when(service.buscarPorId(id)).thenReturn(Optional.empty());
+
+        ResponseEntity<DadosRespostaCategoria> response = controller.buscarPorId(id);
+
+        assertEquals(404, response.getStatusCodeValue());
+        verify(service, times(1)).buscarPorId(id);
+    }
+
+    @Test
+    void listarTodos_DeveRetornarOkComListaDeCategorias() {
+        List<DadosRespostaCategoria> categorias = List.of(
+                new DadosRespostaCategoria("Categoria 1", BigDecimal.valueOf(123021)),
+                new DadosRespostaCategoria("Categoria 2", BigDecimal.valueOf(123021))
         );
 
-        when(service.listarCategorias()).thenReturn(categorias);
+        when(service.listarTodos()).thenReturn(categorias);
 
         ResponseEntity<List<DadosRespostaCategoria>> response = controller.listarTodos();
 
-        assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertEquals(2, response.getBody().size());
-        verify(service, times(1)).listarCategorias();
+        assertEquals(categorias, response.getBody());
+        verify(service, times(1)).listarTodos();
     }
 
     @Test
-    void atualizar_DeveAtualizarCategoria() {
-        Long id = 1L;
-        DadosAtualizacaoCategoria dadosAtualizacao = new DadosAtualizacaoCategoria("Alimentação", BigDecimal.valueOf(600), true);
-        DadosRespostaCategoria respostaAtualizada = new DadosRespostaCategoria("Alimentação", BigDecimal.valueOf(600));
+    void atualizar_DeveRetornarOkComCategoriaAtualizada() {
+        long id = 1L;
+        DadosAtualizacaoCategoria dadosAtualizacao = new DadosAtualizacaoCategoria("Categoria Atualizada", BigDecimal.valueOf(504050450), true);
+        DadosRespostaCategoria resposta = new DadosRespostaCategoria("Categoria Atualizada", BigDecimal.valueOf(1032103));
 
-        when(service.atualizarCategoria(id, dadosAtualizacao)).thenReturn(respostaAtualizada);
+        when(service.atualizar(id, dadosAtualizacao)).thenReturn(Optional.of(resposta));
 
         ResponseEntity<DadosRespostaCategoria> response = controller.atualizar(id, dadosAtualizacao);
 
-        assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertEquals(BigDecimal.valueOf(600), response.getBody().cota());
-        verify(service, times(1)).atualizarCategoria(id, dadosAtualizacao);
+        assertEquals(resposta, response.getBody());
+        verify(service, times(1)).atualizar(id, dadosAtualizacao);
     }
 
     @Test
-    void inativar_DeveInativarCategoria() {
-        Long id = 1L;
+    void inativar_DeveRetornarNoContent() {
+        long id = 1L;
 
-        DadosAtualizacaoCategoria dadosAtualizacao = new DadosAtualizacaoCategoria("Alimentação", BigDecimal.valueOf(600), true);
-        doNothing().when(service).inativarCategoria(id);
+        doNothing().when(service).inativar(id);
 
         ResponseEntity<Void> response = controller.inativar(id);
 
-        assertNotNull(response);
         assertEquals(204, response.getStatusCodeValue());
-        verify(service, times(1)).inativarCategoria(id);
+        verify(service, times(1)).inativar(id);
     }
 
     @Test
-    void deletar_DeveDeletarCategoria() {
-        DadosAtualizacaoCategoria dadosAtualizacao = new DadosAtualizacaoCategoria("Alimentação", BigDecimal.valueOf(600), true);
+    void deletar_DeveRetornarNoContent() {
+        long id = 1L;
 
-        doNothing().when(service).deletarCategoria(1L);
+        doNothing().when(service).deletar(id);
 
-        ResponseEntity<Void> response = controller.deletar(1L);
+        ResponseEntity<Void> response = controller.deletar(id);
 
-        assertNotNull(response);
         assertEquals(204, response.getStatusCodeValue());
-        verify(service, times(1)).deletarCategoria(1L);
+        verify(service, times(1)).deletar(id);
     }
 }

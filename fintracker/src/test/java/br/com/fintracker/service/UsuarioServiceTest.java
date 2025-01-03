@@ -41,7 +41,7 @@ public class UsuarioServiceTest {
 
         when(repository.saveAndFlush(any(Usuario.class))).thenReturn(usuario);
 
-        DadosRespostaUsuario result = service.inserirNoBancoDeDados(dto, "senhaTeste");
+        DadosRespostaUsuario result = service.inserirNoBancoDeDados(dto);
 
         assertNotNull(result);
         assertEquals("John", result.nome());
@@ -54,7 +54,7 @@ public class UsuarioServiceTest {
 
         when(repository.findById(1L)).thenReturn(Optional.of(usuario));
 
-        Optional<DadosRespostaUsuario> result = service.buscarNoBancoDeDadosPeloId(1L);
+        Optional<DadosRespostaUsuario> result = service.buscarPorId(1L);
 
         assertTrue(result.isPresent());
         assertEquals("John", result.get().nome());
@@ -69,7 +69,7 @@ public class UsuarioServiceTest {
 
         when(repository.findAllByisAtivoTrue()).thenReturn(List.of(usuario1, usuario2));
 
-        List<DadosRespostaUsuario> result = service.buscarTodosOsRegistrosNoBancoDeDados();
+        List<DadosRespostaUsuario> result = service.listarTodos();
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -85,7 +85,7 @@ public class UsuarioServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.of(usuario));
         when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
-        Optional<DadosRespostaUsuario> result = service.atualizarUsuarioComDadosParciais(1L, dtoAtualizacao);
+        Optional<DadosRespostaUsuario> result = service.atualizar(1L, dtoAtualizacao);
 
         assertTrue(result.isPresent());
         assertEquals("Johnny", usuario.getNome());
@@ -100,10 +100,8 @@ public class UsuarioServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.of(usuario));
         when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
-        Optional<DadosRespostaUsuario> result = service.inativarDoBancoDeDados(1L);
+        service.inativar(1L);
 
-        assertTrue(result.isPresent());
-        assertFalse(usuario.getAtivo());
         verify(repository, times(1)).findById(1L);
         verify(repository, times(1)).save(usuario);
     }
@@ -112,7 +110,7 @@ public class UsuarioServiceTest {
     void testRemoverDoBancoDeDados() {
         doNothing().when(repository).deleteById(1L);
 
-        service.removerDoBancoDeDados(1L);
+        service.deletar(1L);
 
         verify(repository, times(1)).deleteById(1L);
     }

@@ -32,10 +32,8 @@ public class CategoriaController implements CrudController <DadosRespostaCategor
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<DadosRespostaCategoria> buscarPorId(@PathVariable Long id) {
-        if (service.buscarPorId(id).isPresent()) {
-            return ResponseEntity.ok().body(service.buscarPorId(id).get());
-        }
-        return ResponseEntity.notFound().build();
+        var categoriaEncontrada = service.buscarPorId(id);
+        return categoriaEncontrada.map(dadosRespostaCategoria -> ResponseEntity.ok().body(dadosRespostaCategoria)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Override

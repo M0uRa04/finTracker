@@ -5,134 +5,127 @@ import br.com.fintracker.dto.usuario.DadosCadastroUsuario;
 import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.service.UsuarioService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
 class UsuarioControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Mock
+    private UsuarioService service;
 
-    @MockBean
-    private UsuarioService usuarioService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    private DadosCadastroUsuario cadastroUsuario;
-    private DadosAtualizacaoUsuario atualizacaoUsuario;
-    private DadosRespostaUsuario respostaUsuario;
-    
+    @InjectMocks
+    private UsuarioController controller;
 
     @BeforeEach
     void setUp() {
-        cadastroUsuario = new DadosCadastroUsuario("john.doe@example.com", "password123", "John Doe");
-        atualizacaoUsuario = new DadosAtualizacaoUsuario(1L, "John Updated", "john.doe@example.com", "John Updated", true);
-        respostaUsuario = new DadosRespostaUsuario("John Updated", "john.doe@example.com");
+        MockitoAnnotations.openMocks(this);
+    }
+
+
+    @Test
+    void inserirNoBancoDeDados_DeveRetornarBadRequestSeEmailExistir() {
+        DadosCadastroUsuario dadosCadastro = new DadosCadastroUsuario("UsuarioTeste1","test@example.com", "password123");
+
+        DadosRespostaUsuario resposta = new DadosRespostaUsuario("UsuarioTeste1", "test@example.com");
+
+        when(service.buscarPeloEmail(dadosCadastro.email())).thenReturn(new Usuario(dadosCadastro));
+
+        ResponseEntity<DadosRespostaUsuario> response = controller.inserirNoBancoDeDados(dadosCadastro);
+
+        assertEquals(400, response.getStatusCodeValue());
+        verify(service, times(1)).buscarPeloEmail(dadosCadastro.email());
+        verify(service, never()).inserirNoBancoDeDados(dadosCadastro);
     }
 
     @Test
-    void deveInserirUsuarioComSucesso() throws Exception {
-        Mockito.when(usuarioService.buscarPeloEmail(anyString())).thenReturn(null);
-        Mockito.when(usuarioService.inserirNoBancoDeDados(any(DadosCadastroUsuario.class), anyString()))
-                .thenReturn(respostaUsuario);
+    void buscarPorId_DeveRetornarOkComUsuarioSeEncontrado() {
+        long id = 1L;
+        DadosRespostaUsuario resposta = new DadosRespostaUsuario("Test1", "test@example.com");
 
-        mockMvc.perform(post("/user")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(cadastroUsuario)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
-                .andExpect(jsonPath("$.nome").value("John Updated"));
+        when(service.buscarPorId(id)).thenReturn(Optional.of(resposta));
+
+        ResponseEntity<DadosRespostaUsuario> response = controller.buscarPorId(id);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(resposta, response.getBody());
+        verify(service, times(1)).buscarPorId(id);
     }
 
     @Test
-    void deveRetornarBadRequestSeEmailJaExistir() throws Exception {
-        Mockito.when(usuarioService.buscarPeloEmail(anyString())).thenReturn(new Usuario());
+    void buscarPorId_DeveRetornarNotFoundSeNaoEncontrado() {
+        long id = 1L;
 
-        mockMvc.perform(post("/user")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(cadastroUsuario)))
-                .andExpect(status().isBadRequest());
+        when(service.buscarPorId(id)).thenReturn(Optional.empty());
+
+        ResponseEntity<DadosRespostaUsuario> response = controller.buscarPorId(id);
+
+        assertEquals(404, response.getStatusCodeValue());
+        verify(service, times(1)).buscarPorId(id);
     }
 
     @Test
-    void deveRetornarUsuarioPorId() throws Exception {
-        Mockito.when(usuarioService.buscarNoBancoDeDadosPeloId(anyLong()))
-                .thenReturn(Optional.of(respostaUsuario));
+    void listarTodos_DeveRetornarOkComListaDeUsuarios() {
+        List<DadosRespostaUsuario> usuarios = List.of(
+                new DadosRespostaUsuario("Test1", "test1@example.com"),
+                new DadosRespostaUsuario("Test2", "test2@example.com")
+        );
 
-        mockMvc.perform(get("/user/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
-                .andExpect(jsonPath("$.nome").value("John Updated"));
+        when(service.listarTodos()).thenReturn(usuarios);
+
+        ResponseEntity<List<DadosRespostaUsuario>> response = controller.listarTodos();
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(usuarios, response.getBody());
+        verify(service, times(1)).listarTodos();
     }
 
     @Test
-    void deveRetornarNotFoundSeUsuarioNaoExistir() throws Exception {
-        Mockito.when(usuarioService.buscarNoBancoDeDadosPeloId(anyLong())).thenReturn(Optional.empty());
+    void atualizar_DeveRetornarOkComUsuarioAtualizado() {
+        long id = 1L;
+        DadosAtualizacaoUsuario dadosAtualizacao = new DadosAtualizacaoUsuario(1L, "test","new@example.com","newPassword123",true);
+        DadosRespostaUsuario resposta = new DadosRespostaUsuario("test", "new@example.com");
 
-        mockMvc.perform(get("/user/1"))
-                .andExpect(status().isNotFound());
+        when(service.atualizar(id, dadosAtualizacao)).thenReturn(Optional.of(resposta));
+
+        ResponseEntity<DadosRespostaUsuario> response = controller.atualizar(id, dadosAtualizacao);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(resposta, response.getBody());
+        verify(service, times(1)).atualizar(id, dadosAtualizacao);
     }
 
     @Test
-    void deveListarTodosUsuarios() throws Exception {
-        Mockito.when(usuarioService.buscarTodosOsRegistrosNoBancoDeDados())
-                .thenReturn(List.of(respostaUsuario));
+    void inativar_DeveRetornarNoContent() {
+        long id = 1L;
 
-        mockMvc.perform(get("/user"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].email").value("john.doe@example.com"))
-                .andExpect(jsonPath("$[0].nome").value("John Updated"));
+        doNothing().when(service).inativar(id);
+
+        ResponseEntity<Void> response = controller.inativar(id);
+
+        assertEquals(204, response.getStatusCodeValue());
+        verify(service, times(1)).inativar(id);
     }
 
     @Test
-    void deveAtualizarUsuarioComSucesso() throws Exception {
-        Mockito.when(usuarioService.atualizarUsuarioComDadosParciais(anyLong(), any(DadosAtualizacaoUsuario.class)))
-                .thenReturn(Optional.of(respostaUsuario));
+    void deletar_DeveRetornarNoContent() {
+        long id = 1L;
 
-        mockMvc.perform(patch("/user/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(atualizacaoUsuario)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
-                .andExpect(jsonPath("$.nome").value("John Updated"));
-    }
+        doNothing().when(service).deletar(id);
 
-    @Test
-    void deveInativarUsuarioComSucesso() throws Exception {
-        mockMvc.perform(patch("/user/inativar")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(atualizacaoUsuario)))
-                .andExpect(status().isNoContent());
-    }
+        ResponseEntity<Void> response = controller.deletar(id);
 
-    @Test
-    void deveDeletarUsuarioComSucesso() throws Exception {
-        mockMvc.perform(delete("/user/deletar")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(atualizacaoUsuario)))
-                .andExpect(status().isNoContent());
+        assertEquals(204, response.getStatusCodeValue());
+        verify(service, times(1)).deletar(id);
     }
 }
