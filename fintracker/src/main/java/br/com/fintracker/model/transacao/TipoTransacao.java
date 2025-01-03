@@ -2,7 +2,7 @@ package br.com.fintracker.model.transacao;
 
 public enum TipoTransacao {
     ENTRADA("Entrada"),
-    SAIDA("Saída"),
+    SAIDA("Saida"),
     INVESTIMENTO("Investimento");
 
     private final String descricao;
