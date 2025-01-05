@@ -8,15 +8,12 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record DadosCadastroTransacao(
-
-        @NotBlank
+public record DadosAtualizacaoTransacao(
         TipoTransacao transacao,
-        @NotBlank
         Categoria categoria,
-        @NotNull
         LocalDate date,
-        @NotNull
         BigDecimal valor,
-        String descricao
-) {}
+        String descricao,
+        Boolean ativo
+) {
+}
