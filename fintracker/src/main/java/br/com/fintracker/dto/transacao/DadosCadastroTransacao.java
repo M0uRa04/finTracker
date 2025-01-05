@@ -10,12 +10,12 @@ import java.time.LocalDate;
 
 public record DadosCadastroTransacao(
 
-        @NotBlank
-        TipoTransacao transacao,
-        @NotBlank
-        Categoria categoria,
         @NotNull
-        LocalDate date,
+        TipoTransacao tipoTransacao,
+        @NotNull
+        Long categoriaId,
+        @NotNull
+        LocalDate dataTransacao,
         @NotNull
         BigDecimal valor,
         String descricao

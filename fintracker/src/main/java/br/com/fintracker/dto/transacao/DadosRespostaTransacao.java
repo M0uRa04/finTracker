@@ -16,7 +16,7 @@ public record DadosRespostaTransacao(
         BigDecimal valor,
         String descricao
 ) {
-    DadosRespostaTransacao (Transacao transacao) {
+    public DadosRespostaTransacao (Transacao transacao) {
         this(transacao.getTipoTransacao(), transacao.getCategoria(), transacao.getDataTransacao(), transacao.getValor(), transacao.getDescricao());
     }
 }

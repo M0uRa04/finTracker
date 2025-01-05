@@ -1,11 +1,15 @@
 package br.com.fintracker.model.transacao;
 
+import br.com.fintracker.dto.transacao.DadosCadastroTransacao;
 import br.com.fintracker.model.categoria.Categoria;
 import br.com.fintracker.model.usuario.Usuario;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Formatter;
 import java.util.Objects;
 
 @Entity
@@ -25,11 +29,19 @@ public class Transacao {
     private Usuario usuario;
     public Transacao(BigDecimal valor, LocalDate dataTransacao, Categoria categoria, String descricao, TipoTransacao tipoTransacao, Usuario usuario) {
         this.valor = valor;
-        this.dataTransacao = dataTransacao;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        this.dataTransacao = LocalDate.parse(formatter.format(dataTransacao));
         this.categoria = categoria;
         this.descricao = descricao;
         this.tipoTransacao = tipoTransacao;
         this.usuario = usuario;
+    }
+
+    public Transacao(DadosCadastroTransacao dadosCadastro) {
+        this.valor = dadosCadastro.valor();
+        this.dataTransacao = (dadosCadastro.dataTransacao());
+        this.descricao = dadosCadastro.descricao();
+        this.tipoTransacao = dadosCadastro.tipoTransacao();
     }
 
     public Long getId() {

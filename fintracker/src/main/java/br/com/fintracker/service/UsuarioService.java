@@ -5,6 +5,7 @@ import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
 import br.com.fintracker.dto.usuario.DadosCadastroUsuario;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,8 @@ import java.util.stream.Collectors;
 @Service
 public class UsuarioService implements CrudService <DadosRespostaUsuario, DadosCadastroUsuario, DadosAtualizacaoUsuario>{
 
-    private final UsuarioRepository repository;
-
-    public UsuarioService (UsuarioRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private UsuarioRepository repository;
 
     private Usuario atualizarAtributos(Usuario usuario, DadosAtualizacaoUsuario dtoAtualizacao) {
         if (dtoAtualizacao.nome() != null) {

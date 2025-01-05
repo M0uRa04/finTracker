@@ -21,8 +21,6 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
     @Autowired
     private CategoriaRepository repository;
 
-
-
     @Override
     public DadosRespostaCategoria inserirNoBancoDeDados(DadosCadastroCategoria dadosCadastro) {
         if (repository.findByNomeCategoria(dadosCadastro.nomeCategoria().toUpperCase()) != null) {
