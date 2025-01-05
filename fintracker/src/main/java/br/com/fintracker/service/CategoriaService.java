@@ -32,7 +32,7 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
     }
 
 
-
+    //Oportunidade de refatorar. Dividir o método em 2
     @Override
     @Transactional
     public Optional<DadosRespostaCategoria> atualizar(Long id, DadosAtualizacaoCategoria dadosAtualizacao) {

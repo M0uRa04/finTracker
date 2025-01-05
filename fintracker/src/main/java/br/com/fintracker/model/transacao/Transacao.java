@@ -13,7 +13,7 @@ import java.util.Formatter;
 import java.util.Objects;
 
 @Entity
-@Table(name = "transacao")
+@Table(name = "tipoTransacao")
 public class Transacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,8 @@ public class Transacao {
     private Categoria categoria;
     @ManyToOne
     private Usuario usuario;
+
+    public Transacao () {};
     public Transacao(BigDecimal valor, LocalDate dataTransacao, Categoria categoria, String descricao, TipoTransacao tipoTransacao, Usuario usuario) {
         this.valor = valor;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");

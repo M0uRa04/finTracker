@@ -7,10 +7,7 @@ import br.com.fintracker.service.TransacaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
@@ -33,27 +30,33 @@ public class TransacaoController implements CrudController <DadosRespostaTransac
     }
 
     @Override
-    public ResponseEntity<DadosRespostaTransacao> buscarPorId(Long id) {
-        return null;
+    @GetMapping("/{id}")
+    public ResponseEntity<DadosRespostaTransacao> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id).orElseThrow());
     }
 
     @Override
+    @GetMapping
     public ResponseEntity<List<DadosRespostaTransacao>> listarTodos() {
-        return null;
+        return ResponseEntity.ok(service.listarTodos());
     }
 
     @Override
-    public ResponseEntity<DadosRespostaTransacao> atualizar(Long id, DadosAtualizacaoTransacao dadosAtualizacaoTransacao) {
-        return null;
+    @PatchMapping("/{id}")
+    public ResponseEntity<DadosRespostaTransacao> atualizar(@PathVariable Long id, @RequestBody DadosAtualizacaoTransacao dadosAtualizacaoTransacao) {
+        return ResponseEntity.ok(service.atualizar(id, dadosAtualizacaoTransacao).orElseThrow());
     }
 
     @Override
+    @Deprecated
     public ResponseEntity<Void> inativar(Long id) {
         return null;
     }
 
     @Override
-    public ResponseEntity<Void> deletar(Long id) {
-        return null;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 }
