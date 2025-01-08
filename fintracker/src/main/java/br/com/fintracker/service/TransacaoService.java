@@ -8,6 +8,7 @@ import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.CategoriaRepository;
 import br.com.fintracker.repository.TransacaoRepository;
 import br.com.fintracker.repository.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class TransacaoService implements CrudService <DadosRespostaTransacao, DadosCadastroTransacao, DadosAtualizacaoTransacao> {
+public class TransacaoService{
 
     @Autowired
     private TransacaoRepository transacaoRepository;
@@ -28,6 +29,11 @@ public class TransacaoService implements CrudService <DadosRespostaTransacao, Da
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+    public Long getAuthenticateUserId () throws EntityNotFoundException {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = (Usuario) usuarioRepository.findByEmail(email);
+        return usuario.getId();
+    }
 
     private Transacao atualizarAtributos(Optional<Transacao> transacao, DadosAtualizacaoTransacao dadosAtualizacao) {
         if (transacao.isPresent()) {
@@ -54,7 +60,6 @@ public class TransacaoService implements CrudService <DadosRespostaTransacao, Da
         }
     }
 
-    @Override
     public DadosRespostaTransacao inserirNoBancoDeDados(DadosCadastroTransacao dadosCadastro) {
         var transacao = new Transacao(dadosCadastro);
 
@@ -68,12 +73,11 @@ public class TransacaoService implements CrudService <DadosRespostaTransacao, Da
         return new DadosRespostaTransacao(transacao);
     }
 
-    @Override
-    public Optional<DadosRespostaTransacao> buscarPorId(Long id) {
-        return Optional.of(new DadosRespostaTransacao(transacaoRepository.findById(id).orElseThrow(() -> new RuntimeException("Transacao não encontrada para o ID fornecido"))));
+    public Optional<DadosRespostaTransacao> buscarTransacaoPorIdEUsuario(Long idTransacao,Long idUsuario) {
+        var transacaoProcurada = transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario);
+        return Optional.of(new DadosRespostaTransacao(transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario).orElseThrow(() -> new EntityNotFoundException("Transação não encontrada para o ID fornecido"))));
     }
 
-    @Override
     public List<DadosRespostaTransacao> listarTodos() {
         return transacaoRepository
                 .findAll()
@@ -82,7 +86,6 @@ public class TransacaoService implements CrudService <DadosRespostaTransacao, Da
                 .collect(Collectors.toList());
     }
 
-    @Override
     @Transactional
     public Optional<DadosRespostaTransacao> atualizar(Long id, DadosAtualizacaoTransacao dadosAtualizacao) {
         var transacao = transacaoRepository.findById(id);
@@ -91,12 +94,10 @@ public class TransacaoService implements CrudService <DadosRespostaTransacao, Da
         return Optional.of(new DadosRespostaTransacao(transacaoAtualizada));
     }
 
-    @Override
     @Deprecated
     public void inativar(Long id) {
     }
 
-    @Override
     public void deletar(Long id) {
         transacaoRepository.deleteById(id);
     }
