@@ -78,17 +78,17 @@ public class TransacaoService{
         return Optional.of(new DadosRespostaTransacao(transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario).orElseThrow(() -> new EntityNotFoundException("Transação não encontrada para o ID fornecido"))));
     }
 
-    public List<DadosRespostaTransacao> listarTodos() {
+    public List<DadosRespostaTransacao> listarTodos(Long usuarioId) {
         return transacaoRepository
-                .findAll()
+                .findAllByUsuarioId(usuarioId)
                 .stream()
                 .map(DadosRespostaTransacao::new)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public Optional<DadosRespostaTransacao> atualizar(Long id, DadosAtualizacaoTransacao dadosAtualizacao) {
-        var transacao = transacaoRepository.findById(id);
+    public Optional<DadosRespostaTransacao> atualizar(Long idUsuario, Long idTransacao, DadosAtualizacaoTransacao dadosAtualizacao) {
+        var transacao = transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario);
         var transacaoAtualizada = atualizarAtributos(transacao, dadosAtualizacao);
         transacaoRepository.saveAndFlush(transacaoAtualizada);
         return Optional.of(new DadosRespostaTransacao(transacaoAtualizada));

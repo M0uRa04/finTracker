@@ -4,6 +4,7 @@ import br.com.fintracker.dto.transacao.DadosAtualizacaoTransacao;
 import br.com.fintracker.dto.transacao.DadosCadastroTransacao;
 import br.com.fintracker.dto.transacao.DadosRespostaTransacao;
 import br.com.fintracker.service.TransacaoService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,13 +41,15 @@ public class TransacaoController implements CrudController <DadosRespostaTransac
     @Override
     @GetMapping
     public ResponseEntity<List<DadosRespostaTransacao>> listarTodos() {
-        return ResponseEntity.ok(service.listarTodos());
+        Long idUsuario = service.getAuthenticateUserId();
+        return ResponseEntity.ok(service.listarTodos(idUsuario));
     }
 
     @Override
-    @PatchMapping("/{id}")
-    public ResponseEntity<DadosRespostaTransacao> atualizar(@PathVariable Long id, @RequestBody DadosAtualizacaoTransacao dadosAtualizacaoTransacao) {
-        return ResponseEntity.ok(service.atualizar(id, dadosAtualizacaoTransacao).orElseThrow());
+    @PatchMapping("/{idTransacao}")
+    public ResponseEntity<DadosRespostaTransacao> atualizar(@PathVariable Long idTransacao, @RequestBody DadosAtualizacaoTransacao dadosAtualizacaoTransacao) {
+        var idUsuario = service.getAuthenticateUserId();
+        return ResponseEntity.ok(service.atualizar(idTransacao, idUsuario, dadosAtualizacaoTransacao).orElseThrow(() -> new EntityNotFoundException("Transação não encontrada para o ID fornecido.")));
     }
 
     @Override
