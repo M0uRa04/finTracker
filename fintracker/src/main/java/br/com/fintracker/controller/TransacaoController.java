@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/transacao")
@@ -34,7 +35,6 @@ public class TransacaoController implements CrudController <DadosRespostaTransac
     @Override
     @GetMapping("/{idTransacao}")
     public ResponseEntity<DadosRespostaTransacao> buscarPorId(@PathVariable Long idTransacao) {
-        //Long idUsuario = service.getAuthenticateUserId();
         var idUsuario = UserContext.getUserId();
         var transacaoBuscada = service.buscarTransacaoPorIdEUsuario(idTransacao, idUsuario);
         return ResponseEntity.ok(transacaoBuscada.orElseThrow());
@@ -43,15 +43,15 @@ public class TransacaoController implements CrudController <DadosRespostaTransac
     @Override
     @GetMapping
     public ResponseEntity<List<DadosRespostaTransacao>> listarTodos() {
-        Long idUsuario = service.getAuthenticateUserId();
+        var idUsuario = UserContext.getUserId();
         return ResponseEntity.ok(service.listarTodos(idUsuario));
     }
 
     @Override
     @PatchMapping("/{idTransacao}")
     public ResponseEntity<DadosRespostaTransacao> atualizar(@PathVariable Long idTransacao, @RequestBody DadosAtualizacaoTransacao dadosAtualizacaoTransacao) {
-        var idUsuario = service.getAuthenticateUserId();
-        return ResponseEntity.ok(service.atualizar(idTransacao, idUsuario, dadosAtualizacaoTransacao).orElseThrow(() -> new EntityNotFoundException("Transação não encontrada para o ID fornecido.")));
+        var idUsuario = UserContext.getUserId();
+        return ResponseEntity.ok(service.atualizar(idTransacao, idUsuario, dadosAtualizacaoTransacao).orElseThrow(() -> new NoSuchElementException("Transação não encontrada para o ID fornecido.")));
     }
 
     @Override
