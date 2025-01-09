@@ -3,6 +3,7 @@ package br.com.fintracker.controller;
 import br.com.fintracker.dto.transacao.DadosAtualizacaoTransacao;
 import br.com.fintracker.dto.transacao.DadosCadastroTransacao;
 import br.com.fintracker.dto.transacao.DadosRespostaTransacao;
+import br.com.fintracker.infra.security.UserContext;
 import br.com.fintracker.service.TransacaoService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -33,7 +34,8 @@ public class TransacaoController implements CrudController <DadosRespostaTransac
     @Override
     @GetMapping("/{idTransacao}")
     public ResponseEntity<DadosRespostaTransacao> buscarPorId(@PathVariable Long idTransacao) {
-        Long idUsuario = service.getAuthenticateUserId();
+        //Long idUsuario = service.getAuthenticateUserId();
+        var idUsuario = UserContext.getUserId();
         var transacaoBuscada = service.buscarTransacaoPorIdEUsuario(idTransacao, idUsuario);
         return ResponseEntity.ok(transacaoBuscada.orElseThrow());
     }

@@ -20,6 +20,9 @@ public class SecurityConfigurations {
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Autowired
+    private UserContextFilter userContextFilter;
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity security) throws Exception {
         return security
@@ -35,8 +38,8 @@ public class SecurityConfigurations {
 
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(userContextFilter, JwtAuthenticationFilter.class)
                 .build();
-
     }
 
     @Bean
