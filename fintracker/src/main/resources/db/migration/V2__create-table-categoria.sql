@@ -4,7 +4,6 @@ CREATE TABLE categoria (
     nome_categoria VARCHAR(100) NOT NULL,
     cota DECIMAL,
     is_ativo boolean NOT NULL,
-
     usuario_id INTEGER NOT NULL,
 
     PRIMARY KEY (id),

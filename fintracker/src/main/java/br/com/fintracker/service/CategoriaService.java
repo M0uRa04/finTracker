@@ -3,8 +3,10 @@ package br.com.fintracker.service;
 import br.com.fintracker.dto.categoria.DadosAtualizacaoCategoria;
 import br.com.fintracker.dto.categoria.DadosCadastroCategoria;
 import br.com.fintracker.dto.categoria.DadosRespostaCategoria;
+import br.com.fintracker.infra.security.UserContext;
 import br.com.fintracker.model.categoria.Categoria;
 import br.com.fintracker.repository.CategoriaRepository;
+import br.com.fintracker.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +23,16 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
     @Autowired
     private CategoriaRepository repository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     @Override
     public DadosRespostaCategoria inserirNoBancoDeDados(DadosCadastroCategoria dadosCadastro) {
         if (repository.findByNomeCategoria(dadosCadastro.nomeCategoria().toUpperCase()) != null) {
             throw new IllegalArgumentException("Categoria já existente com o nomeCategoria fornecido.");
         }
         Categoria novaCategoria = new Categoria(dadosCadastro);
+        novaCategoria.setUsuario(usuarioRepository.findById(UserContext.getUserId()).orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado")));
         repository.saveAndFlush(novaCategoria);
         return new DadosRespostaCategoria(novaCategoria);
     }

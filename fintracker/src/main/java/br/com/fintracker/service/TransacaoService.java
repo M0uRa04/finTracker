@@ -29,12 +29,6 @@ public class TransacaoService{
 
     @Autowired
     private CategoriaRepository categoriaRepository;
-    public Long getAuthenticateUserId () throws EntityNotFoundException {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Usuario usuario = (Usuario) usuarioRepository.findByEmail(email);
-        return usuario.getId();
-    }
-
     private Transacao atualizarAtributos(Optional<Transacao> transacao, DadosAtualizacaoTransacao dadosAtualizacao) {
         if (transacao.isPresent()) {
             var transacaoAtualizada = transacao.get();
