@@ -2,6 +2,7 @@ package br.com.fintracker.model.categoria;
 
 import br.com.fintracker.dto.categoria.DadosCadastroCategoria;
 import br.com.fintracker.model.transacao.Transacao;
+import br.com.fintracker.model.usuario.Usuario;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -17,18 +18,24 @@ public class Categoria {
     private String nomeCategoria;
     private BigDecimal cota;
     private Boolean isAtivo;
+
     @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
     private List<Transacao> transacoes;
+
+    @ManyToOne
+    private Usuario usuario;
+
     public Categoria () {
         this.isAtivo = true;
     };
 
-    public Categoria(Long id, String nomeCategoria, BigDecimal cota, Boolean isAtivo, List<Transacao> transacoes) {
+    public Categoria(Long id, String nomeCategoria, BigDecimal cota, Boolean isAtivo, List<Transacao> transacoes,Usuario usuario) {
         this.id = id;
         this.nomeCategoria = nomeCategoria;
         this.cota = cota;
         this.isAtivo = isAtivo;
         this.transacoes = transacoes;
+        this.usuario = usuario;
     }
 
     public Categoria (DadosCadastroCategoria dados) {

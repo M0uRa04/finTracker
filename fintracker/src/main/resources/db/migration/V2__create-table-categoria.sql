@@ -5,6 +5,10 @@ CREATE TABLE categoria (
     cota DECIMAL,
     is_ativo boolean NOT NULL,
 
-    PRIMARY KEY (id)
+    usuario_id INTEGER NOT NULL,
+
+    PRIMARY KEY (id),
+
+    constraint fk_categoria_usuario_id foreign key(usuario_id) references usuario(id)
 
 );

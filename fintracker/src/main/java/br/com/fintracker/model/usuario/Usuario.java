@@ -1,6 +1,7 @@
 package br.com.fintracker.model.usuario;
 
 import br.com.fintracker.dto.usuario.DadosCadastroUsuario;
+import br.com.fintracker.model.categoria.Categoria;
 import br.com.fintracker.model.transacao.Transacao;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,9 +29,10 @@ public class Usuario implements UserDetails {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Transacao>transacoes;
 
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    private List<Categoria>categorias;
+
     public Usuario () {};
-
-
 
     public Usuario (String nome, String email, String senha, Perfis perfil) {
         this.nome = nome;
