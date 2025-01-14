@@ -13,7 +13,7 @@ import java.util.Formatter;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tipoTransacao")
+@Table(name = "transacao")
 public class Transacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

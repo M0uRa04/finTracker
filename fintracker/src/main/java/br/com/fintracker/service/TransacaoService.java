@@ -69,7 +69,7 @@ public class TransacaoService{
         transacao.setUsuario((Usuario) usuarioRepository.findByEmail(emailUsuario));
         transacao.setCategoria(categoria);
 
-        transacaoRepository.saveAndFlush(transacao);
+        transacaoRepository.save(transacao);
         return new DadosRespostaTransacao(transacao);
     }
 

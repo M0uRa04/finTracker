@@ -5,7 +5,6 @@ import br.com.fintracker.dto.transacao.DadosCadastroTransacao;
 import br.com.fintracker.dto.transacao.DadosRespostaTransacao;
 import br.com.fintracker.infra.security.UserContext;
 import br.com.fintracker.service.TransacaoService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
