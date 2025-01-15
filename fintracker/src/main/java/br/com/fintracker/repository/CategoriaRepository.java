@@ -11,5 +11,9 @@ public interface CategoriaRepository extends JpaRepository <Categoria, Long> {
 
     List<Categoria> findByIsAtivoTrue();
 
-    Optional<Categoria> findByIdAndIsAtivoTrue(Long id);
+    Optional<Categoria> findByIdAndUsuarioIdAndIsAtivoTrue(Long idCategoria, Long idUsuario);
+
+    Optional<Categoria> findByIdAndUsuarioId(Long id, Long idUsuario);
+
+    Optional<List<Categoria>> findAllByUsuarioIdAndIsAtivoTrue(Long idUsuario);
 }

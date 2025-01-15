@@ -41,12 +41,12 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
     //Oportunidade de refatorar. Dividir o método em 2
     @Override
     @Transactional
-    public Optional<DadosRespostaCategoria> atualizar(Long id, DadosAtualizacaoCategoria dadosAtualizacao) {
+    public Optional<DadosRespostaCategoria> atualizar(Long idCategoria, DadosAtualizacaoCategoria dadosAtualizacao) {
         if (dadosAtualizacao == null) {
             throw new IllegalArgumentException("Os dadosAtualizacao de atualização não podem ser nulos.");
         }
 
-        var categoriaEncontrada = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+        var categoriaEncontrada = repository.findByIdAndUsuarioId(idCategoria, UserContext.getUserId()).orElseThrow(EntityNotFoundException::new);
 
         if (!dadosAtualizacao.nomeCategoria().isBlank()) {
             categoriaEncontrada.setNomeCategoria(dadosAtualizacao.nomeCategoria().toUpperCase());
@@ -68,15 +68,16 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
 
     @Override
     public List<DadosRespostaCategoria> listarTodos() {
-        return repository.findByIsAtivoTrue().stream()
+        return repository.findAllByUsuarioIdAndIsAtivoTrue(UserContext.getUserId()).orElseThrow(EntityNotFoundException::new)
+                .stream()
                 .map(c -> new DadosRespostaCategoria(c))
                 .collect(Collectors.toList());
     }
 
 
     @Override
-    public Optional<DadosRespostaCategoria> buscarPorId(Long id) {
-        return Optional.of(new DadosRespostaCategoria(repository.findByIdAndIsAtivoTrue(id).orElseThrow(EntityNotFoundException::new)));
+    public Optional<DadosRespostaCategoria> buscarPorId(Long idCategoria) {
+        return Optional.of(new DadosRespostaCategoria(repository.findByIdAndUsuarioIdAndIsAtivoTrue(idCategoria, UserContext.getUserId()).orElseThrow(EntityNotFoundException::new)));
     }
 
     public DadosRespostaCategoria buscarCategoriaPorNome (String nomeCategoria) {
