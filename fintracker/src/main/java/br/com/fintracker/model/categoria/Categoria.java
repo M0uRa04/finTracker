@@ -29,7 +29,7 @@ public class Categoria {
         this.isAtivo = true;
     };
 
-    public Categoria(Long id, String nomeCategoria, BigDecimal cota, Boolean isAtivo, List<Transacao> transacoes,Usuario usuario) {
+    public Categoria(Long id, String nomeCategoria, BigDecimal cota, Boolean isAtivo, List<Transacao> transacoes, Usuario usuario) {
         this.id = id;
         this.nomeCategoria = nomeCategoria;
         this.cota = cota;

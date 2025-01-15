@@ -59,13 +59,13 @@ public class DataLoader implements CommandLineRunner {
         categoria2.setNomeCategoria("Transporte");
         categoria2.setCota(BigDecimal.valueOf(500));
         categoria2.setAtivo(true);
-        categoria1.setUsuario(usuario1);
+        categoria2.setUsuario(usuario1);
 
         Categoria categoria3 = new Categoria();
         categoria3.setNomeCategoria("Educação");
         categoria3.setCota(BigDecimal.valueOf(1000));
         categoria3.setAtivo(true);
-        categoria1.setUsuario(usuario2);
+        categoria3.setUsuario(usuario2);
 
         categoriaRepository.saveAll(List.of(categoria1, categoria2, categoria3));
     }
