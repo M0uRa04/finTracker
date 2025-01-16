@@ -31,7 +31,7 @@ public class Categoria {
 
     public Categoria(Long id, String nomeCategoria, BigDecimal cota, Boolean isAtivo, List<Transacao> transacoes, Usuario usuario) {
         this.id = id;
-        this.nomeCategoria = nomeCategoria;
+        this.nomeCategoria = nomeCategoria.toUpperCase();
         this.cota = cota;
         this.isAtivo = isAtivo;
         this.transacoes = transacoes;
