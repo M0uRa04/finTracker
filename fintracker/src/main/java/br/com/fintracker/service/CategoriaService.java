@@ -108,13 +108,11 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
     @Override
     @Transactional
     public void deletar(Long idCategoria) {
-        var categoriaEncontrada = repository.findAllByUsuarioIdAndIsAtivoTrue(idCategoria, UserContext.getUserId());
+        var categoriaEncontrada = repository.findByIdAndUsuarioIdAndIsAtivoTrue(idCategoria, UserContext.getUserId());
         if (categoriaEncontrada.isEmpty()) {
             throw new EntityNotFoundException("Categoria não encontrada com o nomeCategoria fornecido.");
         }
         repository.delete(categoriaEncontrada.get());
     }
-
-
 
 }
