@@ -88,7 +88,7 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
             return new DadosRespostaCategoria("Categoria já existente", BigDecimal.valueOf(00000.00));
         }
 
-        return new DadosRespostaCategoria(repository.findByNomeCategoria(nomeCategoria.toUpperCase()));
+        return new DadosRespostaCategoria(repository.findByNomeCategoria(nomeCategoria.toUpperCase()).orElseThrow(EntityNotFoundException::new));
     }
 
 
@@ -98,7 +98,7 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
     public void inativar(Long idCategoria) {
         var categoriaEncontrada = repository.findByIdAndUsuarioIdAndIsAtivoTrue(idCategoria, UserContext.getUserId());
         if (categoriaEncontrada.isEmpty()) {
-            throw new EntityNotFoundException("Categoria não encontrada com o nomeCategoria fornecido.");
+            throw new EntityNotFoundException("Categoria não encontrada com o id fornecido.");
         }
         categoriaEncontrada.get().setAtivo(false);
         repository.saveAndFlush(categoriaEncontrada.get());
@@ -110,7 +110,7 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
     public void deletar(Long idCategoria) {
         var categoriaEncontrada = repository.findByIdAndUsuarioIdAndIsAtivoTrue(idCategoria, UserContext.getUserId());
         if (categoriaEncontrada.isEmpty()) {
-            throw new EntityNotFoundException("Categoria não encontrada com o nomeCategoria fornecido.");
+            throw new EntityNotFoundException("Categoria não encontrada com o id fornecido.");
         }
         repository.delete(categoriaEncontrada.get());
     }
