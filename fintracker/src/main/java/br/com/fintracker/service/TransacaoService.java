@@ -93,7 +93,7 @@ public class TransacaoService{
     public void inativar(Long id) {
     }
 
-    public void deletar(Long id) {
-        transacaoRepository.deleteById(id);
+    public void deletar(Long idTransacao) {
+        transacaoRepository.deleteByIdAndUsuarioId(idTransacao, UserContext.getUserId());
     }
 }
