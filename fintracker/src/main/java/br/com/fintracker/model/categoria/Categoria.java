@@ -85,6 +85,15 @@ public class Categoria {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+    public String atualizaAtingimentoCota (BigDecimal valor) {
+        if (valor.compareTo(cota) > 0) {
+            // o que acontece caso o valor seja maior que a cota
+        }
+        //implementa o que acontece quando a cota está muito perto de ser alcançada
+
+        //decrementa a cota
+        this.cota = cota.subtract(valor);
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -33,7 +33,6 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
             throw new IllegalArgumentException("Categoria já existente com o nome fornecido.");
         }
         Categoria novaCategoria = new Categoria(dadosCadastro);
-        //Oportunidade para inserir em UserContext um método que Forneça o Objeto Usuário do usuário logado.
         novaCategoria.setUsuario(usuarioRepository.findById(UserContext.getUserId()).orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado")));
         repository.saveAndFlush(novaCategoria);
         return new DadosRespostaCategoria(novaCategoria);
