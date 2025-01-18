@@ -18,6 +18,7 @@ public class Categoria {
     private String nomeCategoria;
     private BigDecimal cota;
     private Boolean isAtivo;
+    private BigDecimal atingimentoCota;
 
     @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
     private List<Transacao> transacoes;
@@ -78,6 +79,15 @@ public class Categoria {
         this.cota = cota;
     }
 
+    
+    public BigDecimal getAtingimentoCota() {
+        return atingimentoCota;
+    }
+
+    public void setAtingimentoCota(BigDecimal atingimentoCota) {
+        this.atingimentoCota = this.atingimentoCota.add(atingimentoCota);
+    }
+
     public Usuario getUsuario() {
         return usuario;
     }
@@ -85,14 +95,21 @@ public class Categoria {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    public String atualizaAtingimentoCota (BigDecimal valor) {
-        if (valor.compareTo(cota) > 0) {
-            // o que acontece caso o valor seja maior que a cota
-        }
-        //implementa o que acontece quando a cota está muito perto de ser alcançada
 
-        //decrementa a cota
-        this.cota = cota.subtract(valor);
+    public String atualizaAtingimentoCota (BigDecimal valor) {
+
+        this.setAtingimentoCota(valor);
+        var porcentagemAtingimento = ((this.atingimentoCota.doubleValue() / this.cota.doubleValue()) * 100).intValue();
+
+        if (porcentagemAtingimento > 100) {
+            return "excedida";
+        } else if (porcentagemAtingimento == 100) {
+            return "atingida";
+        } else if (porcentagemAtingimento > 75 && porcentagemAtingimento < 90) {
+            return "quase atingida";
+        } else {
+            return "dentro do esperado";
+        }
     }
 
     @Override
