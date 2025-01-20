@@ -4,6 +4,7 @@ import br.com.fintracker.dto.transacao.DadosAtualizacaoTransacao;
 import br.com.fintracker.dto.transacao.DadosCadastroTransacao;
 import br.com.fintracker.dto.transacao.DadosRespostaTransacao;
 import br.com.fintracker.infra.security.UserContext;
+import br.com.fintracker.model.transacao.TipoTransacao;
 import br.com.fintracker.model.transacao.Transacao;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.CategoriaRepository;
@@ -60,8 +61,9 @@ public class TransacaoService{
 
         var emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
         var categoria = categoriaRepository.findByIdAndUsuarioIdAndIsAtivoTrue(dadosCadastro.categoriaId(), UserContext.getUserId()).orElseThrow(() -> new IllegalArgumentException("Categoria informada inexistente ou inválida"));
-
-        categoria.atualizaAtingimentoCota(transacao.getValor());
+        if (transacao.getTipoTransacao().equals(TipoTransacao.SAIDA)) {
+            categoria.atualizaAtingimentoCota(transacao.getValor());
+        }
         transacao.setUsuario((Usuario) usuarioRepository.findByEmail(emailUsuario));
         transacao.setCategoria(categoria);
 

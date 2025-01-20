@@ -30,7 +30,7 @@ public class Categoria {
     public Categoria () {
         this.isAtivo = true;
         this.atingimentoCota = BigDecimal.valueOf(0.0);
-        this.statusAtingimentoCota = "zerado";
+        this.statusAtingimentoCota = "";
     };
 
     public Categoria(Long id, String nomeCategoria, BigDecimal cota, Boolean isAtivo, List<Transacao> transacoes, Usuario usuario) {
@@ -99,19 +99,26 @@ public class Categoria {
         this.usuario = usuario;
     }
 
-    public String atualizaAtingimentoCota (BigDecimal valor) {
+    public String getStatusAtingimentoCota() {
+        return statusAtingimentoCota;
+    }
 
+    public void setStatusAtingimentoCota(String statusAtingimentoCota) {
+        this.statusAtingimentoCota = statusAtingimentoCota;
+    }
+
+    public void atualizaAtingimentoCota (BigDecimal valor) {
         this.setAtingimentoCota(valor);
         var porcentagemAtingimento = ((this.atingimentoCota.doubleValue() / this.cota.doubleValue()) * 100);
 
         if (porcentagemAtingimento > 100) {
-            return "excedida";
+            this.setStatusAtingimentoCota("excedida");
         } else if (porcentagemAtingimento == 100) {
-            return "atingida";
+            this.setStatusAtingimentoCota("atingida");
         } else if (porcentagemAtingimento > 75 && porcentagemAtingimento < 90) {
-            return "quase atingida";
+            this.setStatusAtingimentoCota("quase atingida");
         } else {
-            return "dentro do esperado";
+            this.setStatusAtingimentoCota("dentro do esperado");
         }
     }
 
