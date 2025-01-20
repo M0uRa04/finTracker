@@ -19,6 +19,7 @@ public class Categoria {
     private BigDecimal cota;
     private Boolean isAtivo;
     private BigDecimal atingimentoCota;
+    private String statusAtingimentoCota;
 
     @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
     private List<Transacao> transacoes;
@@ -28,6 +29,8 @@ public class Categoria {
 
     public Categoria () {
         this.isAtivo = true;
+        this.atingimentoCota = BigDecimal.valueOf(0.0);
+        this.statusAtingimentoCota = "zerado";
     };
 
     public Categoria(Long id, String nomeCategoria, BigDecimal cota, Boolean isAtivo, List<Transacao> transacoes, Usuario usuario) {
@@ -99,7 +102,7 @@ public class Categoria {
     public String atualizaAtingimentoCota (BigDecimal valor) {
 
         this.setAtingimentoCota(valor);
-        var porcentagemAtingimento = ((this.atingimentoCota.doubleValue() / this.cota.doubleValue()) * 100).intValue();
+        var porcentagemAtingimento = ((this.atingimentoCota.doubleValue() / this.cota.doubleValue()) * 100);
 
         if (porcentagemAtingimento > 100) {
             return "excedida";
