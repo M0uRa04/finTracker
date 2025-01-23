@@ -24,7 +24,7 @@ public class UserContextFilter extends OncePerRequestFilter {
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
             var usuario = (Usuario) repository.findByEmail(email);
             UserContext.setUserId(usuario.getId());
-            //System.out.println("ID DO USUÁRIO NO CONTEXTO ATUAL: " + UserContext.getUserId());
+            System.out.println("ID DO USUÁRIO NO CONTEXTO ATUAL: " + UserContext.getUserId());
         } catch (Exception ex) {
             UserContext.clear();
         }
