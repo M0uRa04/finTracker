@@ -46,7 +46,7 @@ public class TransacaoService{
             if (dadosAtualizacao.valor() != null) {
                 transacaoAtualizada.setValor(dadosAtualizacao.valor());
             }
-            if (dadosAtualizacao.descricao() != null) {
+            if (!dadosAtualizacao.descricao().isBrank()) {
                 transacaoAtualizada.setDescricao(dadosAtualizacao.descricao());
             }
             transacaoRepository.saveAndFlush(transacaoAtualizada);
@@ -60,7 +60,7 @@ public class TransacaoService{
         var transacao = new Transacao(dadosCadastro);
 
         var emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
-        var categoria = categoriaRepository.findByIdAndUsuarioIdAndIsAtivoTrue(dadosCadastro.categoriaId(), UserContext.getUserId()).orElseThrow(() -> new IllegalArgumentException("Categoria informada inexistente ou inválida"));
+        var categoria = categoriaRepository.findByIdAndUsuarioIdAndIsAtivoTrue(dadosCadastro.categoriaId(), UserContext.getUserId()).orElseThrow(() -> new IllegalArgumentException("Categoria informada inexistente, inválida ou inativa, e/ou usuário inválido."));
         if (transacao.getTipoTransacao().equals(TipoTransacao.SAIDA)) {
             categoria.atualizaAtingimentoCota(transacao.getValor());
         }
@@ -73,7 +73,7 @@ public class TransacaoService{
 
     public Optional<DadosRespostaTransacao> buscarTransacaoPorIdEUsuario(Long idTransacao,Long idUsuario) {
         var transacaoProcurada = transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario);
-        return Optional.of(new DadosRespostaTransacao(transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario).orElseThrow(() -> new EntityNotFoundException("Transação não encontrada para o ID fornecido"))));
+        return new DadosRespostaTransacao(transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario));
     }
 
     public List<DadosRespostaTransacao> listarTodos(Long usuarioId) {
@@ -81,7 +81,7 @@ public class TransacaoService{
                 .findAllByUsuarioId(usuarioId)
                 .stream()
                 .map(DadosRespostaTransacao::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Transactional
