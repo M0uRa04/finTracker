@@ -88,7 +88,7 @@ public class TransacaoService{
     public Optional<DadosRespostaTransacao> atualizar(Long idUsuario, Long idTransacao, DadosAtualizacaoTransacao dadosAtualizacao) {
         var transacao = transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario);
         var transacaoAtualizada = atualizarAtributos(transacao, dadosAtualizacao);
-        transacaoRepository.saveAndFlush(transacaoAtualizada);
+        //transacaoRepository.saveAndFlush(transacaoAtualizada); Duplicidade de salvamento
         return Optional.of(new DadosRespostaTransacao(transacaoAtualizada));
     }
 
