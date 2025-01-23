@@ -38,31 +38,32 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
         return new DadosRespostaCategoria(novaCategoria);
     }
 
+    private Categoria atualizarAtributos(Optional<Categoria> categoria, DadosAtualizacaoCategoria dadosAtualizacao) {
+        if (categoria.isPresent()) {
+            var categoriaAtualizada = categoria.get();
+            if (!dadosAtualizacao.nomeCategoria().isBlank()) {
+                categoriaAtualizada.setNomeCategoria(dadosAtualizacao.nomeCategoria());
+            }
+            if (dadosAtualizacao.cota() != null && dadosAtualizacao.cota().floatValue() > 0) {
+                categoriaAtualizada.setCota(dadosAtualizacao.cota());
+            }
+            if (dadosAtualizacao.isAtivo() != null) {
+                categoriaAtualizada.setAtivo(dadosAtualizacao.isAtivo());
+            }
+            repository.saveAndFlush(categoriaAtualizada);
+            return categoriaAtualizada;
+        } else {
+            throw new IllegalArgumentException("Os dados de atualização não podem ser nulos.");
+        }
+    }
 
-    //Oportunidade de refatorar. Dividir o método em 2
     @Override
     @Transactional
     public Optional<DadosRespostaCategoria> atualizar(Long idCategoria, DadosAtualizacaoCategoria dadosAtualizacao) {
-        if (dadosAtualizacao == null) {
-            throw new IllegalArgumentException("Os dadosAtualizacao de atualização não podem ser nulos.");
-        }
-
-        var categoriaEncontrada = repository.findByIdAndUsuarioId(idCategoria, UserContext.getUserId()).orElseThrow(EntityNotFoundException::new);
-
-        if (!dadosAtualizacao.nomeCategoria().isBlank()) {
-            categoriaEncontrada.setNomeCategoria(dadosAtualizacao.nomeCategoria().toUpperCase());
-        }
-
-        if (dadosAtualizacao.isAtivo() != null) {
-            categoriaEncontrada.setAtivo(dadosAtualizacao.isAtivo());
-        }
-
-        if (dadosAtualizacao.cota() != null && dadosAtualizacao.cota().floatValue() > 0) {
-            categoriaEncontrada.setCota(dadosAtualizacao.cota());
-        }
-
-        repository.saveAndFlush(categoriaEncontrada);
-        return Optional.of(new DadosRespostaCategoria(categoriaEncontrada));
+        var categoriaEncontrada = repository.findByIdAndUsuarioId(idCategoria, UserContext.getUserId());
+        var categoriaAtualizada = atualizarAtributos(categoriaEncontrada, dadosAtualizacao);
+        //repository.saveAndFlush(categoriaEncontrada); Salvamento redundante
+        return Optional.of(new DadosRespostaCategoria(categoriaAtualizada));
     }
 
 
@@ -86,7 +87,6 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
         if(categoriaEncontrada.isPresent()) {
             return new DadosRespostaCategoria("Categoria já existente", BigDecimal.valueOf(00000.00));
         }
-
         return new DadosRespostaCategoria(repository.findByNomeCategoria(nomeCategoria.toUpperCase()).orElseThrow(EntityNotFoundException::new));
     }
 
