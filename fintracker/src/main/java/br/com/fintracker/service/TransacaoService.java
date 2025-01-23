@@ -10,7 +10,6 @@ import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.CategoriaRepository;
 import br.com.fintracker.repository.TransacaoRepository;
 import br.com.fintracker.repository.UsuarioRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,7 +45,7 @@ public class TransacaoService{
             if (dadosAtualizacao.valor() != null) {
                 transacaoAtualizada.setValor(dadosAtualizacao.valor());
             }
-            if (!dadosAtualizacao.descricao().isBrank()) {
+            if (!dadosAtualizacao.descricao().isBlank()) {
                 transacaoAtualizada.setDescricao(dadosAtualizacao.descricao());
             }
             transacaoRepository.saveAndFlush(transacaoAtualizada);
@@ -73,7 +72,7 @@ public class TransacaoService{
 
     public Optional<DadosRespostaTransacao> buscarTransacaoPorIdEUsuario(Long idTransacao,Long idUsuario) {
         var transacaoProcurada = transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario);
-        return new DadosRespostaTransacao(transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario));
+        return Optional.of(new DadosRespostaTransacao(transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario).orElseThrow()));
     }
 
     public List<DadosRespostaTransacao> listarTodos(Long usuarioId) {

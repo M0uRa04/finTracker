@@ -46,6 +46,8 @@ public class Categoria {
         this.nomeCategoria = dados.nomeCategoria().toUpperCase();
         this.cota = dados.cota();
         this.isAtivo = true;
+        this.atingimentoCota = BigDecimal.valueOf(0.0);
+        this.statusAtingimentoCota = "";
     }
 
     public Categoria(String nomeCategoria, BigDecimal cota, boolean isAtivo) {
