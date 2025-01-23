@@ -4,28 +4,41 @@ import br.com.fintracker.dto.transacao.DadosAtualizacaoTransacao;
 import br.com.fintracker.dto.transacao.DadosCadastroTransacao;
 import br.com.fintracker.dto.transacao.DadosRespostaTransacao;
 import br.com.fintracker.model.transacao.TipoTransacao;
+import br.com.fintracker.repository.TransacaoRepository;
+import br.com.fintracker.repository.UsuarioRepository;
+import br.com.fintracker.service.JWTService;
 import br.com.fintracker.service.TransacaoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @WebMvcTest(TransacaoController.class)
 class TransacaoControllerTest {
 
@@ -35,15 +48,29 @@ class TransacaoControllerTest {
     @MockBean
     private TransacaoService service;
 
+    @MockBean
+    private JWTService jwtService;
+
+    @MockBean
+    private UsuarioRepository usuarioRepository;
+
+    @MockBean
+    private TransacaoRepository repository;
+
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private WebApplicationContext context;
 
     private DadosCadastroTransacao dadosCadastro;
     private DadosRespostaTransacao dadosResposta;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .apply(springSecurity()) // Configura o Spring Security no MockMvc
+                .build();
 
         dadosCadastro = new DadosCadastroTransacao(
                 TipoTransacao.ENTRADA,
@@ -62,9 +89,19 @@ class TransacaoControllerTest {
         );
     }
 
+    @Configuration
+    static class TestSecurityConfiguration {
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+            http.csrf(AbstractHttpConfigurer::disable); // Desabilita CSRF explicitamente
+            return http.build();
+        }
+    }
+
     @Test
+    @WithMockUser(username = "test_user", roles = {"USER"})
     void deveInserirTransacaoComSucesso() throws Exception {
-        when(service.inserirNoBancoDeDados(any(DadosCadastroTransacao.class))).thenReturn(dadosResposta);
+        when(service.inserirNoBancoDeDados(ArgumentMatchers.any(DadosCadastroTransacao.class))).thenReturn(dadosResposta);
 
         mockMvc.perform(post("/transacao")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -74,7 +111,7 @@ class TransacaoControllerTest {
                 .andExpect(jsonPath("$.valor", is(dadosResposta.valor().intValue())))
                 .andExpect(jsonPath("$.descricao", is(dadosResposta.descricao())));
 
-        verify(service, times(1)).inserirNoBancoDeDados(any(DadosCadastroTransacao.class));
+        verify(service, times(1)).inserirNoBancoDeDados(ArgumentMatchers.any(DadosCadastroTransacao.class));
     }
 
     @Test
@@ -116,7 +153,7 @@ class TransacaoControllerTest {
                 "Compra no mercado"
         );
 
-        when(service.atualizar(anyLong(), eq(1L), any(DadosAtualizacaoTransacao.class))).thenReturn(Optional.of(dadosResposta));
+        when(service.atualizar(anyLong(), eq(1L), ArgumentMatchers.any(DadosAtualizacaoTransacao.class))).thenReturn(Optional.of(dadosResposta));
 
         mockMvc.perform(patch("/transacao/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -126,7 +163,7 @@ class TransacaoControllerTest {
                 .andExpect(jsonPath("$.valor", is(dadosResposta.valor().intValue())))
                 .andExpect(jsonPath("$.descricao", is(dadosResposta.descricao())));
 
-        verify(service, times(1)).atualizar(anyLong(), eq(1L), any(DadosAtualizacaoTransacao.class));
+        verify(service, times(1)).atualizar(anyLong(), eq(1L), ArgumentMatchers.any(DadosAtualizacaoTransacao.class));
     }
 
     @Test

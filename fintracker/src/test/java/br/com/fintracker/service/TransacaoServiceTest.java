@@ -16,9 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,21 +32,24 @@ class TransacaoServiceTest {
     private TransacaoService service;
 
     @Mock
+    @Autowired
     private TransacaoRepository transacaoRepository;
 
     @Mock
+    @Autowired
     private UsuarioRepository usuarioRepository;
 
     @Mock
+    @Autowired
     private CategoriaRepository categoriaRepository;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         service = new TransacaoService();
-        service.transacaoRepository = transacaoRepository;
-        service.usuarioRepository = usuarioRepository;
-        service.categoriaRepository = categoriaRepository;
+//        service.transacaoRepository = transacaoRepository;
+//        service.usuarioRepository = usuarioRepository;
+//        service.categoriaRepository = categoriaRepository;
     }
 
     @Test
@@ -65,7 +70,7 @@ class TransacaoServiceTest {
 
         when(UserContext.getUserId()).thenReturn(1L);
         when(categoriaRepository.findByIdAndUsuarioIdAndIsAtivoTrue(1L, 1L)).thenReturn(Optional.of(categoria));
-        when(usuarioRepository.findByEmail(anyString())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByEmail(anyString())).thenReturn(usuario);
         when(transacaoRepository.save(any(Transacao.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         var resposta = service.inserirNoBancoDeDados(dadosCadastro);
@@ -116,7 +121,8 @@ class TransacaoServiceTest {
     @Test
     void deveAtualizarTransacao() {
         var usuarioId = 1L;
-        var transacao = new Transacao(BigDecimal.valueOf(1000), LocalDate.now(), null, "Salário", TipoTransacao.ENTRADA, null);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        var transacao = new Transacao(BigDecimal.valueOf(1000), LocalDate.parse(formatter.format(LocalDate.now())), null, "Salário", TipoTransacao.ENTRADA, null);
         transacao.setId(1L);
 
         var dadosAtualizacao = new DadosAtualizacaoTransacao(
