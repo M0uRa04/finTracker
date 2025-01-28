@@ -19,7 +19,8 @@ public class Categoria {
     private BigDecimal cota;
     private Boolean isAtivo;
     private BigDecimal atingimentoCota;
-    private String statusAtingimentoCota;
+    @Enumerated(EnumType.STRING)
+    private StatusAtingimentoCota statusAtingimentoCota;
 
     @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
     private List<Transacao> transacoes;
@@ -30,7 +31,7 @@ public class Categoria {
     public Categoria () {
         this.isAtivo = true;
         this.atingimentoCota = BigDecimal.valueOf(0.0);
-        this.statusAtingimentoCota = "";
+        this.statusAtingimentoCota = StatusAtingimentoCota.DEFAULT;
     };
 
     public Categoria(Long id, String nomeCategoria, BigDecimal cota, Boolean isAtivo, List<Transacao> transacoes, Usuario usuario) {
@@ -47,7 +48,7 @@ public class Categoria {
         this.cota = dados.cota();
         this.isAtivo = true;
         this.atingimentoCota = BigDecimal.valueOf(0.0);
-        this.statusAtingimentoCota = "";
+        this.statusAtingimentoCota = StatusAtingimentoCota.DEFAULT;
     }
 
     public Categoria(String nomeCategoria, BigDecimal cota, boolean isAtivo) {
@@ -105,11 +106,11 @@ public class Categoria {
         this.usuario = usuario;
     }
 
-    public String getStatusAtingimentoCota() {
+    public StatusAtingimentoCota getStatusAtingimentoCota() {
         return statusAtingimentoCota;
     }
 
-    public void setStatusAtingimentoCota(String statusAtingimentoCota) {
+    public void setStatusAtingimentoCota(StatusAtingimentoCota statusAtingimentoCota) {
         this.statusAtingimentoCota = statusAtingimentoCota;
     }
 
@@ -118,13 +119,13 @@ public class Categoria {
         var porcentagemAtingimento = ((this.atingimentoCota.doubleValue() / this.cota.doubleValue()) * 100);
 
         if (porcentagemAtingimento > 100) {
-            this.setStatusAtingimentoCota("excedida");
+            this.setStatusAtingimentoCota(StatusAtingimentoCota.EXCEDIDA);
         } else if (porcentagemAtingimento == 100) {
-            this.setStatusAtingimentoCota("atingida");
+            this.setStatusAtingimentoCota(StatusAtingimentoCota.ATINGIDA);
         } else if (porcentagemAtingimento > 75 && porcentagemAtingimento < 90) {
-            this.setStatusAtingimentoCota("quase atingida");
+            this.setStatusAtingimentoCota(StatusAtingimentoCota.QUASE_ATINGIDA);
         } else {
-            this.setStatusAtingimentoCota("dentro do esperado");
+            this.setStatusAtingimentoCota(StatusAtingimentoCota.DENTRO_DO_ESPERADO);
         }
     }
 
