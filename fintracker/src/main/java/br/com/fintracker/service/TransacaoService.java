@@ -95,6 +95,7 @@ public class TransacaoService{
     public void inativar(Long id) {
     }
 
+    @Transactional
     public void deletar(Long idTransacao) {
         transacaoRepository.deleteByIdAndUsuarioId(idTransacao, UserContext.getUserId());
     }

@@ -7,6 +7,7 @@ CREATE TABLE categoria (
     status_atingimento_cota VARCHAR (50) NOT NULL,
     is_ativo boolean NOT NULL,
     usuario_id INTEGER NOT NULL,
+    total_gasto DECIMAL,
 
     PRIMARY KEY (id),
 
