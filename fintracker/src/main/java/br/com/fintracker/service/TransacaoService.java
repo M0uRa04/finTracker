@@ -63,9 +63,7 @@ public class TransacaoService{
 
         var emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
         var categoria = categoriaRepository.findByIdAndUsuarioIdAndIsAtivoTrue(dadosCadastro.categoriaId(), UserContext.getUserId()).orElseThrow(() -> new IllegalArgumentException("Categoria informada inexistente, inválida ou inativa, e/ou usuário inválido."));
-//        if (transacao.getTipoTransacao().equals(TipoTransacao.SAIDA)) {
-//            categoriaService.atualizaAtingimentoCota(transacao.getValor(), categoria);
-//        }
+
         transacao.setUsuario((Usuario) usuarioRepository.findByEmail(emailUsuario));
         transacao.setCategoria(categoria);
 

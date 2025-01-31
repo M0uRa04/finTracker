@@ -39,20 +39,6 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
         return new DadosRespostaCategoria(novaCategoria);
     }
 
-//    public void atualizaAtingimentoCota (BigDecimal valor, Categoria categoria) {
-//        categoria.setTotalGasto(valor);
-//        categoria.setAtingimentoCota(categoria.getTotalGasto().floatValue() / categoria.getCota().floatValue() * 100);
-//
-//        if (categoria.getAtingimentoCota() > 100) {
-//            categoria.setStatusAtingimentoCota(StatusAtingimentoCota.EXCEDIDA);
-//        } else if (categoria.getAtingimentoCota() == 100) {
-//            categoria.setStatusAtingimentoCota(StatusAtingimentoCota.ATINGIDA);
-//        } else if (categoria.getAtingimentoCota() > 75 && categoria.getAtingimentoCota() < 90) {
-//            categoria.setStatusAtingimentoCota(StatusAtingimentoCota.QUASE_ATINGIDA);
-//        } else {
-//            categoria.setStatusAtingimentoCota(StatusAtingimentoCota.DENTRO_DO_ESPERADO);
-//        }
-//    }
 
     private Categoria atualizarAtributos(Optional<Categoria> categoria, DadosAtualizacaoCategoria dadosAtualizacao) {
         if (categoria.isPresent()) {
