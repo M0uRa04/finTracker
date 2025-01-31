@@ -30,6 +30,9 @@ public class TransacaoService{
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private CategoriaService categoriaService;
     private Transacao atualizarAtributos(Optional<Transacao> transacao, DadosAtualizacaoTransacao dadosAtualizacao) {
         if (transacao.isPresent()) {
             var transacaoAtualizada = transacao.get();
@@ -60,9 +63,9 @@ public class TransacaoService{
 
         var emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
         var categoria = categoriaRepository.findByIdAndUsuarioIdAndIsAtivoTrue(dadosCadastro.categoriaId(), UserContext.getUserId()).orElseThrow(() -> new IllegalArgumentException("Categoria informada inexistente, inválida ou inativa, e/ou usuário inválido."));
-        if (transacao.getTipoTransacao().equals(TipoTransacao.SAIDA)) {
-            categoria.atualizaAtingimentoCota(transacao.getValor());
-        }
+//        if (transacao.getTipoTransacao().equals(TipoTransacao.SAIDA)) {
+//            categoriaService.atualizaAtingimentoCota(transacao.getValor(), categoria);
+//        }
         transacao.setUsuario((Usuario) usuarioRepository.findByEmail(emailUsuario));
         transacao.setCategoria(categoria);
 

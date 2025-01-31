@@ -5,6 +5,7 @@ import br.com.fintracker.dto.categoria.DadosCadastroCategoria;
 import br.com.fintracker.dto.categoria.DadosRespostaCategoria;
 import br.com.fintracker.infra.security.UserContext;
 import br.com.fintracker.model.categoria.Categoria;
+import br.com.fintracker.model.categoria.StatusAtingimentoCota;
 import br.com.fintracker.repository.CategoriaRepository;
 import br.com.fintracker.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -37,6 +38,21 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
         repository.saveAndFlush(novaCategoria);
         return new DadosRespostaCategoria(novaCategoria);
     }
+
+//    public void atualizaAtingimentoCota (BigDecimal valor, Categoria categoria) {
+//        categoria.setTotalGasto(valor);
+//        categoria.setAtingimentoCota(categoria.getTotalGasto().floatValue() / categoria.getCota().floatValue() * 100);
+//
+//        if (categoria.getAtingimentoCota() > 100) {
+//            categoria.setStatusAtingimentoCota(StatusAtingimentoCota.EXCEDIDA);
+//        } else if (categoria.getAtingimentoCota() == 100) {
+//            categoria.setStatusAtingimentoCota(StatusAtingimentoCota.ATINGIDA);
+//        } else if (categoria.getAtingimentoCota() > 75 && categoria.getAtingimentoCota() < 90) {
+//            categoria.setStatusAtingimentoCota(StatusAtingimentoCota.QUASE_ATINGIDA);
+//        } else {
+//            categoria.setStatusAtingimentoCota(StatusAtingimentoCota.DENTRO_DO_ESPERADO);
+//        }
+//    }
 
     private Categoria atualizarAtributos(Optional<Categoria> categoria, DadosAtualizacaoCategoria dadosAtualizacao) {
         if (categoria.isPresent()) {

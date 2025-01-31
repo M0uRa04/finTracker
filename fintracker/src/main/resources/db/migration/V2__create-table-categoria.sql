@@ -3,11 +3,11 @@ CREATE TABLE categoria (
     id INTEGER NOT NULL AUTO_INCREMENT,
     nome_categoria VARCHAR(100) NOT NULL,
     cota DECIMAL,
-    atingimento_cota DECIMAL,
-    status_atingimento_cota VARCHAR (50) NOT NULL,
+--    atingimento_cota DECIMAL,
+--    status_atingimento_cota VARCHAR (50) NOT NULL,
     is_ativo boolean NOT NULL,
     usuario_id INTEGER NOT NULL,
-    total_gasto DECIMAL,
+--    total_gasto DECIMAL,
 
     PRIMARY KEY (id),
 
