@@ -18,11 +18,7 @@ public class Categoria {
     private String nomeCategoria;
     private BigDecimal cota;
     private Boolean isAtivo;
-    //private Float atingimentoCota;
-    //private BigDecimal totalGasto;
-//    @Enumerated(EnumType.STRING)
-//    private StatusAtingimentoCota statusAtingimentoCota;
-
+    
     @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
     private List<Transacao> transacoes;
 
@@ -31,9 +27,6 @@ public class Categoria {
 
     public Categoria () {
         this.isAtivo = true;
-//        this.atingimentoCota = 0.0F;
-//        this.statusAtingimentoCota = StatusAtingimentoCota.DEFAULT;
-//        this.totalGasto = new BigDecimal("0.0");
     };
 
     public Categoria(Long id, String nomeCategoria, BigDecimal cota, Boolean isAtivo, List<Transacao> transacoes, Usuario usuario) {
@@ -49,9 +42,6 @@ public class Categoria {
         this.nomeCategoria = dados.nomeCategoria().toUpperCase();
         this.cota = dados.cota();
         this.isAtivo = true;
-//        this.atingimentoCota = 0.0F;
-//        this.statusAtingimentoCota = StatusAtingimentoCota.DEFAULT;
-//        this.totalGasto = new BigDecimal("0.0");
     }
 
     public Categoria(String nomeCategoria, BigDecimal cota, boolean isAtivo) {
@@ -92,15 +82,6 @@ public class Categoria {
         this.cota = cota;
     }
 
-    
-//    public Float getAtingimentoCota() {
-//        return atingimentoCota;
-//    }
-//
-//    public void setAtingimentoCota(Float atingimentoCota) {
-//        this.atingimentoCota = atingimentoCota;
-//    }
-
     public Usuario getUsuario() {
         return usuario;
     }
@@ -108,38 +89,6 @@ public class Categoria {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
-//    public StatusAtingimentoCota getStatusAtingimentoCota() {
-//        return statusAtingimentoCota;
-//    }
-//
-//    public void setStatusAtingimentoCota(StatusAtingimentoCota statusAtingimentoCota) {
-//        this.statusAtingimentoCota = statusAtingimentoCota;
-//    }
-//
-//    public BigDecimal getTotalGasto() {
-//        return totalGasto;
-//    }
-//
-//    public void setTotalGasto(BigDecimal valorTransacao) {
-//        this.totalGasto = totalGasto.add(valorTransacao);
-//    }
-
-//    public void atualizaAtingimentoCota (BigDecimal valor) {
-//        this.setTotalGasto(valor);
-//        this.setAtingimentoCota(totalGasto.floatValue() / cota.floatValue() * 100);
-//
-//        if (this.atingimentoCota > 100) {
-//            this.setStatusAtingimentoCota(StatusAtingimentoCota.EXCEDIDA);
-//        } else if (this.atingimentoCota == 100) {
-//            this.setStatusAtingimentoCota(StatusAtingimentoCota.ATINGIDA);
-//        } else if (this.atingimentoCota > 75 && this.atingimentoCota < 90) {
-//            this.setStatusAtingimentoCota(StatusAtingimentoCota.QUASE_ATINGIDA);
-//        } else {
-//            this.setStatusAtingimentoCota(StatusAtingimentoCota.DENTRO_DO_ESPERADO);
-//        }
-//    }
-
 
     @Override
     public boolean equals(Object o) {
