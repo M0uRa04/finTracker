@@ -50,6 +50,13 @@ public class Categoria {
         this.isAtivo = isAtivo;
     }
 
+    public Categoria(String nomeCategoria, BigDecimal cota, boolean isAtivo, Usuario usuario) {
+        this.nomeCategoria = nomeCategoria;
+        this.cota = cota;
+        this.isAtivo = isAtivo;
+        this.usuario = usuario;
+    }
+
     public Boolean getAtivo() {
         return isAtivo;
     }

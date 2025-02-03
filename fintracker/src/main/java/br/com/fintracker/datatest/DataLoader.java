@@ -1,9 +1,12 @@
 package br.com.fintracker.datatest;
 
 import br.com.fintracker.model.categoria.Categoria;
+import br.com.fintracker.model.transacao.TipoTransacao;
+import br.com.fintracker.model.transacao.Transacao;
 import br.com.fintracker.model.usuario.Perfis;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.CategoriaRepository;
+import br.com.fintracker.repository.TransacaoRepository;
 import br.com.fintracker.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -21,52 +25,46 @@ public class DataLoader implements CommandLineRunner {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private TransacaoRepository transacaoRepository;
+
     @Override
     public void run(String... args) throws Exception {
+        List<Usuario> usuarios = carregarUsuarios();
+        usuarioRepository.saveAll(usuarios);
+
+        List<Categoria> categorias = carregarCategorias(usuarios);
+        categoriaRepository.saveAll(categorias);
+
+        List<Transacao> transacoes = carregarTransacoes(usuarios, categorias);
+        transacaoRepository.saveAll(transacoes);
+    }
+
+    private static List<Usuario> carregarUsuarios() {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return List.of(
+                new Usuario("Robson", "robson@test.com", encoder.encode("senha123"),  Perfis.ADMIN),
+                new Usuario("Helen", "helen@test.com", encoder.encode("senha456"),  Perfis.USER),
+                new Usuario("Cirleide", "cirleide@test.com", encoder.encode("senha789"),  Perfis.USER)
+        );
+    }
 
-        Usuario usuario1 = new Usuario();
-        usuario1.setNome("Robson");
-        usuario1.setEmail("robson@test.com");
-        usuario1.setSenha(encoder.encode("senha123"));
-        usuario1.setAtivo(true);
-        usuario1.setPerfil(Perfis.ADMIN);
+    private static List<Categoria> carregarCategorias(List<Usuario> usuarios) {
+        return List.of(
+                new Categoria("Alimentação", BigDecimal.valueOf(1500), true, usuarios.get(0)),
+                new Categoria("Transporte", BigDecimal.valueOf(500), true, usuarios.get(0)),
+                new Categoria("Educação", BigDecimal.valueOf(1000), true, usuarios.get(1))
+        );
+    }
 
-        Usuario usuario2 = new Usuario();
-        usuario2.setNome("Helen");
-        usuario2.setEmail("helen@test.com");
-        usuario2.setSenha(encoder.encode("senha456"));
-        usuario2.setAtivo(true);
-        usuario2.setPerfil(Perfis.USER);
-
-
-        Usuario usuario3 = new Usuario();
-        usuario3.setNome("Cirleide");
-        usuario3.setEmail("cirleide@test.com");
-        usuario3.setSenha(encoder.encode("senha789"));
-        usuario3.setAtivo(true);
-        usuario3.setPerfil(Perfis.USER);
-
-        usuarioRepository.saveAll(List.of(usuario1, usuario2, usuario3));
-
-        Categoria categoria1 = new Categoria();
-        categoria1.setNomeCategoria("Alimentação");
-        categoria1.setCota(BigDecimal.valueOf(1500));
-        categoria1.setAtivo(true);
-        categoria1.setUsuario(usuario1);
-
-        Categoria categoria2 = new Categoria();
-        categoria2.setNomeCategoria("Transporte");
-        categoria2.setCota(BigDecimal.valueOf(500));
-        categoria2.setAtivo(true);
-        categoria2.setUsuario(usuario1);
-
-        Categoria categoria3 = new Categoria();
-        categoria3.setNomeCategoria("Educação");
-        categoria3.setCota(BigDecimal.valueOf(1000));
-        categoria3.setAtivo(true);
-        categoria3.setUsuario(usuario2);
-
-        categoriaRepository.saveAll(List.of(categoria1, categoria2, categoria3));
+    private static List<Transacao> carregarTransacoes(List<Usuario> usuarios, List<Categoria> categorias) {
+        return List.of(
+                new Transacao(BigDecimal.valueOf(200), LocalDate.now(), categorias.get(0), "Supermercado", TipoTransacao.SAIDA, usuarios.get(0)),
+                new Transacao(BigDecimal.valueOf(50), LocalDate.now().minusDays(1), categorias.get(1), "Uber", TipoTransacao.SAIDA, usuarios.get(0)),
+                new Transacao(BigDecimal.valueOf(1200), LocalDate.now().minusDays(2), categorias.get(2), "Mensalidade faculdade", TipoTransacao.SAIDA, usuarios.get(1)),
+                new Transacao(BigDecimal.valueOf(3000), LocalDate.now(), categorias.get(0), "Salário", TipoTransacao.ENTRADA, usuarios.get(0)),
+                new Transacao(BigDecimal.valueOf(1000), LocalDate.now().minusDays(3), categorias.get(2), "Bônus", TipoTransacao.ENTRADA, usuarios.get(1))
+        );
     }
 }

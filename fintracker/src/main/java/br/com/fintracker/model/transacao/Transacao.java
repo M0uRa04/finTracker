@@ -31,8 +31,8 @@ public class Transacao {
     public Transacao () {};
     public Transacao(BigDecimal valor, LocalDate dataTransacao, Categoria categoria, String descricao, TipoTransacao tipoTransacao, Usuario usuario) {
         this.valor = valor;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        this.dataTransacao = LocalDate.parse(formatter.format(dataTransacao));
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        this.dataTransacao = dataTransacao;
         this.categoria = categoria;
         this.descricao = descricao;
         this.tipoTransacao = tipoTransacao;
