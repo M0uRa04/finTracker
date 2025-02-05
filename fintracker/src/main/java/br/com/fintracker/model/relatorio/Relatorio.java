@@ -1,16 +1,24 @@
 package br.com.fintracker.model.relatorio;
 
 import br.com.fintracker.model.usuario.Usuario;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Relatorio {
+@MappedSuperclass
+public abstract class Relatorio {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(value = EnumType.STRING)
     private TipoRelatorio tipoRelatorio;
     private LocalDate dataInicio;
     private LocalDate dataFim;
+
+    @ManyToOne
     private Usuario usuario;
 
     public Relatorio () {};
