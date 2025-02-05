@@ -84,5 +84,4 @@ public abstract class Relatorio {
         return Objects.hash(getId(), getTipoRelatorio(), getDataInicio(), getDataFim(), getUsuario());
     }
 
-    private void gerarRelatorio () {};
 }

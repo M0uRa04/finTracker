@@ -86,4 +86,5 @@ public class RelatorioResumoCotas extends Relatorio {
     public int hashCode() {
         return Objects.hash(super.hashCode(), getCategorias(), getTotalGasto(), getPorcentagemAtingimento(), getStatusAtingimentoCota());
     }
+
 }
