@@ -1,6 +1,7 @@
 package br.com.fintracker.model.categoria;
 
 import br.com.fintracker.dto.categoria.DadosCadastroCategoria;
+import br.com.fintracker.model.relatorio.RelatorioResumoCotas;
 import br.com.fintracker.model.transacao.Transacao;
 import br.com.fintracker.model.usuario.Usuario;
 import jakarta.persistence.*;
@@ -24,6 +25,9 @@ public class Categoria {
 
     @ManyToOne
     private Usuario usuario;
+
+    @ManyToOne
+    private RelatorioResumoCotas relatorioResumoCotas;
 
     public Categoria () {
         this.isAtivo = true;
