@@ -1,5 +1,6 @@
 package br.com.fintracker.model.relatorio;
 
+import br.com.fintracker.dto.categoria.DadosRespostaCategoria;
 import br.com.fintracker.model.categoria.Categoria;
 import br.com.fintracker.model.categoria.StatusAtingimentoCota;
 import br.com.fintracker.model.usuario.Usuario;
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "relatorio_resumo_cotas")
@@ -87,4 +89,15 @@ public class RelatorioResumoCotas extends Relatorio {
         return Objects.hash(super.hashCode(), getCategorias(), getTotalGasto(), getPorcentagemAtingimento(), getStatusAtingimentoCota());
     }
 
+    @Override
+    public String toString() {
+        return "RelatorioResumoCotas{" +
+                "categorias=" + categorias.stream()
+                .map(c -> new DadosRespostaCategoria(c))
+                .collect(Collectors.toList())+
+                ", totalGasto=" + totalGasto +
+                ", porcentagemAtingimento=" + porcentagemAtingimento +
+                ", statusAtingimentoCota=" + statusAtingimentoCota +
+                '}';
+    }
 }
