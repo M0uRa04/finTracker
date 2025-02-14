@@ -14,6 +14,6 @@ public class RelatorioController {
     private RelatorioResumoCotasService relatorioResumoCotasService;
     @GetMapping("/resumo-cotas")
     public void getRelatorioResumoCotas (){
-        relatorioResumoCotasService.obterTotalGastoPorCategoria().forEach((string, bigDecimal) -> System.out.println(string +" " + bigDecimal));
+        relatorioResumoCotasService.obterTotalGastoPorCategoria();
     }
 }

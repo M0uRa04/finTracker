@@ -1,5 +1,6 @@
 package br.com.fintracker.repository.relatorioRepositories;
 
+import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.TotalGastoPorCategoriaDTO;
 import br.com.fintracker.model.relatorio.RelatorioResumoCotas;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,10 +10,10 @@ import java.util.List;
 public interface RelatorioResumoCotasRepository extends JpaRepository <RelatorioResumoCotas, Long> {
 
     @Query(""" 
-            SELECT t.categoria.nomeCategoria, SUM(t.valor) 
+            SELECT new br.com.fintracker.dto.relatorio.relatorioatingimentocotas.TotalGastoPorCategoriaDTO(t.categoria, SUM(t.valor)) 
             FROM Transacao t 
-            GROUP BY t.categoria.id   
+            GROUP BY t.categoria
             """
     )
-    List<Object[]> calculaTotalGasto();
+    List<TotalGastoPorCategoriaDTO> calculaTotalGastoPorCategoria();
 }
