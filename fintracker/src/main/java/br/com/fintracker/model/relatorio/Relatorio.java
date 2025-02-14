@@ -1,9 +1,11 @@
 package br.com.fintracker.model.relatorio;
 
 import br.com.fintracker.model.usuario.Usuario;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @MappedSuperclass
@@ -15,19 +17,25 @@ public abstract class Relatorio {
 
     @Enumerated(value = EnumType.STRING)
     private TipoRelatorio tipoRelatorio;
+    @Nullable
     private LocalDate dataInicio;
+    @Nullable
     private LocalDate dataFim;
+    private LocalDateTime dataCriacao;
 
     @ManyToOne
     private Usuario usuario;
 
-    public Relatorio () {};
+    public Relatorio () {
+        this.dataCriacao = LocalDateTime.now();
+    };
 
-    public Relatorio(Long id, TipoRelatorio tipoRelatorio, LocalDate dataInicio, LocalDate dataFim, Usuario usuario) {
+    public Relatorio(Long id, TipoRelatorio tipoRelatorio, LocalDate dataInicio, LocalDate dataFim, LocalDateTime dataCriacao, Usuario usuario) {
         this.id = id;
         this.tipoRelatorio = tipoRelatorio;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
+        this.dataCriacao = LocalDateTime.now();
         this.usuario = usuario;
     }
 
@@ -57,6 +65,10 @@ public abstract class Relatorio {
 
     public LocalDate getDataFim() {
         return dataFim;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
     }
 
     public void setDataFim(LocalDate dataFim) {

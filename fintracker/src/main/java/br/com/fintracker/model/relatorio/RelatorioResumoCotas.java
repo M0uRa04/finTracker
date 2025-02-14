@@ -1,6 +1,7 @@
 package br.com.fintracker.model.relatorio;
 
 import br.com.fintracker.dto.categoria.DadosRespostaCategoria;
+import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.TotalGastoPorCategoriaDTO;
 import br.com.fintracker.model.categoria.Categoria;
 import br.com.fintracker.model.categoria.StatusAtingimentoCota;
 import br.com.fintracker.model.usuario.Usuario;
@@ -8,6 +9,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -35,14 +37,21 @@ public class RelatorioResumoCotas extends Relatorio {
         this.statusAtingimentoCota = statusAtingimentoCota;
     }
 
-    public RelatorioResumoCotas(Long id, TipoRelatorio tipoRelatorio, LocalDate dataInicio, LocalDate dataFim, Usuario usuario, List<Categoria> categorias, BigDecimal totalGasto, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
-        super(id, tipoRelatorio, dataInicio, dataFim, usuario);
+    public RelatorioResumoCotas(Long id, TipoRelatorio tipoRelatorio, LocalDate dataInicio, LocalDate dataFim, LocalDateTime dataCriacao, Usuario usuario, List<Categoria> categorias, BigDecimal totalGasto, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
+        super(id, tipoRelatorio, dataInicio, dataFim, dataCriacao, usuario);
         this.categorias = categorias;
         this.totalGasto = totalGasto;
         this.porcentagemAtingimento = porcentagemAtingimento;
         this.statusAtingimentoCota = statusAtingimentoCota;
     }
 
+    public RelatorioResumoCotas(TotalGastoPorCategoriaDTO totalGastoPorCategoriaDTO, Long id, LocalDate dataInicio, LocalDate dataFim, LocalDateTime dataCriacao, Usuario usuario, List<Categoria> categorias, BigDecimal totalGasto, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
+        super(id, TipoRelatorio.PERSONALIZADO, null, null, dataCriacao, usuario);
+        this.categorias = categorias;
+        this.totalGasto = totalGasto;
+        this.porcentagemAtingimento = porcentagemAtingimento;
+        this.statusAtingimentoCota = statusAtingimentoCota;
+    }
     public List<Categoria> getCategorias() {
         return categorias;
     }
