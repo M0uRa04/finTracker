@@ -1,0 +1,11 @@
+CREATE TABLE usuario (
+
+    id INTEGER NOT NULL AUTO_INCREMENT,
+    nome VARCHAR(60) NOT NULL,
+    email VARCHAR(60) NOT NULL UNIQUE,
+    senha VARCHAR(100) NOT NULL,
+    is_ativo BOOLEAN NOT NULL,
+    perfil VARCHAR(50) NOT NULL,
+
+    PRIMARY KEY (id)
+);

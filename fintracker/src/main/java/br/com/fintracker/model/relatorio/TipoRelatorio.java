@@ -1,4 +1,4 @@
-package br.com.fintracker.model;
+package br.com.fintracker.model.relatorio;
 
 public enum TipoRelatorio {
 
