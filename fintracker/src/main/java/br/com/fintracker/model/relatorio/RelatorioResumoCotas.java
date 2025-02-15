@@ -46,7 +46,7 @@ public class RelatorioResumoCotas extends Relatorio {
     }
 
     public RelatorioResumoCotas(TotalGastoPorCategoriaDTO totalGastoPorCategoriaDTO, RangeDatasRelatorioDTO rangeDatasRelatorioDTO, Long id, Usuario usuario, List<Categoria> categorias, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
-        super(id, TipoRelatorio.PERSONALIZADO, rangeDatasRelatorioDTO.getDataInicio(), rangeDatasRelatorioDTO.getDataFim(), LocalDateTime.now(), usuario);
+        super(id, TipoRelatorio.PERSONALIZADO, rangeDatasRelatorioDTO.dataInicio(), rangeDatasRelatorioDTO.dataFim(), LocalDateTime.now(), usuario);
         this.categorias = categorias;
         this.totalGasto = totalGastoPorCategoriaDTO.getTotalGasto();
         this.porcentagemAtingimento = porcentagemAtingimento;

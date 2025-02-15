@@ -13,9 +13,6 @@ public class RelatorioResumoCotasService {
     @Autowired
     private RelatorioResumoCotasRepository relatorioResumoCotasRepository;
 
-    @Autowired
-    private UserContext userContext;
-
     private List<TotalGastoPorCategoriaDTO> obterTotalGastoPorCategoria () {
         relatorioResumoCotasRepository.calculaTotalGastoPorCategoria(Long usuarioId, LocalDate dataInicio, LocalDate dataFim);
     }
@@ -30,8 +27,11 @@ public class RelatorioResumoCotasService {
     ) {
         return totaisPorCategoria.stream()
         .map(dto -> new RelatorioResumoCotas(
-                
-        ))    
-    
+                UserContext.getUsuario(),
+                List.of(dto.categoria()), 
+                dto.totalGasto(),
+                porcentagemAtingimento,
+                statusAtingimentoCota))
+        .collect(Collectors.toList());
     }
 }
