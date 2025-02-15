@@ -5,6 +5,7 @@ import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
 import br.com.fintracker.dto.usuario.DadosCadastroUsuario;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -74,6 +75,7 @@ public class UsuarioService implements CrudService <DadosRespostaUsuario, DadosC
     }
 
     @Override
+    @Transactional
     public void deletar(Long id) {
         repository.deleteById(id);
     }

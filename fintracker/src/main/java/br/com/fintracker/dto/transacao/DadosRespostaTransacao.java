@@ -1,5 +1,6 @@
 package br.com.fintracker.dto.transacao;
 
+import br.com.fintracker.dto.categoria.DadosRespostaCategoria;
 import br.com.fintracker.model.categoria.Categoria;
 import br.com.fintracker.model.transacao.TipoTransacao;
 import br.com.fintracker.model.transacao.Transacao;
@@ -11,12 +12,12 @@ import java.time.LocalDate;
 
 public record DadosRespostaTransacao(
         TipoTransacao transacao,
-        Categoria categoria,
+        DadosRespostaCategoria categoria,
         LocalDate date,
         BigDecimal valor,
         String descricao
 ) {
     public DadosRespostaTransacao (Transacao transacao) {
-        this(transacao.getTipoTransacao(), transacao.getCategoria(), transacao.getDataTransacao(), transacao.getValor(), transacao.getDescricao());
+        this(transacao.getTipoTransacao(), new DadosRespostaCategoria(transacao.getCategoria()), transacao.getDataTransacao(), transacao.getValor(), transacao.getDescricao());
     }
 }

@@ -50,7 +50,7 @@ public class TransacaoController implements CrudController <DadosRespostaTransac
     @PatchMapping("/{idTransacao}")
     public ResponseEntity<DadosRespostaTransacao> atualizar(@PathVariable Long idTransacao, @RequestBody DadosAtualizacaoTransacao dadosAtualizacaoTransacao) {
         var idUsuario = UserContext.getUserId();
-        return ResponseEntity.ok(service.atualizar(idTransacao, idUsuario, dadosAtualizacaoTransacao).orElseThrow(() -> new NoSuchElementException("Transação não encontrada para o ID fornecido.")));
+        return ResponseEntity.ok(service.atualizar(idUsuario, idTransacao, dadosAtualizacaoTransacao).orElseThrow(() -> new NoSuchElementException("Transação não encontrada para o ID fornecido.")));
     }
 
     @Override

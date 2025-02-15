@@ -4,12 +4,12 @@ import br.com.fintracker.dto.transacao.DadosAtualizacaoTransacao;
 import br.com.fintracker.dto.transacao.DadosCadastroTransacao;
 import br.com.fintracker.dto.transacao.DadosRespostaTransacao;
 import br.com.fintracker.infra.security.UserContext;
+import br.com.fintracker.model.transacao.TipoTransacao;
 import br.com.fintracker.model.transacao.Transacao;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.CategoriaRepository;
 import br.com.fintracker.repository.TransacaoRepository;
 import br.com.fintracker.repository.UsuarioRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +30,9 @@ public class TransacaoService{
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private CategoriaService categoriaService;
     private Transacao atualizarAtributos(Optional<Transacao> transacao, DadosAtualizacaoTransacao dadosAtualizacao) {
         if (transacao.isPresent()) {
             var transacaoAtualizada = transacao.get();
@@ -45,7 +48,7 @@ public class TransacaoService{
             if (dadosAtualizacao.valor() != null) {
                 transacaoAtualizada.setValor(dadosAtualizacao.valor());
             }
-            if (dadosAtualizacao.descricao() != null) {
+            if (!dadosAtualizacao.descricao().isBlank()) {
                 transacaoAtualizada.setDescricao(dadosAtualizacao.descricao());
             }
             transacaoRepository.saveAndFlush(transacaoAtualizada);
@@ -59,7 +62,7 @@ public class TransacaoService{
         var transacao = new Transacao(dadosCadastro);
 
         var emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
-        var categoria = categoriaRepository.findByIdAndUsuarioIdAndIsAtivoTrue(dadosCadastro.categoriaId(), UserContext.getUserId()).orElseThrow(() -> new RuntimeException("Categoria informada inexistente ou inválida"));
+        var categoria = categoriaRepository.findByIdAndUsuarioIdAndIsAtivoTrue(dadosCadastro.categoriaId(), UserContext.getUserId()).orElseThrow(() -> new IllegalArgumentException("Categoria informada inexistente, inválida ou inativa, e/ou usuário inválido."));
 
         transacao.setUsuario((Usuario) usuarioRepository.findByEmail(emailUsuario));
         transacao.setCategoria(categoria);
@@ -70,7 +73,7 @@ public class TransacaoService{
 
     public Optional<DadosRespostaTransacao> buscarTransacaoPorIdEUsuario(Long idTransacao,Long idUsuario) {
         var transacaoProcurada = transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario);
-        return Optional.of(new DadosRespostaTransacao(transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario).orElseThrow(() -> new EntityNotFoundException("Transação não encontrada para o ID fornecido"))));
+        return Optional.of(new DadosRespostaTransacao(transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario).orElseThrow()));
     }
 
     public List<DadosRespostaTransacao> listarTodos(Long usuarioId) {
@@ -78,14 +81,14 @@ public class TransacaoService{
                 .findAllByUsuarioId(usuarioId)
                 .stream()
                 .map(DadosRespostaTransacao::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Transactional
     public Optional<DadosRespostaTransacao> atualizar(Long idUsuario, Long idTransacao, DadosAtualizacaoTransacao dadosAtualizacao) {
         var transacao = transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario);
         var transacaoAtualizada = atualizarAtributos(transacao, dadosAtualizacao);
-        transacaoRepository.saveAndFlush(transacaoAtualizada);
+        //transacaoRepository.saveAndFlush(transacaoAtualizada); Duplicidade de salvamento
         return Optional.of(new DadosRespostaTransacao(transacaoAtualizada));
     }
 
@@ -93,7 +96,8 @@ public class TransacaoService{
     public void inativar(Long id) {
     }
 
-    public void deletar(Long id) {
-        transacaoRepository.deleteById(id);
+    @Transactional
+    public void deletar(Long idTransacao) {
+        transacaoRepository.deleteByIdAndUsuarioId(idTransacao, UserContext.getUserId());
     }
 }

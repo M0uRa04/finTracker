@@ -8,7 +8,10 @@ import br.com.fintracker.repository.UsuarioRepository;
 import br.com.fintracker.utils.UsuarioTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,14 +27,16 @@ import java.util.List;
 import java.util.Optional;
 public class UsuarioServiceTest {
 
-    private UsuarioService service;
+    @Mock
     private UsuarioRepository repository;
+
+    @InjectMocks
+    private UsuarioService service;
 
 
     @BeforeEach
     void setUp() {
-        repository = Mockito.mock(UsuarioRepository.class);
-        service = new UsuarioService(repository);// Injetar o mock manualmente
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test

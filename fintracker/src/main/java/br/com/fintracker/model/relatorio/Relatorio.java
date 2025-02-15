@@ -1,25 +1,41 @@
 package br.com.fintracker.model.relatorio;
 
 import br.com.fintracker.model.usuario.Usuario;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Relatorio {
+@MappedSuperclass
+public abstract class Relatorio {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(value = EnumType.STRING)
     private TipoRelatorio tipoRelatorio;
+    @Nullable
     private LocalDate dataInicio;
+    @Nullable
     private LocalDate dataFim;
+    private LocalDateTime dataCriacao;
+
+    @ManyToOne
     private Usuario usuario;
 
-    public Relatorio () {};
+    public Relatorio () {
+        this.dataCriacao = LocalDateTime.now();
+    };
 
-    public Relatorio(Long id, TipoRelatorio tipoRelatorio, LocalDate dataInicio, LocalDate dataFim, Usuario usuario) {
+    public Relatorio(Long id, TipoRelatorio tipoRelatorio, LocalDate dataInicio, LocalDate dataFim, LocalDateTime dataCriacao, Usuario usuario) {
         this.id = id;
         this.tipoRelatorio = tipoRelatorio;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
+        this.dataCriacao = LocalDateTime.now();
         this.usuario = usuario;
     }
 
@@ -51,6 +67,10 @@ public class Relatorio {
         return dataFim;
     }
 
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
     public void setDataFim(LocalDate dataFim) {
         this.dataFim = dataFim;
     }
@@ -76,5 +96,4 @@ public class Relatorio {
         return Objects.hash(getId(), getTipoRelatorio(), getDataInicio(), getDataFim(), getUsuario());
     }
 
-    private void gerarRelatorio () {};
 }

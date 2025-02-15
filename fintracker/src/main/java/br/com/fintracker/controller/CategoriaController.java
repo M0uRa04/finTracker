@@ -18,6 +18,7 @@ public class CategoriaController implements CrudController <DadosRespostaCategor
 
     @Autowired
     private CategoriaService service;
+    
     @Override
     @PostMapping
     public ResponseEntity<DadosRespostaCategoria> inserirNoBancoDeDados(@RequestBody @Valid DadosCadastroCategoria dadosCadastroCategoria) {

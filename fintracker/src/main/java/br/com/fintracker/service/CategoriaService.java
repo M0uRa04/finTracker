@@ -5,6 +5,7 @@ import br.com.fintracker.dto.categoria.DadosCadastroCategoria;
 import br.com.fintracker.dto.categoria.DadosRespostaCategoria;
 import br.com.fintracker.infra.security.UserContext;
 import br.com.fintracker.model.categoria.Categoria;
+import br.com.fintracker.model.categoria.StatusAtingimentoCota;
 import br.com.fintracker.repository.CategoriaRepository;
 import br.com.fintracker.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,8 +29,9 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
 
     @Override
     public DadosRespostaCategoria inserirNoBancoDeDados(DadosCadastroCategoria dadosCadastro) {
-        if (repository.findByNomeCategoria(dadosCadastro.nomeCategoria().toUpperCase()) != null) {
-            throw new IllegalArgumentException("Categoria já existente com o nomeCategoria fornecido.");
+        var categoriaProcurada = repository.findByNomeCategoriaAndUsuarioId(dadosCadastro.nomeCategoria().toUpperCase(), UserContext.getUserId());
+        if (categoriaProcurada.isPresent())  {
+            throw new IllegalArgumentException("Categoria já existente com o nome fornecido.");
         }
         Categoria novaCategoria = new Categoria(dadosCadastro);
         novaCategoria.setUsuario(usuarioRepository.findById(UserContext.getUserId()).orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado")));
@@ -38,30 +40,32 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
     }
 
 
-    //Oportunidade de refatorar. Dividir o método em 2
+    private Categoria atualizarAtributos(Optional<Categoria> categoria, DadosAtualizacaoCategoria dadosAtualizacao) {
+        if (categoria.isPresent()) {
+            var categoriaAtualizada = categoria.get();
+            if (!dadosAtualizacao.nomeCategoria().isBlank()) {
+                categoriaAtualizada.setNomeCategoria(dadosAtualizacao.nomeCategoria());
+            }
+            if (dadosAtualizacao.cota() != null && dadosAtualizacao.cota().floatValue() > 0) {
+                categoriaAtualizada.setCota(dadosAtualizacao.cota());
+            }
+            if (dadosAtualizacao.isAtivo() != null) {
+                categoriaAtualizada.setAtivo(dadosAtualizacao.isAtivo());
+            }
+            repository.saveAndFlush(categoriaAtualizada);
+            return categoriaAtualizada;
+        } else {
+            throw new IllegalArgumentException("Os dados de atualização não podem ser nulos.");
+        }
+    }
+
     @Override
     @Transactional
     public Optional<DadosRespostaCategoria> atualizar(Long idCategoria, DadosAtualizacaoCategoria dadosAtualizacao) {
-        if (dadosAtualizacao == null) {
-            throw new IllegalArgumentException("Os dadosAtualizacao de atualização não podem ser nulos.");
-        }
-
-        var categoriaEncontrada = repository.findByIdAndUsuarioId(idCategoria, UserContext.getUserId()).orElseThrow(EntityNotFoundException::new);
-
-        if (!dadosAtualizacao.nomeCategoria().isBlank()) {
-            categoriaEncontrada.setNomeCategoria(dadosAtualizacao.nomeCategoria().toUpperCase());
-        }
-
-        if (dadosAtualizacao.isAtivo() != null) {
-            categoriaEncontrada.setAtivo(dadosAtualizacao.isAtivo());
-        }
-
-        if (dadosAtualizacao.cota() != null && dadosAtualizacao.cota().floatValue() > 0) {
-            categoriaEncontrada.setCota(dadosAtualizacao.cota());
-        }
-
-        repository.saveAndFlush(categoriaEncontrada);
-        return Optional.of(new DadosRespostaCategoria(repository.findByNomeCategoria(categoriaEncontrada.getNomeCategoria())));
+        var categoriaEncontrada = repository.findByIdAndUsuarioId(idCategoria, UserContext.getUserId());
+        var categoriaAtualizada = atualizarAtributos(categoriaEncontrada, dadosAtualizacao);
+        //repository.saveAndFlush(categoriaEncontrada); Salvamento redundante
+        return Optional.of(new DadosRespostaCategoria(categoriaAtualizada));
     }
 
 
@@ -79,24 +83,23 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
     public Optional<DadosRespostaCategoria> buscarPorId(Long idCategoria) {
         return Optional.of(new DadosRespostaCategoria(repository.findByIdAndUsuarioIdAndIsAtivoTrue(idCategoria, UserContext.getUserId()).orElseThrow(EntityNotFoundException::new)));
     }
-
+    
     public DadosRespostaCategoria buscarCategoriaPorNome (String nomeCategoria) {
         var categoriaEncontrada = repository.findByNomeCategoria(nomeCategoria);
-        if(categoriaEncontrada != null) {
+        if(categoriaEncontrada.isPresent()) {
             return new DadosRespostaCategoria("Categoria já existente", BigDecimal.valueOf(00000.00));
         }
-
-        return new DadosRespostaCategoria(repository.findByNomeCategoria(nomeCategoria.toUpperCase()));
+        return new DadosRespostaCategoria(repository.findByNomeCategoria(nomeCategoria.toUpperCase()).orElseThrow(EntityNotFoundException::new));
     }
 
 
 
     @Override
     @Transactional
-    public void inativar(Long id) {
-        var categoriaEncontrada = repository.findById(id);
+    public void inativar(Long idCategoria) {
+        var categoriaEncontrada = repository.findByIdAndUsuarioIdAndIsAtivoTrue(idCategoria, UserContext.getUserId());
         if (categoriaEncontrada.isEmpty()) {
-            throw new EntityNotFoundException("Categoria não encontrada com o nomeCategoria fornecido.");
+            throw new EntityNotFoundException("Categoria não encontrada com o id fornecido.");
         }
         categoriaEncontrada.get().setAtivo(false);
         repository.saveAndFlush(categoriaEncontrada.get());
@@ -105,14 +108,12 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
 
     @Override
     @Transactional
-    public void deletar(Long id) {
-        var categoriaEncontrada = repository.findById(id);
+    public void deletar(Long idCategoria) {
+        var categoriaEncontrada = repository.findByIdAndUsuarioIdAndIsAtivoTrue(idCategoria, UserContext.getUserId());
         if (categoriaEncontrada.isEmpty()) {
-            throw new EntityNotFoundException("Categoria não encontrada com o nomeCategoria fornecido.");
+            throw new EntityNotFoundException("Categoria não encontrada com o id fornecido.");
         }
         repository.delete(categoriaEncontrada.get());
     }
-
-
 
 }
