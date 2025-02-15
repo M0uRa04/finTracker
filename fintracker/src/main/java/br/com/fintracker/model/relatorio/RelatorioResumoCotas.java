@@ -37,18 +37,18 @@ public class RelatorioResumoCotas extends Relatorio {
         this.statusAtingimentoCota = statusAtingimentoCota;
     }
 
-    public RelatorioResumoCotas(Long id, TipoRelatorio tipoRelatorio, LocalDate dataInicio, LocalDate dataFim, LocalDateTime dataCriacao, Usuario usuario, List<Categoria> categorias, BigDecimal totalGasto, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
-        super(id, tipoRelatorio, dataInicio, dataFim, dataCriacao, usuario);
+    public RelatorioResumoCotas(Long id, TipoRelatorio tipoRelatorio, LocalDate dataInicio, LocalDate dataFim, Usuario usuario, List<Categoria> categorias, BigDecimal totalGasto, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
+        super(id, tipoRelatorio, dataInicio, dataFim, LocalDateTime.now(), usuario);
         this.categorias = categorias;
         this.totalGasto = totalGasto;
         this.porcentagemAtingimento = porcentagemAtingimento;
         this.statusAtingimentoCota = statusAtingimentoCota;
     }
 
-    public RelatorioResumoCotas(TotalGastoPorCategoriaDTO totalGastoPorCategoriaDTO, Long id, LocalDate dataInicio, LocalDate dataFim, LocalDateTime dataCriacao, Usuario usuario, List<Categoria> categorias, BigDecimal totalGasto, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
-        super(id, TipoRelatorio.PERSONALIZADO, null, null, dataCriacao, usuario);
+    public RelatorioResumoCotas(TotalGastoPorCategoriaDTO totalGastoPorCategoriaDTO, RangeDatasRelatorioDTO rangeDatasRelatorioDTO, Long id, Usuario usuario, List<Categoria> categorias, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
+        super(id, TipoRelatorio.PERSONALIZADO, rangeDatasRelatorioDTO.getDataInicio(), rangeDatasRelatorioDTO.getDataFim(), LocalDateTime.now(), usuario);
         this.categorias = categorias;
-        this.totalGasto = totalGasto;
+        this.totalGasto = totalGastoPorCategoriaDTO.getTotalGasto();
         this.porcentagemAtingimento = porcentagemAtingimento;
         this.statusAtingimentoCota = statusAtingimentoCota;
     }

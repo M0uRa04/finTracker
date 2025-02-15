@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public record TotalGastoPorCategoriaDTO (
 
-    String nomeCategoria,
+    Categoria categoria,
     
     BigDecimal totalGasto
 
