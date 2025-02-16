@@ -1,8 +1,13 @@
 package br.com.fintracker.controller;
 
+import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.RangeDatasRelatorioDTO;
+import br.com.fintracker.infra.security.UserContext;
 import br.com.fintracker.service.relatorioServices.RelatorioResumoCotasService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,9 +18,8 @@ public class RelatorioController {
     @Autowired
     private RelatorioResumoCotasService relatorioResumoCotasService;
 
-    //preciso colocar neste método: O @RequestBody e criar o DTO que é enviado para o método com os paremetros de dataInicio e dataFim 
     @GetMapping("/resumo-cotas")
-    public void getRelatorioResumoCotas (){
-        relatorioResumoCotasService.obterTotalGastoPorCategoria();
+    public ResponseEntity getRelatorioResumoCotas (@Valid @RequestBody RangeDatasRelatorioDTO dto){
+        return ResponseEntity.ok(relatorioResumoCotasService.criarRelatorioResumoCotas(dto));
     }
 }

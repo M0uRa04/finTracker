@@ -14,7 +14,7 @@ public interface RelatorioResumoCotasRepository extends JpaRepository <Relatorio
     @Query(""" 
             SELECT new br.com.fintracker.dto.relatorio.relatorioatingimentocotas.TotalGastoPorCategoriaDTO(t.categoria, SUM(t.valor)) 
             FROM Transacao t 
-            WHERE t.usuarioId = :usuarioId AND t.dataTransacao >= :dataInicio AND t.dataTransacao <= :dataFim 
+            WHERE t.usuario.id = :usuarioId AND t.dataTransacao >= :dataInicio AND t.dataTransacao <= :dataFim 
             GROUP BY t.categoria
             """
     )

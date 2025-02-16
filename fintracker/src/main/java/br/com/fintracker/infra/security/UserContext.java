@@ -1,10 +1,15 @@
 package br.com.fintracker.infra.security;
 
+import br.com.fintracker.model.usuario.Usuario;
+import br.com.fintracker.repository.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class UserContext {
     private static final ThreadLocal<Long> userId = new ThreadLocal<>();
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private static UsuarioRepository usuarioRepository;
 
     public static void setUserId(Long id) {
         userId.set(id);
@@ -15,7 +20,7 @@ public class UserContext {
     }
 
     public static Usuario getUsuario () {
-        return usuarioRepository.findById(getUserId());
+        return usuarioRepository.findById(getUserId()).orElseThrow(() -> new EntityNotFoundException());
     }
 
     public static void clear() {

@@ -1,6 +1,7 @@
 package br.com.fintracker.model.relatorio;
 
 import br.com.fintracker.dto.categoria.DadosRespostaCategoria;
+import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.RangeDatasRelatorioDTO;
 import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.TotalGastoPorCategoriaDTO;
 import br.com.fintracker.model.categoria.Categoria;
 import br.com.fintracker.model.categoria.StatusAtingimentoCota;
@@ -18,8 +19,8 @@ import java.util.stream.Collectors;
 @Table(name = "relatorio_resumo_cotas")
 public class RelatorioResumoCotas extends Relatorio {
 
-    @OneToMany(mappedBy = "relatorioResumoCotas", fetch = FetchType.LAZY)
-    private List<Categoria> categorias;
+    @OneToOne(mappedBy = "relatorioResumoCotas", fetch = FetchType.LAZY)
+    private Categoria categoria;
 
     private BigDecimal totalGasto;
 
@@ -30,34 +31,34 @@ public class RelatorioResumoCotas extends Relatorio {
 
     public RelatorioResumoCotas () {}
 
-    public RelatorioResumoCotas(List<Categoria> categorias, BigDecimal totalGasto, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
-        this.categorias = categorias;
+    public RelatorioResumoCotas(Categoria categoria, BigDecimal totalGasto, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
+        this.categoria = categoria;
         this.totalGasto = totalGasto;
         this.porcentagemAtingimento = porcentagemAtingimento;
         this.statusAtingimentoCota = statusAtingimentoCota;
     }
 
-    public RelatorioResumoCotas(Long id, TipoRelatorio tipoRelatorio, LocalDate dataInicio, LocalDate dataFim, Usuario usuario, List<Categoria> categorias, BigDecimal totalGasto, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
+    public RelatorioResumoCotas(Long id, TipoRelatorio tipoRelatorio, LocalDate dataInicio, LocalDate dataFim, Usuario usuario, Categoria categoria, BigDecimal totalGasto, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
         super(id, tipoRelatorio, dataInicio, dataFim, LocalDateTime.now(), usuario);
-        this.categorias = categorias;
+        this.categoria = categoria;
         this.totalGasto = totalGasto;
         this.porcentagemAtingimento = porcentagemAtingimento;
         this.statusAtingimentoCota = statusAtingimentoCota;
     }
 
-    public RelatorioResumoCotas(TotalGastoPorCategoriaDTO totalGastoPorCategoriaDTO, RangeDatasRelatorioDTO rangeDatasRelatorioDTO, Long id, Usuario usuario, List<Categoria> categorias, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
+    public RelatorioResumoCotas(TotalGastoPorCategoriaDTO totalGastoPorCategoriaDTO, RangeDatasRelatorioDTO rangeDatasRelatorioDTO, Long id, Usuario usuario, Categoria categoria, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
         super(id, TipoRelatorio.PERSONALIZADO, rangeDatasRelatorioDTO.dataInicio(), rangeDatasRelatorioDTO.dataFim(), LocalDateTime.now(), usuario);
-        this.categorias = categorias;
-        this.totalGasto = totalGastoPorCategoriaDTO.getTotalGasto();
+        this.categoria = categoria;
+        this.totalGasto = totalGastoPorCategoriaDTO.totalGasto();
         this.porcentagemAtingimento = porcentagemAtingimento;
         this.statusAtingimentoCota = statusAtingimentoCota;
     }
-    public List<Categoria> getCategorias() {
-        return categorias;
+    public Categoria getCategoria() {
+        return categoria;
     }
 
-    public void setCategorias(List<Categoria> categorias) {
-        this.categorias = categorias;
+    public void setCategorias(Categoria categoria) {
+        this.categoria = categoria;
     }
 
     public BigDecimal getTotalGasto() {
@@ -90,20 +91,18 @@ public class RelatorioResumoCotas extends Relatorio {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         RelatorioResumoCotas that = (RelatorioResumoCotas) o;
-        return Objects.equals(getCategorias(), that.getCategorias()) && Objects.equals(getTotalGasto(), that.getTotalGasto()) && Objects.equals(getPorcentagemAtingimento(), that.getPorcentagemAtingimento()) && getStatusAtingimentoCota() == that.getStatusAtingimentoCota();
+        return Objects.equals(getCategoria(), that.getCategoria()) && Objects.equals(getTotalGasto(), that.getTotalGasto()) && Objects.equals(getPorcentagemAtingimento(), that.getPorcentagemAtingimento()) && getStatusAtingimentoCota() == that.getStatusAtingimentoCota();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getCategorias(), getTotalGasto(), getPorcentagemAtingimento(), getStatusAtingimentoCota());
+        return Objects.hash(super.hashCode(), getCategoria(), getTotalGasto(), getPorcentagemAtingimento(), getStatusAtingimentoCota());
     }
 
     @Override
     public String toString() {
         return "RelatorioResumoCotas{" +
-                "categorias=" + categorias.stream()
-                .map(c -> new DadosRespostaCategoria(c))
-                .collect(Collectors.toList())+
+                "categoria=" + categoria.getNomeCategoria() +
                 ", totalGasto=" + totalGasto +
                 ", porcentagemAtingimento=" + porcentagemAtingimento +
                 ", statusAtingimentoCota=" + statusAtingimentoCota +
