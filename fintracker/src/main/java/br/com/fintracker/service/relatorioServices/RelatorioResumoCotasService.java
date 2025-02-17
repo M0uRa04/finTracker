@@ -27,7 +27,12 @@ public class RelatorioResumoCotasService {
 
         return totaisPorCategoria.stream()
                 .map(totalGastoPorCategoriaDTO -> new RelatorioResumoCotas(
-                        totalGastoPorCategoriaDTO.categoria(), totalGastoPorCategoriaDTO.totalGasto(), 0.10F, StatusAtingimentoCota.DEFAULT))
+                        totalGastoPorCategoriaDTO,
+                        rangeDatasRelatorioDTO,
+                        null, //-> esse é o ID que só será gerado depois da persistência
+                        UserContext.getUsuario(),
+                         0.10F,
+                        StatusAtingimentoCota.DEFAULT))
                 .collect(Collectors.toList());
     }
 }
