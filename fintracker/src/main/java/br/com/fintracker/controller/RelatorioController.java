@@ -1,8 +1,7 @@
 package br.com.fintracker.controller;
 
 import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.RangeDatasRelatorioDTO;
-import br.com.fintracker.infra.security.UserContext;
-import br.com.fintracker.service.relatorioServices.RelatorioResumoCotasService;
+import br.com.fintracker.service.relatorio.services.RelatorioResumoCotasService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package br.com.fintracker.repository.relatorioRepositories;
+package br.com.fintracker.repository.relatorio.repositories;
 
 import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.TotalGastoPorCategoriaDTO;
 import br.com.fintracker.model.relatorio.RelatorioResumoCotas;

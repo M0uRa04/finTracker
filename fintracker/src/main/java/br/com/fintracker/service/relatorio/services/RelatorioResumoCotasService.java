@@ -1,4 +1,4 @@
-package br.com.fintracker.service.relatorioServices;
+package br.com.fintracker.service.relatorio.services;
 
 import java.math.BigDecimal;
 
@@ -7,7 +7,8 @@ import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.TotalGastoPorCa
 import br.com.fintracker.infra.security.UserContext;
 import br.com.fintracker.model.categoria.StatusAtingimentoCota;
 import br.com.fintracker.model.relatorio.RelatorioResumoCotas;
-import br.com.fintracker.repository.relatorioRepositories.RelatorioResumoCotasRepository;
+import br.com.fintracker.repository.UsuarioRepository;
+import br.com.fintracker.repository.relatorio.repositories.RelatorioResumoCotasRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class RelatorioResumoCotasService {
     @Autowired
     private RelatorioResumoCotasRepository relatorioResumoCotasRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     public List <RelatorioResumoCotas> criarRelatorioResumoCotas (RangeDatasRelatorioDTO rangeDatasRelatorioDTO) {
         var totaisPorCategoria = obterTotalGastoPorCategoria(rangeDatasRelatorioDTO);
 
@@ -29,7 +33,7 @@ public class RelatorioResumoCotasService {
                         totalGastoPorCategoriaDTO,
                         rangeDatasRelatorioDTO,
                         null, //-> esse é o ID que só será gerado depois da persistência
-                        UserContext.getUsuario(),
+                        usuarioRepository.findById(UserContext.getUserId()).get(),
                          0.10F,
                         StatusAtingimentoCota.DEFAULT))
                 .collect(Collectors.toList());
@@ -41,6 +45,6 @@ public class RelatorioResumoCotasService {
     }
 
     private Float calculaPorcentagemAtingimento (BigDecimal cota, BigDecimal totalGasto) {
-
+        return null;
     }
  }
