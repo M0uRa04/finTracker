@@ -1,5 +1,5 @@
 CREATE TABLE relatorio_resumo_cotas (
-    id INTEGER NOT NULL,
+    id INTEGER NOT NULL AUTO_INCREMENT,
     categoria_id INTEGER,
     total_gasto DECIMAL,
     porcentagem_atingimento FLOAT,

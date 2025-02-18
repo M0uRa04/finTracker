@@ -1,6 +1,5 @@
 package br.com.fintracker.model.relatorio;
 
-import br.com.fintracker.dto.categoria.DadosRespostaCategoria;
 import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.RangeDatasRelatorioDTO;
 import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.TotalGastoPorCategoriaDTO;
 import br.com.fintracker.model.categoria.Categoria;
@@ -11,13 +10,15 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "relatorio_resumo_cotas")
 public class RelatorioResumoCotas extends Relatorio {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @OneToOne(mappedBy = "relatorioResumoCotas", fetch = FetchType.LAZY)
     private Categoria categoria;
@@ -39,15 +40,20 @@ public class RelatorioResumoCotas extends Relatorio {
     }
 
     public RelatorioResumoCotas(Long id, TipoRelatorio tipoRelatorio, LocalDate dataInicio, LocalDate dataFim, Usuario usuario, Categoria categoria, BigDecimal totalGasto, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
-        super(id, tipoRelatorio, dataInicio, dataFim, LocalDateTime.now(), usuario);
+        super(tipoRelatorio, dataInicio, dataFim, LocalDateTime.now(), usuario);
         this.categoria = categoria;
         this.totalGasto = totalGasto;
         this.porcentagemAtingimento = porcentagemAtingimento;
         this.statusAtingimentoCota = statusAtingimentoCota;
+        this.id = id;
     }
 
-    public RelatorioResumoCotas(TotalGastoPorCategoriaDTO totalGastoPorCategoriaDTO, RangeDatasRelatorioDTO rangeDatasRelatorioDTO, Long id, Usuario usuario, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
-        super(id, TipoRelatorio.PERSONALIZADO, rangeDatasRelatorioDTO.dataInicio(), rangeDatasRelatorioDTO.dataFim(), LocalDateTime.now(), usuario);
+    public RelatorioResumoCotas(TotalGastoPorCategoriaDTO totalGastoPorCategoriaDTO, RangeDatasRelatorioDTO rangeDatasRelatorioDTO, Usuario usuario, Float porcentagemAtingimento, StatusAtingimentoCota statusAtingimentoCota) {
+        super(TipoRelatorio.PERSONALIZADO,
+                rangeDatasRelatorioDTO.dataInicio(),
+                rangeDatasRelatorioDTO.dataFim(),
+                LocalDateTime.now(),
+                usuario);
         this.categoria = totalGastoPorCategoriaDTO.categoria();
         this.totalGasto = totalGastoPorCategoriaDTO.totalGasto();
         this.porcentagemAtingimento = porcentagemAtingimento;
@@ -83,6 +89,16 @@ public class RelatorioResumoCotas extends Relatorio {
 
     public void setStatusAtingimentoCota(StatusAtingimentoCota statusAtingimentoCota) {
         this.statusAtingimentoCota = statusAtingimentoCota;
+    }
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
     @Override

@@ -1,20 +1,22 @@
 package br.com.fintracker.service.relatorio.services;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.DadosRespostaRelatorioResumoCotas;
 import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.RangeDatasRelatorioDTO;
 import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.TotalGastoPorCategoriaDTO;
 import br.com.fintracker.infra.security.UserContext;
 import br.com.fintracker.model.categoria.StatusAtingimentoCota;
 import br.com.fintracker.model.relatorio.RelatorioResumoCotas;
+import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.UsuarioRepository;
 import br.com.fintracker.repository.relatorio.repositories.RelatorioResumoCotasRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RelatorioResumoCotasService {
@@ -52,7 +54,6 @@ public class RelatorioResumoCotasService {
                     return new RelatorioResumoCotas(
                             totalGastoPorCategoriaDTO,
                             rangeDatasRelatorioDTO,
-                            null, //-> esse é o ID que só será gerado depois da persistência
                             usuario,
                             porcentagemAtingimento,
                             StatusAtingimentoCota.setStatus(porcentagemAtingimento)
@@ -71,6 +72,6 @@ public class RelatorioResumoCotasService {
         if (cota.compareTo(BigDecimal.ZERO) == 0) {
             throw new IllegalArgumentException("Cota não pode ser zero");
         }
-        return totalGasto.divide(cota).floatValue();
+        return totalGasto.divide(cota,2, RoundingMode.HALF_UP).floatValue();
     }
 }

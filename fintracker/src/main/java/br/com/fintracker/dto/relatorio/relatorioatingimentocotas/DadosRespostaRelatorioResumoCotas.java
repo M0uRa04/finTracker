@@ -1,5 +1,12 @@
 package br.com.fintracker.dto.relatorio.relatorioatingimentocotas;
 
+import br.com.fintracker.dto.categoria.DadosRespostaCategoria;
+import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
+import br.com.fintracker.model.categoria.StatusAtingimentoCota;
+import br.com.fintracker.model.relatorio.RelatorioResumoCotas;
+import br.com.fintracker.model.relatorio.TipoRelatorio;
+import jakarta.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -23,14 +30,14 @@ public record DadosRespostaRelatorioResumoCotas(
 ) {
     public DadosRespostaRelatorioResumoCotas (RelatorioResumoCotas relatorioResumoCotas) {
         this(
-            relatorioResumoCotas.tipoRelatorio(),
-            relatorioResumoCotas.dataCriacao(),
-            new RangeDatasRelatorioDTO(relatorioResumoCotas.dataInicio(), relatorioResumoCotas.dataFim()),
-            new DadosRespostaUsuario(relatorioResumoCotas.usuario()),
-            new DadosRespostaCategoria(relatorioResumoCotas.categoria()),
-            relatorioResumoCotas.totalGasto(),
-            relatorioResumoCotas.porcentagemAtingimento(),
-            relatorioResumoCotas.statusAtingimentoCota()
+            relatorioResumoCotas.getTipoRelatorio(),
+            relatorioResumoCotas.getDataCriacao(),
+            new RangeDatasRelatorioDTO(relatorioResumoCotas.getDataInicio(), relatorioResumoCotas.getDataFim()),
+            new DadosRespostaUsuario(relatorioResumoCotas.getUsuario()),
+            new DadosRespostaCategoria(relatorioResumoCotas.getCategoria()),
+            relatorioResumoCotas.getTotalGasto(),
+            relatorioResumoCotas.getPorcentagemAtingimento(),
+            relatorioResumoCotas.getStatusAtingimentoCota()
         );
     }
     
