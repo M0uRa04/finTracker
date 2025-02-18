@@ -1,6 +1,9 @@
 package br.com.fintracker.service.relatorio.services;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.RangeDatasRelatorioDTO;
 import br.com.fintracker.dto.relatorio.relatorioatingimentocotas.TotalGastoPorCategoriaDTO;
@@ -13,9 +16,6 @@ import br.com.fintracker.repository.relatorio.repositories.RelatorioResumoCotasR
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class RelatorioResumoCotasService {
 
@@ -25,26 +25,37 @@ public class RelatorioResumoCotasService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public List <RelatorioResumoCotas> criarRelatorioResumoCotas (RangeDatasRelatorioDTO rangeDatasRelatorioDTO) {
+    public List<RelatorioResumoCotas> criarRelatorioResumoCotas(RangeDatasRelatorioDTO rangeDatasRelatorioDTO) {
         var totaisPorCategoria = obterTotalGastoPorCategoria(rangeDatasRelatorioDTO);
 
         return totaisPorCategoria.stream()
-                .map(totalGastoPorCategoriaDTO -> new RelatorioResumoCotas(
-                        totalGastoPorCategoriaDTO,
-                        rangeDatasRelatorioDTO,
-                        null, //-> esse é o ID que só será gerado depois da persistência
-                        usuarioRepository.findById(UserContext.getUserId()).get(),
-                         0.10F,
-                        StatusAtingimentoCota.DEFAULT))
+                .map(totalGastoPorCategoriaDTO -> {
+                    Optional<Usuario> usuarioOpt = usuarioRepository.findById(UserContext.getUserId());
+                    if (usuarioOpt.isEmpty()) {
+                        throw new RuntimeException("Usuário não encontrado");
+                    }
+                    var usuario = usuarioOpt.get();
+                    var porcentagemAtingimento = calculaPorcentagemAtingimento(totalGastoPorCategoriaDTO.categoria().getCota(), totalGastoPorCategoriaDTO.totalGasto());
+                    return new RelatorioResumoCotas(
+                            totalGastoPorCategoriaDTO,
+                            rangeDatasRelatorioDTO,
+                            null, //-> esse é o ID que só será gerado depois da persistência
+                            usuario,
+                            porcentagemAtingimento,
+                            StatusAtingimentoCota.setStatus(porcentagemAtingimento)
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
-    
-    private List<TotalGastoPorCategoriaDTO> obterTotalGastoPorCategoria (RangeDatasRelatorioDTO dto) {
-        return  relatorioResumoCotasRepository.calculaTotalGastoPorCategoria(UserContext.getUserId(), dto.dataInicio(), dto.dataFim());
+    private List<TotalGastoPorCategoriaDTO> obterTotalGastoPorCategoria(RangeDatasRelatorioDTO dto) {
+        return relatorioResumoCotasRepository.calculaTotalGastoPorCategoria(UserContext.getUserId(), dto.dataInicio(), dto.dataFim());
     }
 
-    private Float calculaPorcentagemAtingimento (BigDecimal cota, BigDecimal totalGasto) {
-        return null;
+    private Float calculaPorcentagemAtingimento(BigDecimal cota, BigDecimal totalGasto) {
+        if (cota.compareTo(BigDecimal.ZERO) == 0) {
+            throw new IllegalArgumentException("Cota não pode ser zero");
+        }
+        return totalGasto.divide(cota).floatValue();
     }
- }
+}
