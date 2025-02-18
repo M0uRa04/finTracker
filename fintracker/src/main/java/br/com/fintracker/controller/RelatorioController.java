@@ -19,6 +19,6 @@ public class RelatorioController {
 
     @GetMapping("/resumo-cotas")
     public ResponseEntity getRelatorioResumoCotas (@Valid @RequestBody RangeDatasRelatorioDTO dto){
-        return ResponseEntity.ok(relatorioResumoCotasService.criarRelatorioResumoCotas(dto));
+        return ResponseEntity.ok(relatorioResumoCotasService.criarDadosRespostaRelatorioResumoCotas(dto));
     }
 }

@@ -3,7 +3,7 @@ package br.com.fintracker.dto.relatorio.relatorioatingimentocotas;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record DadosRespostaRelatorioAtingimentoCotas(
+public record DadosRespostaRelatorioResumoCotas(
     @NotNull
     TipoRelatorio tipoRelatorio,
     @NotNull
@@ -21,7 +21,7 @@ public record DadosRespostaRelatorioAtingimentoCotas(
     @NotNull
     StatusAtingimentoCota statusAtingimentoCota
 ) {
-    public DadosRespostaRelatorioAtingimentoCotas (RelatorioResumoCotas relatorioResumoCotas) {
+    public DadosRespostaRelatorioResumoCotas (RelatorioResumoCotas relatorioResumoCotas) {
         this(
             relatorioResumoCotas.tipoRelatorio(),
             relatorioResumoCotas.dataCriacao(),

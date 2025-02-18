@@ -25,10 +25,23 @@ public class RelatorioResumoCotasService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public List<RelatorioResumoCotas> criarRelatorioResumoCotas(RangeDatasRelatorioDTO rangeDatasRelatorioDTO) {
+    public List<DadosRespostaRelatorioResumoCotas> criarDadosRespostaRelatorioResumoCotas(RangeDatasRelatorioDTO rangeDatasRelatorioDTO) {
+        criarRelatorioResumoCotas(rangeDatasRelatorioDTO);
+        
+        var relatorioResumoCotasList = relatorioResumoCotasRepository.findAll();
+        
+        return relatorioResumoCotasList.stream()
+                .map(relatorioResumoCota -> {
+                    return new DadosRespostaRelatorioResumoCotas(relatorioResumoCota);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private void criarRelatorioResumoCotas(RangeDatasRelatorioDTO rangeDatasRelatorioDTO) {
+        // posibilidade de grande refatoração
         var totaisPorCategoria = obterTotalGastoPorCategoria(rangeDatasRelatorioDTO);
 
-        return totaisPorCategoria.stream()
+        var listaDeRelatoriosGerados =  totaisPorCategoria.stream()
                 .map(totalGastoPorCategoriaDTO -> {
                     Optional<Usuario> usuarioOpt = usuarioRepository.findById(UserContext.getUserId());
                     if (usuarioOpt.isEmpty()) {
@@ -46,7 +59,9 @@ public class RelatorioResumoCotasService {
                     );
                 })
                 .collect(Collectors.toList());
+        relatorioResumoCotasRepository.saveAll(listaDeRelatoriosGerados);       
     }
+
 
     private List<TotalGastoPorCategoriaDTO> obterTotalGastoPorCategoria(RangeDatasRelatorioDTO dto) {
         return relatorioResumoCotasRepository.calculaTotalGastoPorCategoria(UserContext.getUserId(), dto.dataInicio(), dto.dataFim());
