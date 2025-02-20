@@ -1,6 +1,7 @@
 package br.com.fintracker.model.categoria;
 
 import br.com.fintracker.dto.categoria.DadosCadastroCategoria;
+import br.com.fintracker.model.relatorio.RelatorioResumoCotas;
 import br.com.fintracker.model.transacao.Transacao;
 import br.com.fintracker.model.usuario.Usuario;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 public class Categoria {

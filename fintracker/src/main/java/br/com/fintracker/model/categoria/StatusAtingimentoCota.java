@@ -25,4 +25,16 @@ public enum StatusAtingimentoCota {
         }
         throw new IllegalArgumentException("Tipo de Transação inválido: " + valor);
     }
+
+    public static StatusAtingimentoCota setStatus(Float porcentagemAtingimento) {
+        if (porcentagemAtingimento > 1.0) {
+            return EXCEDIDA;
+        } else if (porcentagemAtingimento == 1.0) {
+            return ATINGIDA;
+        } else if (porcentagemAtingimento >= 0.75) {
+            return QUASE_ATINGIDA;
+        } else {
+            return DENTRO_DO_ESPERADO;
+        }
+    }
 }
