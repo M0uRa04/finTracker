@@ -20,7 +20,8 @@ public class RelatorioResumoCotas extends Relatorio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "relatorioResumoCotas", fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
 
     private BigDecimal totalGasto;

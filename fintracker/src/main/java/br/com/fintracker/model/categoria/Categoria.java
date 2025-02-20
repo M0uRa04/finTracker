@@ -27,10 +27,6 @@ public class Categoria {
     @ManyToOne
     private Usuario usuario;
 
-    @ManyToOne
-    @JoinColumn(name = "relatorio_resumo_cotas_id", nullable = true)
-    private RelatorioResumoCotas relatorioResumoCotas;
-
     public Categoria () {
         this.isAtivo = true;
     };
