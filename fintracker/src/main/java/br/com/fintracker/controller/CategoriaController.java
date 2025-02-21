@@ -17,7 +17,7 @@ import java.util.List;
 public class CategoriaController implements CrudController <DadosRespostaCategoria, DadosCadastroCategoria, DadosAtualizacaoCategoria>{
 
     @Autowired
-    private CategoriaService service;
+private CategoriaService service;
     
     @Override
     @PostMapping
@@ -58,7 +58,7 @@ public class CategoriaController implements CrudController <DadosRespostaCategor
 
     @Override
     @PatchMapping("/ativar/{id}")
-    public ResponseEntity<Void> ativar(@PathVariable Long id) {
+    public ResponseEntity<DadosRespostaCategoria> ativar(@PathVariable Long id) {
         return ResponseEntity.ok().body(service.ativar(id).get());
     }
 
