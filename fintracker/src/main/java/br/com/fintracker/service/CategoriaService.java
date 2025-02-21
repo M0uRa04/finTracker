@@ -105,6 +105,17 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
         repository.saveAndFlush(categoriaEncontrada.get());
     }
 
+    @Override
+    @Transactional
+    public Optional<DadosRespostaCategoria> ativar(Long idCategoria) {
+        var categoriaEncontrada = repository.findByIdAndUsuarioIdAndIsAtivoFalse(idCategoria, UserContext.getUserId());
+        if (categoriaEncontrada.isEmpty()) {
+            throw new EntityNotFoundException("Categoria não encontrada com o id fornecido.");
+        }
+        categoriaEncontrada.get().setAtivo(true);
+        repository.saveAndFlush(categoriaEncontrada.get());
+        return Optional.of(new DadosRespostaCategoria(categoriaEncontrada.get()));
+    }
 
     @Override
     @Transactional

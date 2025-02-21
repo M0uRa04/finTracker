@@ -50,7 +50,7 @@ public interface CrudService <ResponseDTO, CreateDTO, UpdateDTO>{
      *
      * @param id o identificador único do registro a ser removido.
      */
-    void ativar(Long id);
+    Optional<ResponseDTO> ativar(Long id);
 
     /**
      * Remove um registro do banco de dados.
