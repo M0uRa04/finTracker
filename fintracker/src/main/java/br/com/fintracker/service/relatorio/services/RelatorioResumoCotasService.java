@@ -30,7 +30,7 @@ public class RelatorioResumoCotasService {
     public List<DadosRespostaRelatorioResumoCotas> criarDadosRespostaRelatorioResumoCotas(RangeDatasRelatorioDTO rangeDatasRelatorioDTO) {
         criarRelatorioResumoCotas(rangeDatasRelatorioDTO);
         
-        var relatorioResumoCotasList = relatorioResumoCotasRepository.findAll();
+        var relatorioResumoCotasList = relatorioResumoCotasRepository.findAllByUsuarioId();
         
         return relatorioResumoCotasList.stream()
                 .map(relatorioResumoCota -> {
