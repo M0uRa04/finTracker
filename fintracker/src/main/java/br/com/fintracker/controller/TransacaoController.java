@@ -60,6 +60,12 @@ public class TransacaoController implements CrudController <DadosRespostaTransac
     }
 
     @Override
+    @Deprecated
+    public ResponseEntity<DadosRespostaTransacao> ativar(Long id) {
+        return null;
+    }
+
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
