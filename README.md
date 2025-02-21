@@ -1,35 +1,71 @@
-# FinTracker
+# 💰 FinTracker
 
-Projeto pessoal criado com o objetivo de otimizar e suportar o controle de finanças pessoais.
+**FinTracker** é uma API REST para **gerenciamento de finanças pessoais**, projetada para oferecer controle detalhado sobre receitas, despesas e orçamentos. Criado como um projeto pessoal, o FinTracker busca otimizar a organização financeira, fornecendo **relatórios detalhados, alertas e exportação de dados**.
 
-#### Funcionalidades e Implementações
+## 🚀 Tecnologias Utilizadas
 
-1. **Interface simples para o cadastro de transações de entradas e saídas**
-   - **Solução:** Implementar uma interface minimalista usando JavaFX (se for desktop) ou um framework web como Thymeleaf para facilitar o cadastro. Utilizar formulários com campos básicos de valor, categoria, descrição e data, com validação de dados antes do envio.
+- **Java 17** + **Spring Boot**
+- **Spring Security** para autenticação
+- **Spring Data JPA** para persistência de dados
+- **MySQL** como banco de dados
+- **Apache POI** para exportação de relatórios em Excel
+- **Spring Scheduler** para automação de processos
+- **JUnit** e **Mockito** para testes automatizados
 
-2. **Categorização de transações**
-   - **Solução:** Criar uma tabela de categorias no banco de dados. Cada transação poderá ser vinculada a uma categoria específica, facilitando a filtragem e o cálculo de totais por categoria.
+---
 
-3. **Descrição das transações**
-   - **Solução:** Adicionar um campo de texto para a descrição de cada transação, permitindo que o usuário insira detalhes adicionais sobre a natureza de cada entrada ou saída.
+## 🔥 Funcionalidades
 
-4. **Saldo atual**
-   - **Solução:** Implementar uma função que calcula o saldo em tempo real, somando todas as entradas e subtraindo todas as saídas armazenadas no banco de dados.
+### 📌 **Cadastro e Gerenciamento de Transações**
+✔ Interface para **registro de receitas e despesas**  
+✔ Cada transação pode ter **descrição, categoria e data**  
+✔ Possibilidade de **editar e excluir** transações  
 
-5. **Cota por categoria**
-   - **Solução:** Permitir que o usuário defina uma cota de gastos para cada categoria e armazenar esses valores. Utilizar essas cotas como base para monitoramento.
+### 📊 **Categorização e Controle de Gastos**
+✔ As transações podem ser **categorizadas**  
+✔ Definição de **cotas de gastos** por categoria  
+✔ Notificação caso **a cota seja ultrapassada**  
 
-6. **Alerta caso a cota seja ultrapassada**
-   - **Solução:** Implementar uma notificação automática que será acionada quando o valor total de uma categoria exceder a cota definida.
+### 📅 **Relatórios Inteligentes**
+✔ Geração de **relatórios financeiros mensais, trimestrais e anuais**  
+✔ **Dashboard** com visão geral de despesas e receitas  
+✔ **Relatórios de atingimento de cotas**, categorizando gastos  
 
-7. **Relatórios mensais, trimestrais e anuais**
-   - **Solução:** Implementar consultas no banco de dados que somem as transações por mês, trimestre e ano, retornando esses valores como relatórios.
+### 📂 **Exportação de Dados**
+✔ Exportação de transações e relatórios em **Excel, JSON e CSV**  
+✔ Geração de **arquivos automatizados** via **Apache POI**  
 
-8. **Exportação para Excel, JSON e CSV**
-   - **Solução:** Utilizar bibliotecas Java como Apache POI para exportar dados para Excel e bibliotecas padrão para JSON e CSV, permitindo ao usuário escolher o formato.
+### 🔄 **Agendamento e Automação**
+✔ **Spring Scheduler** para atualização de dados financeiros  
+✔ **Tabela materializada** para otimizar cálculos de cotas e totais  
 
-9. **Atalhos rápidos para transações frequentes**
-   - **Solução:** Oferecer uma lista de transações predefinidas que o usuário pode acessar com um clique (ex.: salário, aluguel) para adicionar essas entradas de forma rápida.
+### 🔑 **Segurança e Controle de Acesso**
+✔ **Spring Security** para autenticação e autorização  
+✔ Contexto de usuário gerenciado via **UserContext**  
+✔ Cada usuário tem **acesso isolado aos seus dados financeiros**  
 
-10. **Criação de novas categorias**
-     - **Solução:** Oferecer uma forma de cadastro de novas categorias de forma simples.
+---
+
+## 📖 Estrutura do Projeto
+
+📂 **fintracker** (root)  
+┣ 📂 `src/main/java/br/com/fintracker`  
+┃ ┣ 📂 `controller` *(Lida com as requisições HTTP)*  
+┃ ┣ 📂 `service` *(Regras de negócio e validações)*  
+┃ ┣ 📂 `repository` *(Camada de persistência com JPA/Hibernate)*  
+┃ ┣ 📂 `model` *(Entidades do banco de dados)*  
+┃ ┣ 📂 `dto` *(Transferência de dados entre camadas)*  
+┃ ┣ 📂 `infra/security` *(Autenticação e contexto de usuário)*  
+┃ ┣ 📂 `scheduler` *(Tarefas agendadas para cálculos financeiros)*  
+┣ 📂 `src/test/java/br/com/fintracker` *(Testes unitários e de integração)*  
+┣ 📄 `application.yml` *(Configurações da API)*  
+┣ 📄 `pom.xml` *(Dependências do projeto Maven)*  
+
+---
+
+## 🛠️ Como Executar o Projeto  
+
+1️⃣ **Clone o repositório:**  
+```sh
+git clone https://github.com/seu-usuario/fintracker.git
+cd fintracker
