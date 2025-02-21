@@ -11,5 +11,6 @@ public interface CrudController<ResponseDTO, CreateDTO, UpdateDTO> {
      ResponseEntity<List<ResponseDTO>> listarTodos();
      ResponseEntity<ResponseDTO> atualizar(Long id, UpdateDTO updateDTO);
      ResponseEntity<Void> inativar(Long id);
+     ResponseEntity<ResponseDTO> ativar(Long id);
      ResponseEntity<Void> deletar(Long id);
 }
