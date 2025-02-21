@@ -3,6 +3,7 @@ package br.com.fintracker.service;
 import br.com.fintracker.dto.usuario.DadosAtualizacaoUsuario;
 import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
 import br.com.fintracker.dto.usuario.DadosCadastroUsuario;
+import br.com.fintracker.infra.security.UserContext;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
