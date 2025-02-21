@@ -2,7 +2,6 @@ package br.com.fintracker.model.usuario;
 
 import br.com.fintracker.dto.usuario.DadosCadastroUsuario;
 import br.com.fintracker.model.categoria.Categoria;
-import br.com.fintracker.model.relatorio.Relatorio;
 import br.com.fintracker.model.relatorio.RelatorioResumoCotas;
 import br.com.fintracker.model.transacao.Transacao;
 import jakarta.persistence.*;

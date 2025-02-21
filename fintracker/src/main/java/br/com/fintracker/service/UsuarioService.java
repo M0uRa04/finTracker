@@ -3,6 +3,7 @@ package br.com.fintracker.service;
 import br.com.fintracker.dto.usuario.DadosAtualizacaoUsuario;
 import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
 import br.com.fintracker.dto.usuario.DadosCadastroUsuario;
+import br.com.fintracker.infra.security.UserContext;
 import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
@@ -63,6 +64,12 @@ public class UsuarioService implements CrudService <DadosRespostaUsuario, DadosC
     @Override
     public Optional<DadosRespostaUsuario> atualizar(Long id, DadosAtualizacaoUsuario dadosAtualizacao) {
         var usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado para o id fornecido."));
+        repository.save(atualizarAtributos(usuario, dadosAtualizacao));
+        return Optional.of(new DadosRespostaUsuario(usuario));
+    }
+
+    public Optional<DadosRespostaUsuario> atualizarUsuario (DadosAtualizacaoUsuario dadosAtualizacao) {
+        var usuario = repository.findById(UserContext.getUserId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado para o id fornecido."));
         repository.save(atualizarAtributos(usuario, dadosAtualizacao));
         return Optional.of(new DadosRespostaUsuario(usuario));
     }
