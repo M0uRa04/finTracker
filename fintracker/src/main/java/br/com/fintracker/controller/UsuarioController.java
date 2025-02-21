@@ -52,11 +52,18 @@ public class UsuarioController implements CrudController <DadosRespostaUsuario, 
     }
 
     @Override
-    @PatchMapping("/{id}")
+    @PatchMapping("/admin/atualizar/{id}")
     @Transactional
     public ResponseEntity<DadosRespostaUsuario> atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoUsuario dadosAtualizacaoUsuario) {
         //alterar este método para autenticar o usuario via email para atualizar infos
+        //alterar este método no filter para permitir apenas usuário "ADMIN"
         return ResponseEntity.ok(service.atualizar(id, dadosAtualizacaoUsuario).orElseThrow(() -> new EntityNotFoundException()));
+    }
+
+    @Transactional
+    @PatchMapping("/atualizar")
+    public ResponseEntity<DadosRespostaUsuario> atualizarUsuario (@RequestBody @Valid DadosAtualizacaoUsuario dadosAtualizacaoUsuario) {
+        return ResponseEntity.ok(service.atualizarUsuario(dadosAtualizacaoUsuario).orElseThrow(() -> new EntityNotFoundException()));
     }
 
     @Override

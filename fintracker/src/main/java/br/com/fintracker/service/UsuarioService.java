@@ -67,6 +67,12 @@ public class UsuarioService implements CrudService <DadosRespostaUsuario, DadosC
         return Optional.of(new DadosRespostaUsuario(usuario));
     }
 
+    public Optional<DadosRespostaUsuario> atualizarUsuario (DadosAtualizacaoUsuario dadosAtualizacao) {
+        var usuario = repository.findById(UserContext.getUserId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado para o id fornecido."));
+        repository.save(atualizarAtributos(usuario, dadosAtualizacao));
+        return Optional.of(new DadosRespostaUsuario(usuario));
+    }
+
     @Override
     public void inativar(Long id) {
         var usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado para o id fornecido."));
