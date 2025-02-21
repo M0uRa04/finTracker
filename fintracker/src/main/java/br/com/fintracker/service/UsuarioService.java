@@ -75,6 +75,14 @@ public class UsuarioService implements CrudService <DadosRespostaUsuario, DadosC
     }
 
     @Override
+    public Optional<Usuario> ativar(Long id) {
+        var usuario = repository.findByIdAndIsAtivoFalse(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado para o id fornecido."));
+        usuario.setAtivo(true);
+        repository.save(usuario);
+        return Optional.of(usuario);
+    }
+
+    @Override
     @Transactional
     public void deletar(Long id) {
         repository.deleteById(id);

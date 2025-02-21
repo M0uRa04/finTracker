@@ -67,6 +67,12 @@ public class UsuarioController implements CrudController <DadosRespostaUsuario, 
     }
 
     @Override
+    @PatchMapping("ativar/{id}")
+    public ResponseEntity<Void> ativar(@PathVariable Long id) {
+        return ResponseEntity.ok().body(service.ativar(id).get());
+    }
+
+    @Override
     @DeleteMapping("deletar/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
