@@ -44,6 +44,14 @@ public interface CrudService <ResponseDTO, CreateDTO, UpdateDTO>{
      */
     void inativar(Long id);
 
+    
+    /**
+     * ativa um registro do banco de dados.
+     *
+     * @param id o identificador único do registro a ser removido.
+     */
+    void ativar(Long id);
+
     /**
      * Remove um registro do banco de dados.
      *
