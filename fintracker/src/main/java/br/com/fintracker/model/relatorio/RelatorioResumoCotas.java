@@ -8,6 +8,7 @@ import br.com.fintracker.model.usuario.Usuario;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -57,7 +58,7 @@ public class RelatorioResumoCotas extends Relatorio {
                 usuario);
         this.categoria = totalGastoPorCategoriaDTO.categoria();
         this.totalGasto = totalGastoPorCategoriaDTO.totalGasto();
-        this.porcentagemAtingimento = porcentagemAtingimento;
+        this.porcentagemAtingimento = new BigDecimal(porcentagemAtingimento).setScale(2, RoundingMode.HALF_UP).floatValue();
         this.statusAtingimentoCota = statusAtingimentoCota;
     }
     public Categoria getCategoria() {

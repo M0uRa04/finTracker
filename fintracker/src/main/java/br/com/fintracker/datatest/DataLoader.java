@@ -15,7 +15,9 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -28,6 +30,8 @@ public class DataLoader implements CommandLineRunner {
 
     @Autowired
     private TransacaoRepository transacaoRepository;
+
+    private static final Random random = new Random();
 
     @Override
     public void run(String... args) throws Exception {
@@ -44,9 +48,9 @@ public class DataLoader implements CommandLineRunner {
     private static List<Usuario> carregarUsuarios() {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return List.of(
-                new Usuario("Robson", "robson@test.com", encoder.encode("senha123"),  Perfis.ADMIN),
-                new Usuario("Helen", "helen@test.com", encoder.encode("senha456"),  Perfis.USER),
-                new Usuario("Cirleide", "cirleide@test.com", encoder.encode("senha789"),  Perfis.USER)
+                new Usuario("Robson", "robson@test.com", encoder.encode("senha123"), Perfis.ADMIN),
+                new Usuario("Helen", "helen@test.com", encoder.encode("senha456"), Perfis.USER),
+                new Usuario("Cirleide", "cirleide@test.com", encoder.encode("senha789"), Perfis.USER)
         );
     }
 
@@ -54,17 +58,30 @@ public class DataLoader implements CommandLineRunner {
         return List.of(
                 new Categoria("Alimentação", BigDecimal.valueOf(1500), true, usuarios.get(0)),
                 new Categoria("Transporte", BigDecimal.valueOf(500), true, usuarios.get(0)),
-                new Categoria("Educação", BigDecimal.valueOf(1000), true, usuarios.get(1))
+                new Categoria("Educação", BigDecimal.valueOf(1000), true, usuarios.get(1)),
+                new Categoria("Lazer", BigDecimal.valueOf(800), true, usuarios.get(1)),
+                new Categoria("Saúde", BigDecimal.valueOf(700), true, usuarios.get(2)),
+                new Categoria("Moradia", BigDecimal.valueOf(2000), true, usuarios.get(2)),
+                new Categoria("Investimentos", BigDecimal.valueOf(3000), true, usuarios.get(0)),
+                new Categoria("Salário", BigDecimal.valueOf(5000), true, usuarios.get(0))
         );
     }
 
     private static List<Transacao> carregarTransacoes(List<Usuario> usuarios, List<Categoria> categorias) {
-        return List.of(
-                new Transacao(BigDecimal.valueOf(200), LocalDate.now(), categorias.get(0), "Supermercado", TipoTransacao.SAIDA, usuarios.get(0)),
-                new Transacao(BigDecimal.valueOf(50), LocalDate.now().minusDays(1), categorias.get(1), "Uber", TipoTransacao.SAIDA, usuarios.get(0)),
-                new Transacao(BigDecimal.valueOf(1200), LocalDate.now().minusDays(2), categorias.get(2), "Mensalidade faculdade", TipoTransacao.SAIDA, usuarios.get(1)),
-                new Transacao(BigDecimal.valueOf(3000), LocalDate.now(), categorias.get(0), "Salário", TipoTransacao.ENTRADA, usuarios.get(0)),
-                new Transacao(BigDecimal.valueOf(1000), LocalDate.now().minusDays(3), categorias.get(2), "Bônus", TipoTransacao.ENTRADA, usuarios.get(1))
-        );
+        List<Transacao> transacoes = new ArrayList<>();
+        LocalDate dataAtual = LocalDate.now();
+
+        for (Usuario usuario : usuarios) {
+            for (int i = 0; i < 200; i++) { // Criando 200 transações para cada usuário
+                Categoria categoria = categorias.get(random.nextInt(categorias.size()));
+                LocalDate dataTransacao = dataAtual.minusDays(random.nextInt(180)); // Últimos 6 meses
+                BigDecimal valor = BigDecimal.valueOf(random.nextInt(500) + 10); // Valores entre 10 e 500
+                TipoTransacao tipo = (random.nextBoolean()) ? TipoTransacao.SAIDA : TipoTransacao.ENTRADA;
+                String descricao = tipo == TipoTransacao.SAIDA ? "Despesa " + categoria.getNomeCategoria() : "Receita " + categoria.getNomeCategoria();
+
+                transacoes.add(new Transacao(valor, dataTransacao, categoria, descricao, tipo, usuario));
+            }
+        }
+        return transacoes;
     }
 }
