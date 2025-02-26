@@ -10,4 +10,6 @@ public interface TransacaoRepository extends JpaRepository <Transacao, Long> {
     Optional<Transacao> findByIdAndUsuarioId(Long idTransacao, Long idUsuario);
     List<Transacao> findAllByUsuarioId(Long idUsuario);
     void deleteByIdAndUsuarioId(Long idTransacao, Long idUsuario);
+
+    void deleteAllByUsuarioId(Long id);
 }

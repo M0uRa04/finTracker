@@ -5,7 +5,10 @@ import br.com.fintracker.dto.usuario.DadosRespostaUsuario;
 import br.com.fintracker.dto.usuario.DadosCadastroUsuario;
 import br.com.fintracker.infra.security.UserContext;
 import br.com.fintracker.model.usuario.Usuario;
+import br.com.fintracker.repository.CategoriaRepository;
+import br.com.fintracker.repository.TransacaoRepository;
 import br.com.fintracker.repository.UsuarioRepository;
+import br.com.fintracker.repository.relatorio.repositories.RelatorioResumoCotasRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +24,11 @@ public class UsuarioService implements CrudService <DadosRespostaUsuario, DadosC
 
     @Autowired
     private UsuarioRepository repository;
+
+    @Autowired
+    private TransacaoRepository transacaoRepository;
+    @Autowired
+    private RelatorioResumoCotasRepository relatorioResumoCotasRepository;
 
     private Usuario atualizarAtributos(Usuario usuario, DadosAtualizacaoUsuario dtoAtualizacao) {
         if (dtoAtualizacao.nome() != null) {
@@ -92,6 +100,8 @@ public class UsuarioService implements CrudService <DadosRespostaUsuario, DadosC
     @Override
     @Transactional
     public void deletar(Long id) {
+        relatorioResumoCotasRepository.deleteAllByUsuarioId(id);
+        transacaoRepository.deleteAllByUsuarioId(id);
         repository.deleteById(id);
     }
 
