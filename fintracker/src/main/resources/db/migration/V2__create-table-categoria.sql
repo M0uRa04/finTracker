@@ -8,6 +8,6 @@ CREATE TABLE categoria (
 
     PRIMARY KEY (id),
 
-    constraint fk_categoria_usuario_id foreign key(usuario_id) references usuario(id)
+    constraint fk_categoria_usuario_id foreign key(usuario_id) references usuario(id) ON DELETE CASCADE
 
 );
