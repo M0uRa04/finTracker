@@ -23,4 +23,6 @@ public interface RelatorioResumoCotasRepository extends JpaRepository <Relatorio
     List<TotalGastoPorCategoriaDTO> calculaTotalGastoPorCategoria(@Param("usuarioId") Long usuarioId, @Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim);
 
     List<RelatorioResumoCotas> findAllByUsuarioId(Long usuarioId);
+
+    void deleteAllByUsuarioId(Long id);
 }

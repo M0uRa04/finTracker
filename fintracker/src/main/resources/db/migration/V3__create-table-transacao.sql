@@ -11,7 +11,7 @@ CREATE TABLE transacao (
 
     PRIMARY KEY (id),
 
-    constraint fk_transacao_usuario_id foreign key(usuario_id) references usuario(id),
-    constraint fk_trasacao_categoria_id foreign key(categoria_id) references categoria(id)
+    constraint fk_transacao_usuario_id foreign key(usuario_id) references usuario(id) ON DELETE CASCADE,
+    constraint fk_trasacao_categoria_id foreign key(categoria_id) references categoria(id) ON DELETE CASCADE
 
 );
