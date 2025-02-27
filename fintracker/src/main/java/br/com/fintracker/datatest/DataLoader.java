@@ -49,8 +49,8 @@ public class DataLoader implements CommandLineRunner {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return List.of(
                 new Usuario("Robson", "robson@test.com", encoder.encode("senha123"), Perfis.ADMIN),
-                new Usuario("Helen", "helen@test.com", encoder.encode("senha456"), Perfis.USER),
-                new Usuario("Cirleide", "cirleide@test.com", encoder.encode("senha789"), Perfis.USER)
+                new Usuario("Helen", "helen@test.com", encoder.encode("senha123"), Perfis.USER),
+                new Usuario("Cirleide", "cirleide@test.com", encoder.encode("senha123"), Perfis.USER)
         );
     }
 
@@ -72,7 +72,7 @@ public class DataLoader implements CommandLineRunner {
         LocalDate dataAtual = LocalDate.now();
 
         for (Usuario usuario : usuarios) {
-            for (int i = 0; i < 50; i++) { // Criando 200 transações para cada usuário
+            for (int i = 0; i < 1; i++) { // Criando 200 transações para cada usuário
                 Categoria categoria = categorias.get(random.nextInt(categorias.size()));
                 LocalDate dataTransacao = dataAtual.minusDays(random.nextInt(180)); // Últimos 6 meses
                 BigDecimal valor = BigDecimal.valueOf(random.nextInt(500) + 10); // Valores entre 10 e 500
