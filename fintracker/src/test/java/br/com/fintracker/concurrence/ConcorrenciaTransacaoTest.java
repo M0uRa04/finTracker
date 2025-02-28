@@ -106,15 +106,36 @@ public class ConcorrenciaTransacaoTest {
 
     // Método para criar transação autenticada
     private boolean criarTransacao(String token, String email) throws Exception {
-        String jsonBody = """
+        
+        var categoriaId;
+
+        switch (email) {
+
+            case "robson@test.com":
+                categoriaId = 1;
+                break;
+
+            case "helen@test.com":
+                categoriaId = 3;
+                break;
+                
+            case "cirleide@test.com":
+                categoriaId = 5;
+                break;    
+
+            default:
+                throw new AssertionError();
+        }
+
+        String jsonBody = String.format("""
         {
             "tipoTransacao": "SAIDA",
-            "categoriaId": 1,
+            "categoriaId": %d,
             "dataTransacao": "2025-01-10",
             "valor": 2000.00,
             "descricao": "testando a concorrência"
         }
-    """;
+    """,categoriaId);
 
         MvcResult resultado = mockMvc.perform(post("/transacoes")
                         .header("Authorization", "Bearer " + token)
