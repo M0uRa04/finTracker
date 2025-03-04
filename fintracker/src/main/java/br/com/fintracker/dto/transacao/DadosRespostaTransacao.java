@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record DadosRespostaTransacao(
+        Long usuarioId,
         TipoTransacao transacao,
         DadosRespostaCategoria categoria,
         LocalDate date,
@@ -18,6 +19,6 @@ public record DadosRespostaTransacao(
         String descricao
 ) {
     public DadosRespostaTransacao (Transacao transacao) {
-        this(transacao.getTipoTransacao(), new DadosRespostaCategoria(transacao.getCategoria()), transacao.getDataTransacao(), transacao.getValor(), transacao.getDescricao());
+        this(transacao.getUsuario().getId(),transacao.getTipoTransacao(), new DadosRespostaCategoria(transacao.getCategoria()), transacao.getDataTransacao(), transacao.getValor(), transacao.getDescricao());
     }
 }

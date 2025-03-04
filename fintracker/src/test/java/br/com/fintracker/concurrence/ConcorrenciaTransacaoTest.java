@@ -139,8 +139,6 @@ public class ConcorrenciaTransacaoTest {
 
         // Opcional: Verifica se o JSON de resposta contém alguma informação relevante
         String responseBody = resultado.getResponse().getContentAsString();
-        JsonNode jsonNode = objectMapper.readTree(responseBody);
-        Long userIdResponse = jsonNode.get("usuarioId").asLong();
         return responseBody.contains("valor");
     }
 
