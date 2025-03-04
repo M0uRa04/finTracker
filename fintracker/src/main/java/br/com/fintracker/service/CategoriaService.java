@@ -87,7 +87,7 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
     public DadosRespostaCategoria buscarCategoriaPorNome (String nomeCategoria) {
         var categoriaEncontrada = repository.findByNomeCategoria(nomeCategoria);
         if(categoriaEncontrada.isPresent()) {
-            return new DadosRespostaCategoria(categoriaEncontrada.get().getUsuario().getId(),"Categoria já existente", BigDecimal.valueOf(00000.00));
+            return new DadosRespostaCategoria(categoriaEncontrada.get().getUsuario().getId(),categoriaEncontrada.get().getId(),"Categoria já existente", BigDecimal.valueOf(00000.00));
         }
         return new DadosRespostaCategoria(repository.findByNomeCategoria(nomeCategoria.toUpperCase()).orElseThrow(EntityNotFoundException::new));
     }
