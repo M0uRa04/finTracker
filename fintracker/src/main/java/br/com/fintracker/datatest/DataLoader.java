@@ -35,14 +35,21 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        System.out.println("CARREGANDO OS USUÁRIOS");
         List<Usuario> usuarios = carregarUsuarios();
         usuarioRepository.saveAll(usuarios);
+        System.out.println("FIM CARREGANDO OS USUÁRIOS");
 
+        System.out.println("CARREGANDO AS CATEGORIAS");
         List<Categoria> categorias = carregarCategorias(usuarios);
         categoriaRepository.saveAll(categorias);
+        System.out.println("FIM CARREGANDO AS CATEGORIAS");
 
+        System.out.println("CARREGANDO AS TRANSAÇÕES");
         List<Transacao> transacoes = carregarTransacoes(usuarios, categorias);
         transacaoRepository.saveAll(transacoes);
+        System.out.println("FIM CARREGANDO AS TRANSAÇÕES");
+
     }
 
     private static List<Usuario> carregarUsuarios() {

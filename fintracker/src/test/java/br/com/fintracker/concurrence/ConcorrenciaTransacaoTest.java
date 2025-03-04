@@ -1,10 +1,8 @@
 package br.com.fintracker.concurrence;
 
-import br.com.fintracker.dto.transacao.DadosCadastroTransacao;
-import br.com.fintracker.model.transacao.TipoTransacao;
+import br.com.fintracker.model.transacao.Transacao;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,19 +10,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -105,22 +98,22 @@ public class ConcorrenciaTransacaoTest {
     }
 
     // Método para criar transação autenticada
-    private boolean criarTransacao(String token, String email) throws Exception {
+    private Boolean criarTransacao(String token, String email) throws Exception {
         
-        var categoriaId;
+        var categoriaId = 0L;
 
         switch (email) {
 
             case "robson@test.com":
-                categoriaId = 1;
+                categoriaId = 1L;
                 break;
 
             case "helen@test.com":
-                categoriaId = 3;
+                categoriaId = 3L;
                 break;
                 
             case "cirleide@test.com":
-                categoriaId = 5;
+                categoriaId = 5L;
                 break;    
 
             default:
@@ -137,7 +130,7 @@ public class ConcorrenciaTransacaoTest {
         }
     """,categoriaId);
 
-        MvcResult resultado = mockMvc.perform(post("/transacoes")
+        MvcResult resultado = mockMvc.perform(post("/transacao")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonBody))
@@ -146,7 +139,9 @@ public class ConcorrenciaTransacaoTest {
 
         // Opcional: Verifica se o JSON de resposta contém alguma informação relevante
         String responseBody = resultado.getResponse().getContentAsString();
-        return responseBody.contains(email); // Ajuste conforme necessário
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        Long userIdResponse = jsonNode.get("usuarioId").asLong();
+        return responseBody.contains("valor");
     }
 
 
