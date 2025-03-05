@@ -52,18 +52,26 @@ class CategoriaControllerTest {
     }
 
     @Test
-    void inserirNoBancoDeDados_DeveRetornarCreatedComCategoriaInserida() {
+    void inserirNoBancoDeDados_DeveRetornarCreatedComCategoriaInserida() throws Exception {
         DadosCadastroCategoria dadosCadastroCategoria = new DadosCadastroCategoria("Categoria Teste", BigDecimal.valueOf(1500));
-        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria(1L, 1L, "Categoria Teste", BigDecimal.valueOf(1500));
-
+        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria("Categoria Teste", BigDecimal.valueOf(1500), 1L);
+    
         when(service.inserirNoBancoDeDados(dadosCadastroCategoria)).thenReturn(dadosRespostaCategoria);
-
-        ResponseEntity<DadosRespostaCategoria> response = controller.inserirNoBancoDeDados(dadosCadastroCategoria);
-
-        assertEquals(201, response.getStatusCodeValue());
-        assertEquals(dadosRespostaCategoria, response.getBody());
+    
+        MvcResult resultado = mockMvc.perform(post("/categoria")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dadosCadastroCategoria)))
+            .andExpect(status().isCreated())
+            .andReturn();
+    
+        String responseBody = resultado.getResponse().getContentAsString();
+        DadosRespostaCategoria resposta = objectMapper.readValue(responseBody, DadosRespostaCategoria.class);
+    
+        assertEquals(dadosRespostaCategoria, resposta);
         verify(service, times(1)).inserirNoBancoDeDados(dadosCadastroCategoria);
     }
+    
 
     @Test
     void inserirNoBancoDeDados_SemToken_DeveRetornarUnauthorized() throws Exception {
