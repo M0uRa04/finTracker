@@ -46,9 +46,9 @@ class CategoriaControllerTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-        token = autenticarUsuario("usuario@test.com", "senha123");
+        MockitoAnnotations.openMocks(this); //preparando e subindo os mocks
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).build(); //preparando o controller para receber requisições sem o servidor
+        token = autenticarUsuario("robson@test.com", "senha123");
     }
 
     @Test
