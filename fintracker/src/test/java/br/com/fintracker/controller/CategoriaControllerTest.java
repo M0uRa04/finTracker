@@ -54,7 +54,7 @@ class CategoriaControllerTest {
     @Test
     void inserirNoBancoDeDados_DeveRetornarCreatedComCategoriaInserida() {
         DadosCadastroCategoria dadosCadastroCategoria = new DadosCadastroCategoria("Categoria Teste", BigDecimal.valueOf(1500));
-        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria("Categoria Teste", BigDecimal.valueOf(1500), 1L);
+        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria(1L, 1L, "Categoria Teste", BigDecimal.valueOf(1500));
 
         when(service.inserirNoBancoDeDados(dadosCadastroCategoria)).thenReturn(dadosRespostaCategoria);
 
@@ -66,9 +66,19 @@ class CategoriaControllerTest {
     }
 
     @Test
+    void inserirNoBancoDeDados_SemToken_DeveRetornarUnauthorized() throws Exception {
+        DadosCadastroCategoria dadosCadastroCategoria = new DadosCadastroCategoria("Categoria Teste", BigDecimal.valueOf(1500));
+
+        mockMvc.perform(post("/categoria")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(dadosCadastroCategoria)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void buscarPorId_DeveRetornarOkComCategoriaSeEncontrada() {
         long id = 1L;
-        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria("Categoria Teste", BigDecimal.valueOf(1500), 1L);
+        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria(1L, 1L, "Categoria Teste", BigDecimal.valueOf(1500), 1L);
 
         when(service.buscarPorId(id)).thenReturn(Optional.of(dadosRespostaCategoria));
 
@@ -77,6 +87,30 @@ class CategoriaControllerTest {
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(dadosRespostaCategoria, response.getBody());
         verify(service, times(1)).buscarPorId(id);
+    }
+
+    @Test
+    void atualizar_CategoriaNaoEncontrada_DeveRetornarNotFound() {
+        long id = 99L;
+        DadosAtualizacaoCategoria dadosAtualizacaoCategoria = new DadosAtualizacaoCategoria("Nova Categoria", BigDecimal.valueOf(2000), true);
+
+        when(service.atualizar(id, dadosAtualizacaoCategoria)).thenReturn(Optional.empty());
+
+        ResponseEntity<DadosRespostaCategoria> response = controller.atualizar(id, dadosAtualizacaoCategoria);
+
+        assertEquals(404, response.getStatusCodeValue());
+        verify(service, times(1)).atualizar(id, dadosAtualizacaoCategoria);
+    }
+
+    @Test
+    void inativar_CategoriaJaInativa_DeveRetornarBadRequest() {
+        long id = 2L;
+        doThrow(new IllegalStateException("Categoria já está inativa."))
+                .when(service).inativar(id);
+
+        Exception exception = assertThrows(IllegalStateException.class, () -> controller.inativar(id));
+        assertEquals("Categoria já está inativa.", exception.getMessage());
+        verify(service, times(1)).inativar(id);
     }
 
     private String autenticarUsuario(String email, String senha) throws Exception {
