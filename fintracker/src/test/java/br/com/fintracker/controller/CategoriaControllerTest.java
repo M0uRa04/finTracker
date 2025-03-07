@@ -45,7 +45,7 @@ class CategoriaControllerTest {
     @Test
     void inserirNoBancoDeDados_DeveRetornarCreatedComCategoriaInserida() {
         DadosCadastroCategoria dadosCadastroCategoria = new DadosCadastroCategoria("Categoria Teste", BigDecimal.valueOf(1500));
-        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria("Categoria Teste", BigDecimal.valueOf(1500));
+        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria(1L,  1L,"Categoria Teste", BigDecimal.valueOf(1500));
 
         when(service.inserirNoBancoDeDados(dadosCadastroCategoria)).thenReturn(dadosRespostaCategoria);
 
@@ -59,7 +59,7 @@ class CategoriaControllerTest {
     @Test
     void buscarPorId_DeveRetornarOkComCategoriaSeEncontrada() {
         long id = 1L;
-        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria("Categoria Teste", BigDecimal.valueOf(1500));
+        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria(1L,1L,"Categoria Teste", BigDecimal.valueOf(1500));
 
         when(service.buscarPorId(id)).thenReturn(Optional.of(dadosRespostaCategoria));
 
@@ -85,8 +85,8 @@ class CategoriaControllerTest {
     @Test
     void listarTodos_DeveRetornarOkComListaDeCategorias() {
         List<DadosRespostaCategoria> categorias = List.of(
-                new DadosRespostaCategoria("Categoria 1", BigDecimal.valueOf(1200)),
-                new DadosRespostaCategoria("Categoria 2", BigDecimal.valueOf(1500))
+                new DadosRespostaCategoria(1L,1L,"Categoria 1", BigDecimal.valueOf(1200)),
+                new DadosRespostaCategoria(2L, 2L,"Categoria 2", BigDecimal.valueOf(1500))
         );
 
         when(service.listarTodos()).thenReturn(categorias);
@@ -102,7 +102,7 @@ class CategoriaControllerTest {
     void atualizar_DeveRetornarOkComCategoriaAtualizada() {
         long id = 1L;
         DadosAtualizacaoCategoria dadosAtualizacaoCategoria = new DadosAtualizacaoCategoria("Categoria Atualizada", BigDecimal.valueOf(1800), true);
-        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria("Categoria Atualizada", BigDecimal.valueOf(1800));
+        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria(1L, 1L,"Categoria Atualizada", BigDecimal.valueOf(1800));
 
         when(service.atualizar(id, dadosAtualizacaoCategoria)).thenReturn(Optional.of(dadosRespostaCategoria));
 

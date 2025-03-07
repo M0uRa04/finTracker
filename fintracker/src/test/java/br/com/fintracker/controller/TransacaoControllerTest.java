@@ -81,6 +81,8 @@ class TransacaoControllerTest {
         );
 
         dadosResposta = new DadosRespostaTransacao(
+                1L,
+                1L,
                 TipoTransacao.ENTRADA,
                 null, // Substitua por DadosRespostaCategoria se necessário
                 LocalDate.now(),

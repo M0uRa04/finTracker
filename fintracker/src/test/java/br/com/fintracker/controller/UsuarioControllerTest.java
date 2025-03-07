@@ -37,7 +37,7 @@ class UsuarioControllerTest {
     void inserirNoBancoDeDados_DeveRetornarBadRequestSeEmailExistir() {
         DadosCadastroUsuario dadosCadastro = new DadosCadastroUsuario("UsuarioTeste1","test@example.com", "password123");
 
-        DadosRespostaUsuario resposta = new DadosRespostaUsuario("UsuarioTeste1", "test@example.com");
+        DadosRespostaUsuario resposta = new DadosRespostaUsuario(1L,"UsuarioTeste1", "test@example.com");
 
         when(service.buscarPeloEmail(dadosCadastro.email())).thenReturn(new Usuario(dadosCadastro));
 
@@ -51,7 +51,7 @@ class UsuarioControllerTest {
     @Test
     void buscarPorId_DeveRetornarOkComUsuarioSeEncontrado() {
         long id = 1L;
-        DadosRespostaUsuario resposta = new DadosRespostaUsuario("Test1", "test@example.com");
+        DadosRespostaUsuario resposta = new DadosRespostaUsuario(1L, "Test1", "test@example.com");
 
         when(service.buscarPorId(id)).thenReturn(Optional.of(resposta));
 
@@ -77,8 +77,8 @@ class UsuarioControllerTest {
     @Test
     void listarTodos_DeveRetornarOkComListaDeUsuarios() {
         List<DadosRespostaUsuario> usuarios = List.of(
-                new DadosRespostaUsuario("Test1", "test1@example.com"),
-                new DadosRespostaUsuario("Test2", "test2@example.com")
+                new DadosRespostaUsuario(1L,"Test1", "test1@example.com"),
+                new DadosRespostaUsuario(2L,"Test2", "test2@example.com")
         );
 
         when(service.listarTodos()).thenReturn(usuarios);
@@ -94,7 +94,7 @@ class UsuarioControllerTest {
     void atualizar_DeveRetornarOkComUsuarioAtualizado() {
         long id = 1L;
         DadosAtualizacaoUsuario dadosAtualizacao = new DadosAtualizacaoUsuario(1L, "test","new@example.com","newPassword123",true);
-        DadosRespostaUsuario resposta = new DadosRespostaUsuario("test", "new@example.com");
+        DadosRespostaUsuario resposta = new DadosRespostaUsuario(1L, "test", "new@example.com");
 
         when(service.atualizar(id, dadosAtualizacao)).thenReturn(Optional.of(resposta));
 

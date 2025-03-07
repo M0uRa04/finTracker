@@ -1,6 +1,9 @@
 package br.com.fintracker.concurrence;
 
 import br.com.fintracker.model.transacao.Transacao;
+import br.com.fintracker.model.usuario.Usuario;
+import br.com.fintracker.service.JWTService;
+import br.com.fintracker.service.UsuarioService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -16,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,6 +30,12 @@ public class ConcorrenciaTransacaoTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private JWTService jwtService;
 
     @Autowired
     private ObjectMapper objectMapper; // Para converter o objeto em JSON
@@ -99,7 +109,7 @@ public class ConcorrenciaTransacaoTest {
 
     // Método para criar transação autenticada
     private Boolean criarTransacao(String token, String email) throws Exception {
-        
+
         var categoriaId = 0L;
 
         switch (email) {
@@ -138,9 +148,18 @@ public class ConcorrenciaTransacaoTest {
                 .andReturn();
 
         // Opcional: Verifica se o JSON de resposta contém alguma informação relevante
-        String responseBody = resultado.getResponse().getContentAsString();
-        return responseBody.contains("valor");
-    }
+        var login = jwtService.verifyTokenJWT(token);
+        var iDdoUsuarioObtidoPeloToken = (Usuario) usuarioService.buscarPeloEmail(login);
+        System.out.println("ID DO USUÁRIO OBTIDO DO TOKEN " + iDdoUsuarioObtidoPeloToken.getId());
 
+
+        String responseBody = resultado.getResponse().getContentAsString();
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        Long userIdResponse = jsonNode.get("usuarioId").asLong();
+        System.out.println("ID DO USUÁRIO OBTIDO DO JSON " + userIdResponse);
+        System.out.println("O email do criador da transação é o mesmo do token?" + login.equals(email));
+        return userIdResponse.equals(iDdoUsuarioObtidoPeloToken.getId());
+//        return responseBody.contains("valor");
+    }
 
 }
