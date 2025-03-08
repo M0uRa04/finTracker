@@ -50,14 +50,22 @@ class TransacaoServiceTest {
 //        service.transacaoRepository = transacaoRepository;
 //        service.usuarioRepository = usuarioRepository;
 //        service.categoriaRepository = categoriaRepository;
+
+        dadosCadastroTransacao = new DadosCadastroTransacao(
+                TipoTransacao.ENTRADA,
+                1L,
+                LocalDate.now(),
+                BigDecimal.valueOf(1000),
+                "Salário"
+        );
     }
 
     @Test
     void deveInserirTransacaoComSucesso() {
-        var usuario = new Usuario();
+        var usuario = new Usuario(); //verificar esse tipo de instanciação
         usuario.setId(1L);
 
-        var categoria = new Categoria();
+        var categoria = new Categoria(); //verificar esse tipo de instanciação
         categoria.setId(1L);
 
         var dadosCadastro = new DadosCadastroTransacao(
@@ -86,11 +94,11 @@ class TransacaoServiceTest {
     @Test
     void deveBuscarTransacaoPorIdEUsuario() {
         var usuarioId = 1L;
-        var transacao = new Transacao();
-        transacao.setId(1L);
+        var transacao = new Transacao(dadosCadastroTransacao); //passando um DTO ao invés de setar os valores manualmente
+        /*transacao.setId(1L);
         transacao.setTipoTransacao(TipoTransacao.ENTRADA);
         transacao.setValor(BigDecimal.valueOf(1000));
-        transacao.setDescricao("Salário");
+        transacao.setDescricao("Salário");*/
 
         when(transacaoRepository.findByIdAndUsuarioId(1L, usuarioId)).thenReturn(Optional.of(transacao));
 
