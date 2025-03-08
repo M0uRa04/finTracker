@@ -69,7 +69,6 @@ public class UsuarioServiceTest {
     @Test
     void testBuscarTodosOsRegistrosNoBancoDeDados() {
         Usuario usuario1 = UsuarioTestUtils.criarUsuario(1L, "John", "john@example.com", "123456", true);
-        ;
         Usuario usuario2 = UsuarioTestUtils.criarUsuario(2L, "Jane", "jane@example.com", "654321", true);
 
         when(repository.findAllByisAtivoTrue()).thenReturn(List.of(usuario1, usuario2));
@@ -79,6 +78,9 @@ public class UsuarioServiceTest {
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("John", result.get(0).nome());
+        assertTrue(result.get(0).ativo());
+        assertEquals("Jane", result.get(1).nome());
+        assertTrue(result.get(1).ativo());
         verify(repository, times(1)).findAllByisAtivoTrue();
     }
 
@@ -94,6 +96,9 @@ public class UsuarioServiceTest {
 
         assertTrue(result.isPresent());
         assertEquals("Johnny", usuario.getNome());
+        assertEquals("john@example.com", usuario.getEmail());
+        assertEquals("123456", usuario.getSenha());
+        assertTrue(usuario.isAtivo());
         verify(repository, times(1)).findById(1L);
         verify(repository, times(1)).save(usuario);
     }
@@ -106,7 +111,7 @@ public class UsuarioServiceTest {
         when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
         service.inativar(1L);
-
+        assetFalse(usuario.isAtivo());
         verify(repository, times(1)).findById(1L);
         verify(repository, times(1)).save(usuario);
     }
@@ -116,7 +121,8 @@ public class UsuarioServiceTest {
         doNothing().when(repository).deleteById(1L);
 
         service.deletar(1L);
-
+        asserThrows(NoSuchElementException.class, () -> service.buscarPorId(1L));//verificar se o correto é um EntityNotFoundException
+        assertEqual(204, response.getStatusCodeValue());
         verify(repository, times(1)).deleteById(1L);
     }
 }
