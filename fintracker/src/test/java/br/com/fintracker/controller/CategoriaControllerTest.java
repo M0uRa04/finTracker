@@ -54,7 +54,7 @@ class CategoriaControllerTest {
     @Test
     void inserirNoBancoDeDados_DeveRetornarCreatedComCategoriaInserida() throws Exception {
         DadosCadastroCategoria dadosCadastroCategoria = new DadosCadastroCategoria("Categoria Teste", BigDecimal.valueOf(1500));
-        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria("Categoria Teste", BigDecimal.valueOf(1500), 1L);
+        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria(1L, 1L, "Categoria Teste", BigDecimal.valueOf(1500));
     
         when(service.inserirNoBancoDeDados(dadosCadastroCategoria)).thenReturn(dadosRespostaCategoria);
     
@@ -86,7 +86,7 @@ class CategoriaControllerTest {
     @Test
     void buscarPorId_DeveRetornarOkComCategoriaSeEncontrada() {
         long id = 1L;
-        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria(1L, 1L, "Categoria Teste", BigDecimal.valueOf(1500), 1L);
+        DadosRespostaCategoria dadosRespostaCategoria = new DadosRespostaCategoria(1L, 1L,"Categoria Teste", BigDecimal.valueOf(1500));
 
         when(service.buscarPorId(id)).thenReturn(Optional.of(dadosRespostaCategoria));
 
@@ -112,6 +112,7 @@ class CategoriaControllerTest {
 
     @Test
     void inativar_CategoriaJaInativa_DeveRetornarBadRequest() {
+        //Pode falhar caso não tenha uma categoria com o ID 2l no BD que esteja inativa.
         long id = 2L;
         doThrow(new IllegalStateException("Categoria já está inativa."))
                 .when(service).inativar(id);
