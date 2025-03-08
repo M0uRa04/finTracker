@@ -95,7 +95,7 @@ class JWTServiceTest {
 
         // Simulando um delay para expirar o token
         try {
-            Thread.sleep(1000); // Ajuste se necessário para o tempo de expiração
+            Thread.sleep(7201000); // Ajuste se necessário para o tempo de expiração
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
