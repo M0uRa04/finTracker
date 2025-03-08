@@ -123,6 +123,7 @@ class CategoriaServiceTest {
         when(repository.findByIdAndUsuarioIdAndIsAtivoTrue(1L, 1L)).thenReturn(Optional.of(categoria));
 
         service.deletar(1L);
+        assertFalse(categoria.getAtivo());
 
         verify(repository, times(1)).delete(categoria);
     }
