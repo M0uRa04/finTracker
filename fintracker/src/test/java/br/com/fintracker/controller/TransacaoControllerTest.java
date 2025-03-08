@@ -65,9 +65,13 @@ class TransacaoControllerTest {
 
     private DadosCadastroTransacao dadosCadastro;
     private DadosRespostaTransacao dadosResposta;
+    private String token;
 
     @BeforeEach
     void setUp() {
+
+        token = autenticarUsuario("robson@test.com", "senha123");
+
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(springSecurity()) // Configura o Spring Security no MockMvc
                 .build();
@@ -80,15 +84,24 @@ class TransacaoControllerTest {
                 "Salário"
         );
 
+        dadosRespostaCategoria = new DadosRespostaCategoria(
+            1L, 
+            1L,
+            "Categoria Teste", 
+            BigDecimal.valueOf(1500)
+            );
+
         dadosResposta = new DadosRespostaTransacao(
                 TipoTransacao.ENTRADA,
-                null, // Substitua por DadosRespostaCategoria se necessário
+                dadosRespostaCategoria, // Substitua por DadosRespostaCategoria se necessário
                 LocalDate.now(),
                 BigDecimal.valueOf(1000),
                 "Salário"
         );
     }
 
+    /*
+    Acredito que não é necessária essa parte do código
     @Configuration
     static class TestSecurityConfiguration {
         @Bean
@@ -97,17 +110,17 @@ class TransacaoControllerTest {
             return http.build();
         }
     }
-
+    */
     @Test
-    @WithMockUser(username = "test_user", roles = {"USER"})
     void deveInserirTransacaoComSucesso() throws Exception {
         when(service.inserirNoBancoDeDados(ArgumentMatchers.any(DadosCadastroTransacao.class))).thenReturn(dadosResposta);
 
         mockMvc.perform(post("/transacao")
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dadosCadastro)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.transacao", is(dadosResposta.transacao().toString())))
+                .andExpect(jsonPath("$.transacao", is(dadosResposta.transacao().name())))//ficar de olho aqui
                 .andExpect(jsonPath("$.valor", is(dadosResposta.valor().intValue())))
                 .andExpect(jsonPath("$.descricao", is(dadosResposta.descricao())));
 
@@ -116,50 +129,53 @@ class TransacaoControllerTest {
 
     @Test
     void deveBuscarTransacaoPorId() throws Exception {
-        when(service.buscarTransacaoPorIdEUsuario(eq(1L), anyLong())).thenReturn(Optional.of(dadosResposta));
+        when(service.buscarTransacaoPorIdEUsuario(eq(1L), eq(1L))).thenReturn(Optional.of(dadosResposta));
 
         mockMvc.perform(get("/transacao/1")
+                       .header("Authorization", "Bearer " + token)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.transacao", is(dadosResposta.transacao().toString())))
+                .andExpect(jsonPath("$.transacao", is(dadosResposta.transacao().name())))
                 .andExpect(jsonPath("$.valor", is(dadosResposta.valor().intValue())))
                 .andExpect(jsonPath("$.descricao", is(dadosResposta.descricao())));
 
-        verify(service, times(1)).buscarTransacaoPorIdEUsuario(eq(1L), anyLong());
+        verify(service, times(1)).buscarTransacaoPorIdEUsuario(eq(1L), eq(1L));
     }
 
     @Test
     void deveListarTodasTransacoes() throws Exception {
-        when(service.listarTodos(anyLong())).thenReturn(List.of(dadosResposta));
+        when(service.listarTodos(eq(1L))).thenReturn(List.of(dadosResposta));
 
         mockMvc.perform(get("/transacao")
+                        .header("Authorization", "Bearer " + token)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].transacao", is(dadosResposta.transacao().toString())))
+                .andExpect(jsonPath("$[0].transacao", is(dadosResposta.transacao().name())))
                 .andExpect(jsonPath("$[0].valor", is(dadosResposta.valor().intValue())))
                 .andExpect(jsonPath("$[0].descricao", is(dadosResposta.descricao())));
 
-        verify(service, times(1)).listarTodos(anyLong());
+        verify(service, times(1)).listarTodos(eq(1L));
     }
 
     @Test
     void deveAtualizarTransacao() throws Exception {
         DadosAtualizacaoTransacao dadosAtualizacao = new DadosAtualizacaoTransacao(
                 TipoTransacao.SAIDA,
-                null,
+                1L, //verificar se deu certo essa categoria ou se devo passar null
                 LocalDate.now(),
                 BigDecimal.valueOf(200),
                 "Compra no mercado"
         );
 
-        when(service.atualizar(anyLong(), eq(1L), ArgumentMatchers.any(DadosAtualizacaoTransacao.class))).thenReturn(Optional.of(dadosResposta));
+        when(service.atualizar(eq(1L), eq(1L), ArgumentMatchers.any(DadosAtualizacaoTransacao.class))).thenReturn(Optional.of(dadosResposta));
 
         mockMvc.perform(patch("/transacao/1")
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dadosAtualizacao)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.transacao", is(dadosResposta.transacao().toString())))
+                .andExpect(jsonPath("$.transacao", is(dadosResposta.transacao().name())))
                 .andExpect(jsonPath("$.valor", is(dadosResposta.valor().intValue())))
                 .andExpect(jsonPath("$.descricao", is(dadosResposta.descricao())));
 
@@ -170,9 +186,25 @@ class TransacaoControllerTest {
     void deveDeletarTransacao() throws Exception {
         doNothing().when(service).deletar(1L);
 
-        mockMvc.perform(delete("/transacao/1"))
-                .andExpect(status().isNoContent());
+        mockMvc.perform(delete("/transacao/1")
+                .header("Authorization", "Bearer " + token))    
+            .andExpect(status().isNoContent());
 
         verify(service, times(1)).deletar(1L);
+    }
+
+    private String autenticarUsuario(String email, String senha) throws Exception {
+        String jsonBody = String.format("{\"email\":\"%s\", \"senha\":\"%s\"}", email, senha);
+
+        String responseBody = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonBody))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JsonNode jsonNode = new ObjectMapper().readTree(responseBody);
+        return jsonNode.get("token").asText();
     }
 }
