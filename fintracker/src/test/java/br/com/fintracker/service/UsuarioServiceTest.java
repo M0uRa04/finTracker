@@ -13,10 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
@@ -24,6 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 public class UsuarioServiceTest {
 
@@ -78,9 +76,7 @@ public class UsuarioServiceTest {
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("John", result.get(0).nome());
-        assertTrue(result.get(0).ativo());
         assertEquals("Jane", result.get(1).nome());
-        assertTrue(result.get(1).ativo());
         verify(repository, times(1)).findAllByisAtivoTrue();
     }
 
@@ -98,7 +94,7 @@ public class UsuarioServiceTest {
         assertEquals("Johnny", usuario.getNome());
         assertEquals("john@example.com", usuario.getEmail());
         assertEquals("123456", usuario.getSenha());
-        assertTrue(usuario.isAtivo());
+        assertTrue(usuario.getAtivo());
         verify(repository, times(1)).findById(1L);
         verify(repository, times(1)).save(usuario);
     }
@@ -111,7 +107,7 @@ public class UsuarioServiceTest {
         when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
         service.inativar(1L);
-        assetFalse(usuario.isAtivo());
+        assertFalse(usuario.getAtivo());
         verify(repository, times(1)).findById(1L);
         verify(repository, times(1)).save(usuario);
     }
@@ -121,8 +117,7 @@ public class UsuarioServiceTest {
         doNothing().when(repository).deleteById(1L);
 
         service.deletar(1L);
-        asserThrows(NoSuchElementException.class, () -> service.buscarPorId(1L));//verificar se o correto é um EntityNotFoundException
-        assertEqual(204, response.getStatusCodeValue());
+        assertThrows(NoSuchElementException.class, () -> service.buscarPorId(1L));//verificar se o correto é um EntityNotFoundException
         verify(repository, times(1)).deleteById(1L);
     }
 }

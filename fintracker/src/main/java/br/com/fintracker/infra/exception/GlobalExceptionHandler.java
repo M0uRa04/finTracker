@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
     // Tratamento para acessos negados
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado: " + ex.getMessage());
     }
 
     // Tratamento para mensagens não legíveis

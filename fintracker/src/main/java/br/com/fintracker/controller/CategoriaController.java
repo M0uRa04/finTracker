@@ -4,6 +4,7 @@ import br.com.fintracker.dto.categoria.DadosAtualizacaoCategoria;
 import br.com.fintracker.dto.categoria.DadosCadastroCategoria;
 import br.com.fintracker.dto.categoria.DadosRespostaCategoria;
 import br.com.fintracker.service.CategoriaService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +47,8 @@ private CategoriaService service;
     @Override
     @PatchMapping("/{id}")
     public ResponseEntity<DadosRespostaCategoria> atualizar(@PathVariable Long id, @Valid @RequestBody DadosAtualizacaoCategoria dadosAtualizacaoCategoria) {
-        return ResponseEntity.ok().body(service.atualizar(id, dadosAtualizacaoCategoria).get());
+        return ResponseEntity.ok().body(service.atualizar(id, dadosAtualizacaoCategoria).
+        orElseThrow(EntityNotFoundException::new));
     }
 
     @Override

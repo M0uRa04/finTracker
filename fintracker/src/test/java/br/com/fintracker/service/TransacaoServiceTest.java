@@ -43,6 +43,8 @@ class TransacaoServiceTest {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
+    private DadosCadastroTransacao dadosCadastroTransacao;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);

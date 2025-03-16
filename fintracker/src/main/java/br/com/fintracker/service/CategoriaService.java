@@ -64,7 +64,6 @@ public class CategoriaService implements CrudService <DadosRespostaCategoria, Da
     public Optional<DadosRespostaCategoria> atualizar(Long idCategoria, DadosAtualizacaoCategoria dadosAtualizacao) {
         var categoriaEncontrada = repository.findByIdAndUsuarioId(idCategoria, UserContext.getUserId());
         var categoriaAtualizada = atualizarAtributos(categoriaEncontrada, dadosAtualizacao);
-        //repository.saveAndFlush(categoriaEncontrada); Salvamento redundante
         return Optional.of(new DadosRespostaCategoria(categoriaAtualizada));
     }
 

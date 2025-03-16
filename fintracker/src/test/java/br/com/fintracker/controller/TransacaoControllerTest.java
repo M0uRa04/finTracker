@@ -1,5 +1,6 @@
 package br.com.fintracker.controller;
 
+import br.com.fintracker.dto.categoria.DadosRespostaCategoria;
 import br.com.fintracker.dto.transacao.DadosAtualizacaoTransacao;
 import br.com.fintracker.dto.transacao.DadosCadastroTransacao;
 import br.com.fintracker.dto.transacao.DadosRespostaTransacao;
@@ -8,6 +9,7 @@ import br.com.fintracker.repository.TransacaoRepository;
 import br.com.fintracker.repository.UsuarioRepository;
 import br.com.fintracker.service.JWTService;
 import br.com.fintracker.service.TransacaoService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +41,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-@WebMvcTest(TransacaoController.class)
+@WebMvcTest({TransacaoController.class, AuthenticationController.class})
 class TransacaoControllerTest {
 
     @Autowired
@@ -65,10 +67,11 @@ class TransacaoControllerTest {
 
     private DadosCadastroTransacao dadosCadastro;
     private DadosRespostaTransacao dadosResposta;
+    private DadosRespostaCategoria dadosRespostaCategoria;
     private String token;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
 
         token = autenticarUsuario("robson@test.com", "senha123");
 
@@ -92,6 +95,8 @@ class TransacaoControllerTest {
             );
 
         dadosResposta = new DadosRespostaTransacao(
+                1L,
+                1L,
                 TipoTransacao.ENTRADA,
                 dadosRespostaCategoria, // Substitua por DadosRespostaCategoria se necessário
                 LocalDate.now(),
@@ -162,7 +167,7 @@ class TransacaoControllerTest {
     void deveAtualizarTransacao() throws Exception {
         DadosAtualizacaoTransacao dadosAtualizacao = new DadosAtualizacaoTransacao(
                 TipoTransacao.SAIDA,
-                1L, //verificar se deu certo essa categoria ou se devo passar null
+                null, //verificar se deu certo essa categoria ou se devo passar null
                 LocalDate.now(),
                 BigDecimal.valueOf(200),
                 "Compra no mercado"
