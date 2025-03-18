@@ -34,9 +34,9 @@ public class TransacaoController implements CrudController <DadosRespostaTransac
     @Override
     @GetMapping("/{idTransacao}")
     public ResponseEntity<DadosRespostaTransacao> buscarPorId(@PathVariable Long idTransacao) {
-        var idUsuario = UserContext.getUserId();
-        var transacaoBuscada = service.buscarTransacaoPorIdEUsuario(idTransacao, idUsuario);
-        return ResponseEntity.ok(transacaoBuscada.orElseThrow());
+        return service.buscarTransacaoPorIdEUsuario(idTransacao, UserContext.getUserId())
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Override
