@@ -16,6 +16,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -26,6 +27,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
+    // Tratamento para NoSuchElementException
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String>handleNoSuchElementException (NoSuchElementException ex) {
+       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro ao encontrar o elemento solicitado. " + ex.getMessage());
+    }
     // Tratamento para erros de validação
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
