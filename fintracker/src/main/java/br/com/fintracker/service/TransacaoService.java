@@ -10,6 +10,7 @@ import br.com.fintracker.model.usuario.Usuario;
 import br.com.fintracker.repository.CategoriaRepository;
 import br.com.fintracker.repository.TransacaoRepository;
 import br.com.fintracker.repository.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -72,8 +73,8 @@ public class TransacaoService{
     }
 
     public Optional<DadosRespostaTransacao> buscarTransacaoPorIdEUsuario(Long idTransacao,Long idUsuario) {
-        var transacaoProcurada = transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario);
-        return Optional.of(new DadosRespostaTransacao(transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario).orElseThrow()));
+        var transacaoProcurada = transacaoRepository.findByIdAndUsuarioId(idTransacao, idUsuario).orElseThrow(() -> new EntityNotFoundException("Transação não encontrada para os dados fornecidos."));
+        return Optional.of(new DadosRespostaTransacao(transacaoProcurada));
     }
 
     public List<DadosRespostaTransacao> listarTodos(Long usuarioId) {
